@@ -1,0 +1,48 @@
+openapi: 3.1.0
+info:
+  title: Clinical Simulation Backend API
+  version: 0.1.0
+  description: Local-first backend API for a voice-enabled clinical simulation platform.
+servers:
+  - url: http://localhost:8000
+    description: Local development
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Service health
+  /sessions:
+    post:
+      summary: Create a new simulation session
+  /sessions/{sessionId}/start-case:
+    post:
+      summary: Start a case in an existing session
+  /sessions/{sessionId}/reset-case:
+    post:
+      summary: Reset the active case
+  /sessions/{sessionId}/state:
+    get:
+      summary: Get full current case state
+  /sessions/{sessionId}/state/summary:
+    get:
+      summary: Get lightweight state summary
+  /sessions/{sessionId}/parse-turn:
+    post:
+      summary: Parse a resident turn into structured actions
+  /sessions/{sessionId}/execute-turn:
+    post:
+      summary: Execute a parsed turn against the deterministic simulation engine
+  /sessions/{sessionId}/voice-plan:
+    post:
+      summary: Build the voice dialogue response plan
+  /sessions/{sessionId}/turns:
+    post:
+      summary: One-call endpoint to parse, execute, and voice-plan a single turn
+  /sessions/{sessionId}/events:
+    get:
+      summary: Get event log entries
+  /sessions/{sessionId}/reports/final:
+    post:
+      summary: Generate final debrief report

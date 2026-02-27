@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "runtime_parser_contract.json",
+  "title": "Simulation Runtime Parser Contract",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "turn_id",
+    "timestamp_sim_sec",
+    "raw_input",
+    "normalized_input",
+    "parser_mode",
+    "intent_summary",
+    "actions",
+    "needs_clarification",
+    "clarification_question",
+    "overall_confidence",
+    "parser_status"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string"
+    },
+    "turn_id": {
+      "type": "string"
+    },
+    "timestamp_sim_sec": {
+      "type": "number"
+    },
+    "raw_input": {
+      "type": "string"
+    },
+    "normalized_input": {
+      "type": "string"
+    },
+    "parser_mode": {
+      "type": "string"
+    },
+    "intent_summary": {
+      "type": "string"
+    },
+    "actions": {
+      "type": "array"
+    },
+    "needs_clarification": {
+      "type": "boolean"
+    },
+    "clarification_question": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "overall_confidence": {
+      "type": "number"
+    },
+    "parser_status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "partial_parse",
+        "clarification_required",
+        "rejected"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

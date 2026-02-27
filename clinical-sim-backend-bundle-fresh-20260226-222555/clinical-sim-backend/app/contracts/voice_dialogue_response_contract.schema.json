@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "voice_dialogue_response_contract.json",
+  "title": "Voice Dialogue Response Contract",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "turn_id",
+    "timestamp_sim_sec",
+    "response_status",
+    "audio_queue_policy",
+    "responses",
+    "input_gate",
+    "subtitle_plan"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string"
+    },
+    "turn_id": {
+      "type": "string"
+    },
+    "timestamp_sim_sec": {
+      "type": "number"
+    },
+    "response_status": {
+      "type": "string"
+    },
+    "audio_queue_policy": {
+      "type": "object"
+    },
+    "responses": {
+      "type": "array"
+    },
+    "input_gate": {
+      "type": "object"
+    },
+    "subtitle_plan": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

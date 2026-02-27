@@ -1,0 +1,400 @@
+{
+  "case_file_version": "0.1.0",
+  "case_id": "htn_enceph_001",
+  "title": "Hypertensive Encephalopathy with Visual Symptoms",
+  "difficulty": "moderate",
+  "scenario_type": "hypertensive_encephalopathy_or_pres",
+  "authoring_notes": {
+    "summary": "Adult with severe hypertension, headache, confusion, blurred vision, and evolving encephalopathy. Goal is recognition of hypertensive emergency, controlled BP reduction, appropriate monitoring, and avoidance of precipitous overcorrection.",
+    "teaching_focus": [
+      "Recognize hypertensive emergency rather than asymptomatic hypertension",
+      "Choose a titratable IV antihypertensive",
+      "Lower MAP gradually rather than normalizing immediately",
+      "Monitor for neurologic worsening from disease progression or overshoot hypoperfusion",
+      "Consider PRES / hypertensive encephalopathy and obtain appropriate workup"
+    ]
+  },
+  "case_metadata": {
+    "case_id": "htn_enceph_001",
+    "title": "Hypertensive Encephalopathy with Visual Symptoms",
+    "difficulty": "moderate",
+    "scenario_type": "hypertensive_encephalopathy_or_pres",
+    "time_elapsed_sec": 0,
+    "time_step_sec": 5,
+    "status": "not_started"
+  },
+  "patient_profile": {
+    "name": "Angela Morris",
+    "age_years": 52,
+    "sex": "female",
+    "weight_kg": 82,
+    "height_cm": 165,
+    "bsa_m2": 1.93,
+    "pregnant": false,
+    "gestational_weeks": 0,
+    "chronic_hypertension": true,
+    "baseline_sbp": 155,
+    "baseline_dbp": 92,
+    "baseline_hr": 84,
+    "comorbidities": {
+      "ckd": false,
+      "hfrEF": false,
+      "copd": false,
+      "asthma_or_reactive_airways": false,
+      "cad": false,
+      "diabetes": false,
+      "aortic_aneurysm_history": false,
+      "baseline_beta_blocker_use": false,
+      "baseline_bradycardia": false,
+      "av_conduction_disease": false,
+      "volume_depletion": false
+    }
+  },
+  "disease_model": {
+    "primary_pathology": "hypertensive_encephalopathy",
+    "severity_index": 0.72,
+    "end_organ_risk": {
+      "brain": 0.9,
+      "heart": 0.25,
+      "kidney": 0.35,
+      "aorta": 0.1,
+      "lungs": 0.1
+    },
+    "autoregulation_shift_index": 0.78,
+    "catecholamine_excess_index": 0.2,
+    "pulmonary_edema_index": 0.05,
+    "aortic_shear_index": 0.05,
+    "cerebral_edema_index": 0.58
+  },
+  "initial_state": {
+    "hemodynamics": {
+      "svr_index": 1.95,
+      "preload_index": 1.0,
+      "contractility_index": 1.0,
+      "cardiac_output_index": 1.0,
+      "stroke_volume_index": 1.0,
+      "map": 157,
+      "sbp": 228,
+      "dbp": 122,
+      "hr": 102,
+      "rhythm": "sinus_tachycardia",
+      "av_node_conduction_index": 1.0,
+      "coronary_supply_demand_mismatch_index": 0.22
+    },
+    "respiratory": {
+      "rr": 22,
+      "spo2": 98,
+      "fio2": 0.21,
+      "oxygen_device": "room_air",
+      "work_of_breathing_index": 0.1,
+      "crackles_index": 0.0,
+      "bronchospasm_index": 0.0,
+      "pulmonary_edema_index": 0.05
+    },
+    "neurologic": {
+      "gcs": 14,
+      "mental_status": "confused",
+      "headache_index": 0.85,
+      "vision_change_index": 0.7,
+      "focal_deficit_index": 0.0,
+      "cerebral_hypoperfusion_index": 0.0
+    },
+    "renal": {
+      "urine_output_ml_per_hr": 45,
+      "renal_perfusion_index": 0.82,
+      "aki_risk_index": 0.18
+    },
+    "cardiac": {
+      "chest_pain_index": 0.0,
+      "ischemia_index": 0.08,
+      "troponin_leak_index": 0.0,
+      "acute_heart_failure_index": 0.0
+    },
+    "monitor": {
+      "ecg_text": "Sinus tachycardia, rate 102, no STEMI, nonspecific ST-T changes",
+      "telemetry_quality": "good",
+      "nibp_cycle_sec": 60,
+      "waveform_flags": [
+        "hypertension_alarm",
+        "tachyarrhythmia"
+      ]
+    },
+    "labs": {
+      "creatinine_mg_dl": 1.1,
+      "bnp_pg_ml": 68,
+      "troponin_ng_l": 11,
+      "lactate_mmol_l": 1.4,
+      "abg": {
+        "ph": 7.4,
+        "pco2": 39,
+        "po2": 92,
+        "hco3": 24
+      },
+      "cmp": {
+        "na": 139,
+        "k": 3.9,
+        "cl": 104,
+        "co2": 23,
+        "bun": 18,
+        "glucose": 122
+      }
+    },
+    "active_medications": [],
+    "orders": [],
+    "event_log": [],
+    "scoring": {
+      "critical_actions": [],
+      "harm_events": [],
+      "teaching_points": [],
+      "final_score": 0
+    }
+  },
+  "hidden_truth": {
+    "final_diagnosis": "Hypertensive encephalopathy, likely PRES-spectrum presentation",
+    "must_not_miss_alternatives": [
+      "Intracranial hemorrhage",
+      "Acute ischemic stroke",
+      "Meningoencephalitis",
+      "Toxic-metabolic encephalopathy"
+    ],
+    "head_ct_result_if_ordered": "No acute intracranial hemorrhage or mass effect. Mild chronic small vessel changes.",
+    "mri_brain_result_if_ordered": "Symmetric posterior subcortical T2/FLAIR hyperintensities compatible with PRES.",
+    "fundoscopic_exam_if_requested": "Blurred disc margins not seen; arteriolar narrowing present; no frank papilledema on limited ED exam.",
+    "ua_if_ordered": "Trace protein, otherwise unremarkable",
+    "cxr_if_ordered": "No acute cardiopulmonary process",
+    "pregnancy_test_if_ordered": "Negative"
+  },
+  "opening_script": {
+    "patient_voice": "My head is pounding. I can't think straight. Everything looks blurry.",
+    "nurse_handoff": "52-year-old woman brought in by family for severe headache, confusion, and blurry vision. Pressure is 228 over 122. She keeps asking the same questions.",
+    "appearance": [
+      "Anxious but not combative",
+      "Slow to answer",
+      "Squinting and rubbing temples",
+      "No respiratory distress"
+    ]
+  },
+  "critical_actions": [
+    {
+      "id": "recognize_htn_emergency",
+      "description": "Recognize hypertensive emergency with neurologic end-organ dysfunction",
+      "target_time_sec": 300,
+      "weight": 12
+    },
+    {
+      "id": "establish_monitoring",
+      "description": "Place on continuous monitoring and frequent blood pressure checks",
+      "target_time_sec": 240,
+      "weight": 6
+    },
+    {
+      "id": "start_titratable_iv_agent",
+      "description": "Start appropriate titratable IV antihypertensive",
+      "target_time_sec": 600,
+      "weight": 16
+    },
+    {
+      "id": "avoid_overcorrection",
+      "description": "Avoid dropping MAP too far too fast",
+      "target_time_sec": 3600,
+      "weight": 18
+    },
+    {
+      "id": "order_neuro_workup",
+      "description": "Order appropriate neurologic evaluation",
+      "target_time_sec": 900,
+      "weight": 8
+    },
+    {
+      "id": "reassess_neuro_status",
+      "description": "Perform serial reassessment after treatment",
+      "target_time_sec": 1200,
+      "weight": 10
+    },
+    {
+      "id": "disposition",
+      "description": "Admit to ICU or similarly high-acuity monitored setting",
+      "target_time_sec": 2400,
+      "weight": 8
+    }
+  ],
+  "harm_events": [
+    {
+      "id": "missed_hypertensive_emergency",
+      "description": "Treats as simple headache or asymptomatic hypertension and delays IV therapy",
+      "trigger": "no_iv_antihypertensive_by_1200_sec",
+      "severity": 8
+    },
+    {
+      "id": "rapid_overcorrection",
+      "description": "MAP falls too quickly leading to cerebral hypoperfusion",
+      "trigger": "map_drop_fraction_from_start_greater_than_0.25_within_1800_sec",
+      "severity": 10
+    },
+    {
+      "id": "iatrogenic_bradycardic_hypoperfusion",
+      "description": "Excess beta blockade causes bradycardia and worsened mental status",
+      "trigger": "hr_less_than_45_and_map_less_than_65",
+      "severity": 8
+    },
+    {
+      "id": "progression_to_seizure",
+      "description": "Ongoing cerebral edema progresses to seizure due to undertreatment",
+      "trigger": "no_meaningful_bp_reduction_by_1800_sec_and_cerebral_edema_index_greater_than_0.8",
+      "severity": 9
+    }
+  ],
+  "recommended_management_logic": {
+    "preferred_agents": [
+      "nicardipine_iv",
+      "clevidipine_iv",
+      "labetalol_iv"
+    ],
+    "preferred_strategy": "controlled gradual MAP reduction with close neuro reassessment",
+    "penalized_strategy": [
+      "attempt_to_normalize_bp_immediately",
+      "large_repeated_labetalol_boluses_without_reassessment",
+      "discharge_after_bp_improvement_without_workup"
+    ]
+  },
+  "time_course": {
+    "untreated_progression": [
+      {
+        "time_sec": 300,
+        "effects": {
+          "neurologic": {
+            "headache_index": 0.9,
+            "vision_change_index": 0.78
+          },
+          "hemodynamics": {
+            "sbp": 232,
+            "dbp": 124,
+            "hr": 104
+          }
+        },
+        "narrative": "She becomes more repetitive and asks where she is."
+      },
+      {
+        "time_sec": 900,
+        "effects": {
+          "neurologic": {
+            "mental_status": "somnolent",
+            "gcs": 13
+          },
+          "disease_model": {
+            "cerebral_edema_index": 0.68
+          }
+        },
+        "narrative": "The patient is more drowsy and slower to answer."
+      },
+      {
+        "time_sec": 1800,
+        "effects": {
+          "neurologic": {
+            "mental_status": "agitated"
+          },
+          "disease_model": {
+            "cerebral_edema_index": 0.82
+          }
+        },
+        "conditional_event": "if_no_meaningful_bp_reduction",
+        "narrative": "She becomes agitated, grabs at leads, and briefly stares off."
+      },
+      {
+        "time_sec": 2400,
+        "conditional_event": "if_no_iv_antihypertensive_or_map_still_greater_than_145",
+        "effects": {
+          "neurologic": {
+            "mental_status": "seizing",
+            "gcs": 6
+          }
+        },
+        "narrative": "Generalized tonic-clonic seizure begins."
+      }
+    ]
+  },
+  "triggered_diagnostics": {
+    "head_ct_ordered": {
+      "result_delay_sec": 900,
+      "result_text": "No acute intracranial hemorrhage. No mass effect. Mild chronic microvascular changes."
+    },
+    "mri_brain_ordered": {
+      "result_delay_sec": 2700,
+      "result_text": "Posterior predominant subcortical FLAIR hyperintensities concerning for PRES."
+    },
+    "ecg_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "Sinus tachycardia, nonspecific ST-T changes."
+    },
+    "cmp_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Creatinine 1.1, electrolytes otherwise unremarkable."
+    },
+    "troponin_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Troponin mildly detectable but not rising significantly at baseline."
+    },
+    "pregnancy_test_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "Negative."
+    }
+  },
+  "success_criteria": {
+    "required": [
+      "recognize_htn_emergency",
+      "establish_monitoring",
+      "start_titratable_iv_agent",
+      "avoid_overcorrection",
+      "order_neuro_workup",
+      "reassess_neuro_status",
+      "disposition"
+    ],
+    "target_end_state": {
+      "map_range": [
+        118,
+        132
+      ],
+      "mental_status": "anxious",
+      "gcs_min": 14,
+      "cerebral_edema_index_max": 0.45,
+      "no_harm_event_ids": [
+        "rapid_overcorrection",
+        "progression_to_seizure"
+      ]
+    }
+  },
+  "failure_criteria": {
+    "any_of": [
+      "progression_to_seizure",
+      "map_less_than_50",
+      "unresponsive_state_persists_more_than_300_sec",
+      "disposition_is_discharge"
+    ]
+  },
+  "debrief_template": {
+    "what_went_well": [
+      "Recognized neurologic end-organ dysfunction from severe hypertension",
+      "Used a titratable IV agent appropriately",
+      "Reassessed blood pressure and mental status after intervention",
+      "Avoided excessive early BP correction"
+    ],
+    "what_could_have_gone_better": [
+      "Earlier recognition of hypertensive emergency",
+      "Closer attention to rate of MAP reduction",
+      "Earlier neuroimaging and ICU disposition",
+      "Better adjustment of infusion based on repeated BP checks"
+    ],
+    "key_choices_to_highlight": [
+      "Agent selected and why",
+      "Whether blood pressure was lowered too slowly, appropriately, or too fast",
+      "Whether neurologic reassessment occurred after treatment changes",
+      "Whether alternate intracranial diagnoses were evaluated"
+    ],
+    "teaching_points": [
+      "Numbers alone do not define the emergency; end-organ dysfunction does.",
+      "In hypertensive encephalopathy, the goal is controlled reduction, not immediate normalization.",
+      "Apparent improvement in BP can be dangerous if mental status worsens from hypoperfusion.",
+      "The monitor, symptoms, and serial exam all matter."
+    ]
+  }
+}

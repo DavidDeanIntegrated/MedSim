@@ -1,0 +1,138 @@
+{
+  "mapping_file_version": "0.1.0",
+  "case_id": "htn_enceph_001",
+  "tools": [
+    {
+      "tool_name": "give_medication",
+      "required_fields": [
+        "medication_id",
+        "dose",
+        "dose_unit",
+        "route",
+        "administration_mode"
+      ]
+    },
+    {
+      "tool_name": "start_infusion",
+      "required_fields": [
+        "medication_id",
+        "infusion_rate",
+        "dose_unit",
+        "route",
+        "administration_mode"
+      ]
+    },
+    {
+      "tool_name": "adjust_infusion",
+      "required_fields": [
+        "medication_id",
+        "new_infusion_rate",
+        "dose_unit",
+        "administration_mode"
+      ]
+    },
+    {
+      "tool_name": "stop_infusion",
+      "required_fields": [
+        "medication_id",
+        "administration_mode"
+      ]
+    },
+    {
+      "tool_name": "order_diagnostic",
+      "required_fields": [
+        "diagnostic_id",
+        "order_type"
+      ]
+    },
+    {
+      "tool_name": "set_monitoring",
+      "required_fields": [
+        "monitor_action"
+      ]
+    },
+    {
+      "tool_name": "perform_reassessment",
+      "required_fields": [
+        "reassessment_type"
+      ]
+    },
+    {
+      "tool_name": "set_disposition",
+      "required_fields": [
+        "disposition"
+      ]
+    },
+    {
+      "tool_name": "document_assessment",
+      "required_fields": [
+        "assessment_concept"
+      ]
+    }
+  ],
+  "action_patterns": [
+    {
+      "action_id": "start_nicardipine",
+      "tool_name": "start_infusion",
+      "entity_requirements": {
+        "medication_id": "nicardipine_iv",
+        "dose_unit": "mg_per_hour",
+        "administration_mode": "infusion_start",
+        "route": "IV"
+      },
+      "defaults": {
+        "infusion_rate": 5
+      }
+    },
+    {
+      "action_id": "give_labetalol_bolus",
+      "tool_name": "give_medication",
+      "entity_requirements": {
+        "medication_id": "labetalol_iv",
+        "dose_unit": "mg",
+        "route": "IV",
+        "administration_mode": "bolus"
+      },
+      "validation": {
+        "allowed_doses": [
+          10,
+          20,
+          40,
+          80
+        ]
+      }
+    },
+    {
+      "action_id": "order_head_ct",
+      "tool_name": "order_diagnostic",
+      "entity_requirements": {
+        "diagnostic_id": "head_ct_noncontrast",
+        "order_type": "imaging"
+      }
+    },
+    {
+      "action_id": "set_repeat_bp_q5min",
+      "tool_name": "set_monitoring",
+      "entity_requirements": {
+        "monitor_action": "set_nibp_cycle"
+      },
+      "defaults": {
+        "nibp_cycle_sec": 300
+      }
+    },
+    {
+      "action_id": "admit_icu",
+      "tool_name": "set_disposition",
+      "entity_requirements": {
+        "disposition": "icu_admission"
+      }
+    },
+    {
+      "action_id": "document_hypertensive_emergency_assessment",
+      "tool_name": "document_assessment",
+      "entity_requirements": {
+        "assessment_concept": "hypertensive_emergency_or_hypertensive_encephalopathy"
+      }
+    }
+  ]
+}

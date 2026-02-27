@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "engine_executor_contract.json",
+  "title": "Simulation Engine Executor Contract",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "turn_id",
+    "timestamp_sim_sec_before",
+    "timestamp_sim_sec_after",
+    "execution_status",
+    "action_results",
+    "state_delta",
+    "updated_patient_state",
+    "new_events",
+    "ui_updates",
+    "voice_response_plan",
+    "scoring_updates",
+    "executor_notes"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string"
+    },
+    "turn_id": {
+      "type": "string"
+    },
+    "timestamp_sim_sec_before": {
+      "type": "number"
+    },
+    "timestamp_sim_sec_after": {
+      "type": "number"
+    },
+    "execution_status": {
+      "type": "string"
+    },
+    "action_results": {
+      "type": "array"
+    },
+    "state_delta": {
+      "type": "object"
+    },
+    "updated_patient_state": {
+      "type": "object"
+    },
+    "new_events": {
+      "type": "array"
+    },
+    "ui_updates": {
+      "type": "object"
+    },
+    "voice_response_plan": {
+      "type": "object"
+    },
+    "scoring_updates": {
+      "type": "object"
+    },
+    "executor_notes": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}

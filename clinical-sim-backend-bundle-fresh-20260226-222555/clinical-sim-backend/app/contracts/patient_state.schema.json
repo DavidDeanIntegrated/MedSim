@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "patient_state.schema.json",
+  "title": "Hypertensive Emergency Simulation Patient State",
+  "type": "object",
+  "required": [
+    "case_metadata",
+    "patient_profile",
+    "disease_model",
+    "hemodynamics",
+    "respiratory",
+    "neurologic",
+    "renal",
+    "cardiac",
+    "monitor",
+    "labs",
+    "active_medications",
+    "orders",
+    "event_log",
+    "scoring"
+  ],
+  "properties": {
+    "case_metadata": {
+      "type": "object"
+    },
+    "patient_profile": {
+      "type": "object"
+    },
+    "disease_model": {
+      "type": "object"
+    },
+    "hemodynamics": {
+      "type": "object"
+    },
+    "respiratory": {
+      "type": "object"
+    },
+    "neurologic": {
+      "type": "object"
+    },
+    "renal": {
+      "type": "object"
+    },
+    "cardiac": {
+      "type": "object"
+    },
+    "monitor": {
+      "type": "object"
+    },
+    "labs": {
+      "type": "object"
+    },
+    "active_medications": {
+      "type": "array"
+    },
+    "orders": {
+      "type": "array"
+    },
+    "event_log": {
+      "type": "array"
+    },
+    "scoring": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

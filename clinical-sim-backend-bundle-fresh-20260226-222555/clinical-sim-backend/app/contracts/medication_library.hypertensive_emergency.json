@@ -1,0 +1,77 @@
+{
+  "schema_version": "0.1.0",
+  "domain": "hypertensive_emergency_sim",
+  "medications": [
+    {
+      "id": "labetalol_iv",
+      "name": "Labetalol",
+      "class": "alpha_beta_blocker",
+      "orderable_forms": {
+        "bolus": {
+          "allowed_doses_mg": [
+            10,
+            20,
+            40,
+            80
+          ]
+        },
+        "infusion": {
+          "allowed_start_mg_per_min": [
+            1,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "id": "nicardipine_iv",
+      "name": "Nicardipine",
+      "class": "dihydropyridine_calcium_channel_blocker",
+      "orderable_forms": {
+        "infusion": {
+          "allowed_start_mg_per_hr": [
+            3,
+            5
+          ],
+          "titration_step_mg_per_hr": 2.5,
+          "max_mg_per_hr": 15
+        }
+      }
+    },
+    {
+      "id": "clevidipine_iv",
+      "name": "Clevidipine",
+      "class": "ultra_short_acting_dihydropyridine_calcium_channel_blocker",
+      "orderable_forms": {
+        "infusion": {
+          "allowed_start_mg_per_hr": [
+            1,
+            2
+          ],
+          "usual_max_mg_per_hr": 16,
+          "absolute_max_mg_per_hr": 32
+        }
+      }
+    },
+    {
+      "id": "esmolol_iv",
+      "name": "Esmolol",
+      "class": "ultra_short_acting_beta1_blocker"
+    },
+    {
+      "id": "nitroglycerin_iv",
+      "name": "Nitroglycerin",
+      "class": "venodilator_with_dose_dependent_arterial_effect"
+    },
+    {
+      "id": "nitroprusside_iv",
+      "name": "Sodium Nitroprusside",
+      "class": "potent_arterial_and_venous_vasodilator"
+    },
+    {
+      "id": "phentolamine_iv",
+      "name": "Phentolamine",
+      "class": "alpha_blocker"
+    }
+  ]
+}

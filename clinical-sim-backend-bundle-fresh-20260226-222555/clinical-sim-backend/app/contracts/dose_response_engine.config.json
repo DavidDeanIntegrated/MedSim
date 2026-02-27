@@ -1,0 +1,28 @@
+{
+  "config_version": "0.1.0",
+  "engine_name": "hypertensive_emergency_dose_response_engine",
+  "time": {
+    "default_tick_sec": 5,
+    "max_tick_sec": 15
+  },
+  "global_models": {
+    "effect_compartment_model": {
+      "type": "first_order_effect_site"
+    },
+    "dose_response_curve": {
+      "type": "hill_emax"
+    }
+  },
+  "safety_logic": {
+    "map_drop_penalty": {
+      "threshold_fraction_from_start_over_60_to_120_min": 0.25
+    }
+  },
+  "scenario_overrides": {
+    "hypertensive_encephalopathy_or_pres": {
+      "rapid_overcorrection_penalty": {
+        "map_drop_fraction_over_30_min": 0.2
+      }
+    }
+  }
+}
