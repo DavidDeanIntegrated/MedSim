@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedSim — Clinical Simulation</title>
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --panel: #111827;
+      --border: #1f2d40;
+      --green: #00ff88;
+      --yellow: #ffd700;
+      --red: #ff4444;
+      --cyan: #00cfff;
+      --orange: #ff9500;
+      --text: #d0e0f0;
+      --muted: #506070;
+      --accent: #1a3a5c;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #060b14;
+      border-bottom: 1px solid var(--border);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+    header h1 { font-size: 14px; color: var(--cyan); letter-spacing: 3px; text-transform: uppercase; }
+    .case-info { font-size: 12px; color: var(--muted); }
+    .case-info span { color: var(--text); }
+    .sim-timer {
+      margin-left: auto;
+      font-size: 20px;
+      color: var(--green);
+      letter-spacing: 2px;
+      font-weight: bold;
+    }
+    .status-badge {
+      padding: 3px 10px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      background: #1a1a00;
+      color: var(--yellow);
+      border: 1px solid var(--yellow);
+    }
+    .status-badge.running { background: #001a0a; color: var(--green); border-color: var(--green); }
+    .status-badge.loading { background: #1a0a00; color: var(--orange); border-color: var(--orange); }
+
+    /* ── Main layout ── */
+    main {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      grid-template-rows: 1fr auto;
+      gap: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Left: Monitor panel ── */
+    .monitor-panel {
+      grid-row: 1 / 3;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      overflow-y: auto;
+    }
+    .monitor-section {
+      border-bottom: 1px solid var(--border);
+      padding: 12px;
+    }
+    .monitor-section-title {
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* Vital tile */
+    .vital-tile {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 14px;
+    }
+    .vital-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-bottom: 2px; }
+    .vital-value {
+      font-size: 36px;
+      font-weight: bold;
+      line-height: 1;
+      transition: color 0.4s;
+    }
+    .vital-unit { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .vital-tile.bp .vital-value { color: var(--red); }
+    .vital-tile.hr .vital-value { color: var(--green); }
+    .vital-tile.spo2 .vital-value { color: var(--cyan); }
+    .vital-tile.rr .vital-value { color: var(--yellow); }
+    .vital-tile.map-tile .vital-value { color: var(--orange); }
+
+    .rhythm-box {
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 13px;
+      color: var(--green);
+      background: #040a06;
+      margin-bottom: 8px;
+    }
+
+    /* Alarm flags */
+    .alarm-flags { display: flex; flex-direction: column; gap: 4px; }
+    .alarm-flag {
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      background: #2a0a00;
+      color: var(--red);
+      border-left: 3px solid var(--red);
+    }
+
+    /* Patient profile */
+    .patient-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px; }
+    .patient-row .pk { color: var(--muted); }
+    .patient-row .pv { color: var(--text); }
+
+    /* Score */
+    .score-display {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--cyan);
+      text-align: center;
+      padding: 6px 0;
+    }
+    .score-bar-bg { background: var(--border); border-radius: 4px; height: 6px; }
+    .score-bar-fill { height: 6px; border-radius: 4px; background: var(--cyan); transition: width 0.5s; }
+
+    /* ── Right: Event log ── */
+    .event-log {
+      grid-column: 2;
+      grid-row: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .event-item {
+      border-left: 3px solid var(--muted);
+      padding: 8px 10px;
+      background: #0d1520;
+      border-radius: 0 4px 4px 0;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .event-item .ev-time { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
+    .event-item .ev-who { font-weight: bold; margin-bottom: 2px; }
+    .event-item .ev-text { color: var(--text); }
+
+    /* severity colours */
+    .ev-info     { border-color: var(--muted); }
+    .ev-low      { border-color: #3a6; }
+    .ev-moderate { border-color: var(--yellow); }
+    .ev-high     { border-color: var(--orange); }
+    .ev-critical { border-color: var(--red); background: #1a0808; }
+    .ev-order    { border-color: var(--cyan); }
+    .ev-opening  { border-color: #8844ff; background: #0e0a1a; }
+    .ev-system   { border-color: var(--muted); background: #0a0a0a; font-style: italic; }
+
+    .ev-who.patient { color: #ff99cc; }
+    .ev-who.nurse   { color: #99ccff; }
+    .ev-who.system  { color: var(--muted); }
+    .ev-who.you     { color: var(--cyan); }
+    .ev-who.engine  { color: var(--green); }
+
+    .state-change { font-size: 11px; color: #8a9aaa; margin-top: 4px; }
+
+    /* ── Order input ── */
+    .order-bar {
+      grid-column: 2;
+      grid-row: 2;
+      background: #060b14;
+      border-top: 1px solid var(--border);
+      padding: 10px 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .order-bar input {
+      flex: 1;
+      background: #111827;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .order-bar input:focus { border-color: var(--cyan); }
+    .order-bar input::placeholder { color: var(--muted); }
+    .order-bar button {
+      background: var(--accent);
+      border: 1px solid var(--cyan);
+      border-radius: 4px;
+      color: var(--cyan);
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      padding: 8px 16px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .order-bar button:hover { background: #1f4a7a; }
+    .order-bar button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .order-bar .hint { font-size: 10px; color: var(--muted); white-space: nowrap; }
+
+    /* Suggestion chips */
+    .suggestion-chips {
+      grid-column: 2;
+      padding: 6px 12px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      background: #060b14;
+      border-top: 1px solid var(--border);
+    }
+    .chip {
+      background: #0d1520;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--muted);
+      font-size: 11px;
+      padding: 3px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .chip:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* Loading overlay */
+    #loading-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      gap: 12px;
+    }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--cyan);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { color: var(--cyan); font-size: 13px; letter-spacing: 2px; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* Report modal */
+    #report-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 200;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .report-box {
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+    }
+    .report-box h2 { color: var(--cyan); margin-bottom: 16px; font-size: 14px; letter-spacing: 2px; }
+    .report-section { margin-bottom: 16px; }
+    .report-section h3 { color: var(--yellow); font-size: 12px; letter-spacing: 1px; margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+    .report-section p, .report-section li { font-size: 12px; line-height: 1.7; color: var(--text); }
+    .report-section ul { padding-left: 16px; }
+    .report-close {
+      margin-top: 16px;
+      background: var(--accent);
+      border: 1px solid var(--cyan);
+      border-radius: 4px;
+      color: var(--cyan);
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      padding: 8px 20px;
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text">INITIALISING SESSION…</div>
+</div>
+
+<div id="report-modal">
+  <div class="report-box">
+    <h2>DEBRIEF REPORT</h2>
+    <div id="report-content"></div>
+    <button class="report-close" onclick="closeReport()">CLOSE</button>
+  </div>
+</div>
+
+<header>
+  <h1>MedSim</h1>
+  <div class="case-info">Case: <span id="case-title">—</span></div>
+  <div class="case-info">Patient: <span id="patient-name">—</span></div>
+  <div class="status-badge loading" id="status-badge">LOADING</div>
+  <div class="sim-timer" id="sim-timer">00:00</div>
+  <button onclick="requestReport()" style="background:#1a1a00;border:1px solid #ffd700;border-radius:4px;color:#ffd700;font-family:'Courier New',monospace;font-size:11px;padding:5px 12px;cursor:pointer;letter-spacing:1px;">DEBRIEF</button>
+</header>
+
+<main>
+  <!-- Monitor panel -->
+  <div class="monitor-panel">
+    <div class="monitor-section">
+      <div class="monitor-section-title">Haemodynamics</div>
+      <div class="vital-tile bp">
+        <div class="vital-label">BP (mmHg)</div>
+        <div class="vital-value" id="v-bp">—/—</div>
+        <div class="vital-unit">SBP / DBP</div>
+      </div>
+      <div class="vital-tile map-tile">
+        <div class="vital-label">MAP (mmHg)</div>
+        <div class="vital-value" id="v-map">—</div>
+        <div class="vital-unit">Mean arterial pressure</div>
+      </div>
+      <div class="vital-tile hr">
+        <div class="vital-label">HR (bpm)</div>
+        <div class="vital-value" id="v-hr">—</div>
+        <div class="vital-unit">Heart rate</div>
+      </div>
+      <div class="rhythm-box" id="v-rhythm">—</div>
+    </div>
+
+    <div class="monitor-section">
+      <div class="monitor-section-title">Respiratory</div>
+      <div class="vital-tile spo2">
+        <div class="vital-label">SpO₂ (%)</div>
+        <div class="vital-value" id="v-spo2">—</div>
+      </div>
+      <div class="vital-tile rr">
+        <div class="vital-label">RR (breaths/min)</div>
+        <div class="vital-value" id="v-rr">—</div>
+      </div>
+    </div>
+
+    <div class="monitor-section">
+      <div class="monitor-section-title">Alarms</div>
+      <div class="alarm-flags" id="alarm-flags">
+        <div style="color:var(--muted);font-size:11px;">None active</div>
+      </div>
+    </div>
+
+    <div class="monitor-section">
+      <div class="monitor-section-title">Patient</div>
+      <div class="patient-row"><span class="pk">Name</span><span class="pv" id="p-name">—</span></div>
+      <div class="patient-row"><span class="pk">Age</span><span class="pv" id="p-age">—</span></div>
+      <div class="patient-row"><span class="pk">Sex</span><span class="pv" id="p-sex">—</span></div>
+      <div class="patient-row"><span class="pk">Weight</span><span class="pv" id="p-weight">—</span></div>
+    </div>
+
+    <div class="monitor-section">
+      <div class="monitor-section-title">Score</div>
+      <div class="score-display" id="score-display">0</div>
+      <div class="score-bar-bg"><div class="score-bar-fill" id="score-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- Event log -->
+  <div class="event-log" id="event-log">
+    <div class="event-item ev-system">
+      <div class="ev-who system">SYSTEM</div>
+      <div class="ev-text">Connecting to simulation backend…</div>
+    </div>
+  </div>
+
+  <!-- Suggestion chips -->
+  <div class="suggestion-chips" id="chips">
+    <span class="chip" onclick="fillOrder(this)">IV access x2</span>
+    <span class="chip" onclick="fillOrder(this)">CBC BMP coags</span>
+    <span class="chip" onclick="fillOrder(this)">CT head without contrast</span>
+    <span class="chip" onclick="fillOrder(this)">12-lead ECG</span>
+    <span class="chip" onclick="fillOrder(this)">labetalol 20 mg IV bolus</span>
+    <span class="chip" onclick="fillOrder(this)">nicardipine 5 mcg/kg/min IV infusion</span>
+    <span class="chip" onclick="fillOrder(this)">check fingerstick glucose</span>
+    <span class="chip" onclick="fillOrder(this)">urine hCG</span>
+    <span class="chip" onclick="fillOrder(this)">foley catheter</span>
+    <span class="chip" onclick="fillOrder(this)">reassess neuro status</span>
+  </div>
+
+  <!-- Order input -->
+  <div class="order-bar">
+    <span class="hint">ORDER ›</span>
+    <input
+      id="order-input"
+      type="text"
+      placeholder="Type a clinical order or action… (e.g. labetalol 20mg IV, CT head, reassess patient)"
+      disabled
+    />
+    <button id="submit-btn" onclick="submitOrder()" disabled>SUBMIT</button>
+  </div>
+</main>
+
+<script>
+  const API = '';  // same origin
+  let sessionId = null;
+  let caseData  = null;
+  let turnCount = 0;
+  let simTimeSec = 0;
+  let runningScore = 0;
+  let busy = false;
+
+  // ── Utility ──────────────────────────────────────────────────
+  function setLoading(msg) {
+    document.getElementById('loading-overlay').style.display = 'flex';
+    document.getElementById('loading-text').textContent = msg;
+  }
+  function hideLoading() {
+    document.getElementById('loading-overlay').style.display = 'none';
+  }
+  function fmtTime(sec) {
+    const m = Math.floor(sec / 60).toString().padStart(2, '0');
+    const s = Math.floor(sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  // ── Event log ──────────────────────────────────────────────
+  function logEvent({ who, whoClass, text, severity, stateChanges, time }) {
+    const log = document.getElementById('event-log');
+    const el = document.createElement('div');
+    el.className = `event-item ev-${severity || 'info'}`;
+    let inner = '';
+    if (time !== undefined) inner += `<div class="ev-time">T+${fmtTime(time)}</div>`;
+    inner += `<div class="ev-who ${whoClass || ''}">${who}</div>`;
+    inner += `<div class="ev-text">${text}</div>`;
+    if (stateChanges && stateChanges.length) {
+      inner += `<div class="state-change">${stateChanges.map(s => `• ${s}`).join('<br>')}</div>`;
+    }
+    el.innerHTML = inner;
+    log.appendChild(el);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  // ── Vitals update ──────────────────────────────────────────
+  function updateMonitor(monitor) {
+    if (!monitor) return;
+    const set = (id, val) => { if (val !== undefined && val !== null) document.getElementById(id).textContent = val; };
+    set('v-bp', `${monitor.sbp ?? '—'}/${monitor.dbp ?? '—'}`);
+    set('v-map', monitor.map ?? '—');
+    set('v-hr',  monitor.hr  ?? '—');
+    set('v-spo2', monitor.spo2 ?? '—');
+    set('v-rr',  monitor.rr  ?? '—');
+    if (monitor.rhythm) {
+      document.getElementById('v-rhythm').textContent = monitor.rhythm.replace(/_/g, ' ').toUpperCase();
+    }
+    const alarmEl = document.getElementById('alarm-flags');
+    const flags = monitor.alarmFlags || [];
+    if (flags.length === 0) {
+      alarmEl.innerHTML = '<div style="color:var(--muted);font-size:11px;">None active</div>';
+    } else {
+      alarmEl.innerHTML = flags.map(f =>
+        `<div class="alarm-flag">${f.replace(/_/g, ' ').toUpperCase()}</div>`
+      ).join('');
+    }
+  }
+
+  function updateScore(delta, running) {
+    runningScore = running ?? runningScore + (delta || 0);
+    document.getElementById('score-display').textContent = runningScore.toFixed(0);
+    document.getElementById('score-bar').style.width = `${Math.min(100, runningScore)}%`;
+  }
+
+  function setStatus(text, cls) {
+    const el = document.getElementById('status-badge');
+    el.textContent = text;
+    el.className = 'status-badge ' + (cls || '');
+  }
+
+  // ── Init ──────────────────────────────────────────────────
+  async function init() {
+    setLoading('CREATING SESSION…');
+    try {
+      // 1. Create session
+      const sessionRes = await fetch(`${API}/sessions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: 'demo', deviceMode: 'local_demo' }),
+      });
+      if (!sessionRes.ok) throw new Error(`Session create failed: ${sessionRes.status}`);
+      const sessionData = await sessionRes.json();
+      sessionId = sessionData.sessionId;
+
+      // 2. Start case
+      setLoading('LOADING CASE…');
+      const caseRes = await fetch(`${API}/sessions/${sessionId}/start-case`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ caseId: 'htn_enceph_001', difficulty: 'moderate' }),
+      });
+      if (!caseRes.ok) throw new Error(`Start case failed: ${caseRes.status}`);
+      caseData = await caseRes.json();
+
+      // 3. Populate UI from initial state
+      const initial = caseData.initialState || {};
+      const profile = initial.patient_profile || {};
+      const hemo    = (initial.hemodynamics || initial.initial_state?.hemodynamics) || {};
+      const resp    = (initial.respiratory  || initial.initial_state?.respiratory)  || {};
+
+      document.getElementById('case-title').textContent   = initial.case_metadata?.title || caseData.caseId;
+      document.getElementById('patient-name').textContent = profile.name || '—';
+      document.getElementById('p-name').textContent   = profile.name || '—';
+      document.getElementById('p-age').textContent    = profile.age_years ? `${profile.age_years} yr` : '—';
+      document.getElementById('p-sex').textContent    = profile.sex || '—';
+      document.getElementById('p-weight').textContent = profile.weight_kg ? `${profile.weight_kg} kg` : '—';
+
+      // Use state/summary to get vitals
+      await refreshSummary();
+
+      // 4. Show opening script
+      const script = caseData.openingScript || {};
+      const log = document.getElementById('event-log');
+      log.innerHTML = '';  // clear
+
+      if (script.nurse_handoff) {
+        logEvent({ who: 'NURSE', whoClass: 'nurse', text: script.nurse_handoff, severity: 'opening' });
+      }
+      if (script.patient_voice) {
+        logEvent({ who: 'PATIENT', whoClass: 'patient', text: `"${script.patient_voice}"`, severity: 'opening' });
+      }
+      if (script.appearance && script.appearance.length) {
+        logEvent({
+          who: 'OBSERVATION', whoClass: 'system',
+          text: script.appearance.join(' · '),
+          severity: 'info',
+        });
+      }
+
+      setStatus('RUNNING', 'running');
+      document.getElementById('order-input').disabled = false;
+      document.getElementById('submit-btn').disabled  = false;
+      document.getElementById('order-input').focus();
+
+      hideLoading();
+    } catch (err) {
+      document.getElementById('loading-text').textContent = `ERROR: ${err.message}`;
+      console.error(err);
+    }
+  }
+
+  async function refreshSummary() {
+    try {
+      const res = await fetch(`${API}/sessions/${sessionId}/state/summary`);
+      if (!res.ok) return;
+      const d = await res.json();
+      updateMonitor(d.monitor || {});
+      simTimeSec = d.timeSec || 0;
+      document.getElementById('sim-timer').textContent = fmtTime(simTimeSec);
+    } catch (_) {}
+  }
+
+  // ── Submit order ──────────────────────────────────────────
+  async function submitOrder() {
+    const input = document.getElementById('order-input');
+    const text  = input.value.trim();
+    if (!text || busy || !sessionId) return;
+
+    busy = true;
+    document.getElementById('submit-btn').disabled = true;
+    input.disabled = true;
+
+    logEvent({
+      who: 'YOU', whoClass: 'you',
+      text: text,
+      severity: 'order',
+      time: simTimeSec,
+    });
+    input.value = '';
+
+    try {
+      turnCount++;
+      const res = await fetch(`${API}/sessions/${sessionId}/turns`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          turnId: `turn-${turnCount}`,
+          timestampSimSec: simTimeSec,
+          inputText: text,
+          parserMode: 'rule_based',
+          speaker: 'resident',
+          activeInfusions: [],
+          contextHints: {},
+          advanceTimeSec: 60,
+          includeFullState: true,
+          audioMode: 'local_tts',
+        }),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        logEvent({ who: 'SYSTEM', whoClass: 'system', text: `Error: ${errText}`, severity: 'high' });
+      } else {
+        const result = await res.json();
+        handleTurnResult(result);
+      }
+    } catch (err) {
+      logEvent({ who: 'SYSTEM', whoClass: 'system', text: `Network error: ${err.message}`, severity: 'critical' });
+    }
+
+    busy = false;
+    input.disabled = false;
+    document.getElementById('submit-btn').disabled = false;
+    input.focus();
+  }
+
+  function handleTurnResult(result) {
+    const engine = result.engineResult || {};
+    const voice  = result.voicePlan   || {};
+
+    // Time advance
+    simTimeSec = engine.timestampSimSecAfter ?? simTimeSec;
+    document.getElementById('sim-timer').textContent = fmtTime(simTimeSec);
+
+    // Updated vitals
+    const updatedState = engine.updatedPatientState || {};
+    const hemo = updatedState.hemodynamics || {};
+    const resp = updatedState.respiratory  || {};
+    if (Object.keys(hemo).length) {
+      updateMonitor({
+        sbp: hemo.sbp, dbp: hemo.dbp, map: hemo.map,
+        hr: hemo.hr, rhythm: hemo.rhythm,
+        spo2: resp.spo2, rr: resp.rr,
+        alarmFlags: (updatedState.monitor || {}).waveform_flags || [],
+      });
+    } else {
+      refreshSummary();
+    }
+
+    // Score
+    const scoring = engine.scoringUpdates || {};
+    if (scoring.scoreDelta !== undefined || scoring.runningScore !== undefined) {
+      updateScore(scoring.scoreDelta, scoring.runningScore);
+    }
+
+    // Action results
+    const actions = engine.actionResults || [];
+    for (const action of actions) {
+      const stateChanges = action.stateChangeSummary || [];
+      const warnings     = action.warnings           || [];
+      const allChanges   = [...stateChanges, ...warnings];
+      if (action.executionResult === 'rejected') {
+        logEvent({
+          who: 'ENGINE', whoClass: 'engine',
+          text: `✗ ${action.toolName || 'Action'} rejected: ${(action.blockingErrors || []).join('; ')}`,
+          severity: 'moderate',
+          stateChanges: allChanges,
+          time: simTimeSec,
+        });
+      } else if (stateChanges.length || action.executionResult !== 'noop') {
+        logEvent({
+          who: 'ENGINE', whoClass: 'engine',
+          text: `✓ ${action.toolName || 'Action'} — ${action.executionResult}`,
+          severity: 'low',
+          stateChanges: allChanges,
+          time: simTimeSec,
+        });
+      }
+    }
+
+    // New events
+    const events = engine.newEvents || [];
+    for (const ev of events) {
+      logEvent({
+        who: ev.eventType.replace(/_/g, ' ').toUpperCase(),
+        whoClass: ev.severity === 'critical' || ev.severity === 'high' ? 'system' : 'engine',
+        text: ev.summary,
+        severity: ev.severity,
+        time: ev.timeSec,
+      });
+    }
+
+    // Voice / dialogue
+    const dialogue = voice.dialogueTurns || (result.voicePlan?.dialogue_turns) || [];
+    for (const turn of dialogue) {
+      const speaker = (turn.speaker || 'SYSTEM').toUpperCase();
+      const text    = turn.text || turn.line || '';
+      if (text) {
+        logEvent({
+          who: speaker,
+          whoClass: speaker === 'PATIENT' ? 'patient' : speaker === 'NURSE' ? 'nurse' : 'system',
+          text: `"${text}"`,
+          severity: 'info',
+          time: simTimeSec,
+        });
+      }
+    }
+
+    // Teaching markers
+    const markers = scoring.teachingMarkersAdded || [];
+    for (const m of markers) {
+      logEvent({ who: 'TEACHING', whoClass: 'system', text: m, severity: 'moderate', time: simTimeSec });
+    }
+
+    // Critical actions
+    for (const ca of scoring.criticalActionsCompleted || []) {
+      logEvent({ who: '✓ CRITICAL ACTION', whoClass: 'engine', text: ca, severity: 'low', time: simTimeSec });
+    }
+
+    // Harm events
+    for (const he of scoring.harmEventsTriggered || []) {
+      logEvent({ who: '⚠ HARM EVENT', whoClass: 'system', text: he, severity: 'critical', time: simTimeSec });
+    }
+  }
+
+  // ── Debrief report ────────────────────────────────────────
+  async function requestReport() {
+    if (!sessionId) return;
+    setLoading('GENERATING REPORT…');
+    document.getElementById('loading-overlay').style.display = 'flex';
+    try {
+      const res = await fetch(`${API}/sessions/${sessionId}/reports/final`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ includeTranscript: true, includeTimeline: true }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+      renderReport(data.report || data);
+    } catch (err) {
+      alert(`Report error: ${err.message}`);
+    }
+    hideLoading();
+  }
+
+  function renderReport(report) {
+    const el = document.getElementById('report-content');
+    let html = '';
+    function section(title, content) {
+      if (!content) return;
+      html += `<div class="report-section"><h3>${title}</h3>`;
+      if (typeof content === 'string') html += `<p>${content}</p>`;
+      else if (Array.isArray(content)) html += `<ul>${content.map(c => `<li>${typeof c === 'string' ? c : JSON.stringify(c)}</li>`).join('')}</ul>`;
+      else html += `<pre style="font-size:11px;white-space:pre-wrap">${JSON.stringify(content, null, 2)}</pre>`;
+      html += '</div>';
+    }
+    section('Summary',                report.summary);
+    section('Critical Actions',       report.critical_actions_completed);
+    section('Harm Events',            report.harm_events_triggered);
+    section('Teaching Points',        report.teaching_points);
+    section('Score',                  report.score !== undefined ? `${report.score} / 100` : undefined);
+    section('Timeline',               report.timeline);
+    if (!html) html = `<pre style="font-size:11px;white-space:pre-wrap;color:#aaa">${JSON.stringify(report, null, 2)}</pre>`;
+    el.innerHTML = html;
+    document.getElementById('report-modal').style.display = 'block';
+  }
+
+  function closeReport() {
+    document.getElementById('report-modal').style.display = 'none';
+  }
+
+  // ── Chip click ────────────────────────────────────────────
+  function fillOrder(el) {
+    const input = document.getElementById('order-input');
+    input.value = el.textContent;
+    input.focus();
+  }
+
+  // ── Keyboard ──────────────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && document.activeElement === document.getElementById('order-input')) {
+      submitOrder();
+    }
+  });
+
+  // ── Start ─────────────────────────────────────────────────
+  init();
+</script>
+</body>
+</html>
