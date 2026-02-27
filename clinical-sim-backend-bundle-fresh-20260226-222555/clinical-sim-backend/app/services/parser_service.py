@@ -234,6 +234,29 @@ class ParserService:
                 }
             )
 
+        # Reassessment
+        if "reassess" in normalized or "reassessment" in normalized:
+            for reassessment_type in ("neurologic_reassessment", "hemodynamic_reassessment"):
+                actions.append(
+                    {
+                        "actionUuid": str(uuid4()),
+                        "sequenceIndex": len(actions),
+                        "actionType": "tool_call",
+                        "toolName": "perform_reassessment",
+                        "actionLabel": f"perform_{reassessment_type}",
+                        "payload": {"reassessment_type": reassessment_type},
+                        "confidence": 0.90,
+                        "executionMode": "sequential",
+                        "requiresConfirmation": False,
+                        "confirmationReason": None,
+                        "blockingErrors": [],
+                        "warnings": [],
+                        "derivedFromTextSpan": text,
+                        "mappingActionId": f"perform_{reassessment_type}",
+                        "engineHooks": ["mark_critical_action_reassess_neuro_status"],
+                    }
+                )
+
         if not actions and status == "ok":
             status = "partial_parse"
             notes.append("No supported action detected from input.")

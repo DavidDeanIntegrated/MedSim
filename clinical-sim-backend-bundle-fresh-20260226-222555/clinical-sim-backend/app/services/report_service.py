@@ -18,7 +18,7 @@ class ReportService:
             "score": scoring.get("final_score", 0),
             "events": events if include_timeline else [],
             "transcript": transcript,
-            "whatWentWell": scoring.get("runtime", {}).get("critical_actions_completed_this_turn", []),
-            "whatCouldHaveGoneBetter": scoring.get("runtime", {}).get("harm_events_triggered_this_turn", []),
+            "whatWentWell": [k for k, v in scoring.get("runtime_flags", {}).items() if v],
+            "whatCouldHaveGoneBetter": [k for k, v in scoring.get("harm_runtime_flags", {}).items() if v],
             "teachingPoints": patient_state.get("case_definition_inline", {}).get("debrief_template", {}).get("teaching_points", []),
         }

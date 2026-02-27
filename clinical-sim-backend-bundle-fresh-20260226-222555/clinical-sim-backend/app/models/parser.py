@@ -33,7 +33,7 @@ class ParseTurnRequest(APIModel):
     turn_id: str = Field(alias="turnId")
     timestamp_sim_sec: float = Field(alias="timestampSimSec")
     input_text: str = Field(alias="inputText")
-    parser_mode: Literal["speech_to_actions", "text_to_actions", "mixed_voice_text"] = Field(alias="parserMode")
+    parser_mode: Literal["speech_to_actions", "text_to_actions", "mixed_voice_text", "rule"] = Field(alias="parserMode")
     speaker: Literal["resident", "attending", "nurse", "system"] = "resident"
     active_infusions: list[dict[str, Any]] = Field(default_factory=list, alias="activeInfusions")
     context_hints: dict[str, Any] = Field(default_factory=dict, alias="contextHints")
