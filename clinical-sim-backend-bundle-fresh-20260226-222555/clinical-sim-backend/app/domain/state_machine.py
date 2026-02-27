@@ -388,7 +388,7 @@ class SimulationStateMachine:
             result_map = {
                 "head_ct_noncontrast": hidden_truth.get("head_ct_result_if_ordered", "No acute intracranial process."),
                 "mri_brain": hidden_truth.get("mri_brain_result_if_ordered", "No MRI result configured."),
-                "ecg": case_def.get("initial_state", {}).get("monitor", {}).get("ecg_text", "ECG result unavailable."),
+                "ecg": state.get("monitor", {}).get("ecg_text", "ECG result unavailable."),
                 "cmp": f"Creatinine {state.get('labs', {}).get('creatinine_mg_dl', 'NA')}, electrolytes otherwise unremarkable.",
                 "troponin": f"Troponin {state.get('labs', {}).get('troponin_ng_l', 'NA')}.",
                 "pregnancy_test": hidden_truth.get("pregnancy_test_if_ordered", "Negative."),
