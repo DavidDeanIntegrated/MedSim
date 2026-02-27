@@ -12,24 +12,38 @@ from app.models.parser import ParseTurnRequest, RuntimeParserContract
 # lowercase name → internal medication_id
 # Kept longest-first so multi-word aliases ("nitro drip") match before substrings ("nitro")
 _MED_ID: dict[str, str] = {
+    # Antihypertensives (infusions)
     "nitro drip": "nitroglycerin_iv",
     "nicardipine": "nicardipine_iv",
     "cardene": "nicardipine_iv",
     "clevidipine": "clevidipine_iv",
     "cleviprex": "clevidipine_iv",
-    "labetalol": "labetalol_iv",
-    "trandate": "labetalol_iv",
-    "esmolol": "esmolol_iv",
-    "brevibloc": "esmolol_iv",
     "nitroglycerin": "nitroglycerin_iv",
     "nitroprusside": "nitroprusside_iv",
     "nipride": "nitroprusside_iv",
+    # Antihypertensives (bolus-preferred)
+    "labetalol": "labetalol_iv",
+    "trandate": "labetalol_iv",
     "hydralazine": "hydralazine_iv",
     "apresoline": "hydralazine_iv",
+    # Vasopressors / inotropes
+    "norepinephrine": "norepinephrine_iv",
+    "neosynephrine": "phenylephrine_iv",
+    "neosynephrine drip": "phenylephrine_iv",
+    "epinephrine": "epinephrine_iv",
+    "phenylephrine": "phenylephrine_iv",
+    "levophed": "norepinephrine_iv",
+    "dopamine": "dopamine_iv",
+    "dobutamine": "dobutamine_iv",
+    "vasopressin": "vasopressin_iv",
+    "norepi": "norepinephrine_iv",
+    "epi drip": "epinephrine_iv",
+    "neo drip": "phenylephrine_iv",
+    "levo": "norepinephrine_iv",
 }
 _MED_NAMES = sorted(_MED_ID, key=len, reverse=True)
 
-# Default infusion rate (mg/hr or primary unit) when no rate is specified
+# Default infusion rate when no rate is specified
 _DEFAULT_RATE: dict[str, float] = {
     "nicardipine_iv": 5.0,
     "clevidipine_iv": 1.0,
@@ -38,6 +52,12 @@ _DEFAULT_RATE: dict[str, float] = {
     "nitroglycerin_iv": 20.0,
     "nitroprusside_iv": 0.3,
     "hydralazine_iv": 10.0,
+    "norepinephrine_iv": 0.1,
+    "epinephrine_iv": 0.05,
+    "phenylephrine_iv": 0.5,
+    "dopamine_iv": 5.0,
+    "dobutamine_iv": 5.0,
+    "vasopressin_iv": 0.03,
 }
 
 # Medications whose primary route is continuous infusion
@@ -47,48 +67,62 @@ _INFUSION_PREFERRED = {
     "esmolol_iv",
     "nitroglycerin_iv",
     "nitroprusside_iv",
+    "norepinephrine_iv",
+    "epinephrine_iv",
+    "dopamine_iv",
+    "dobutamine_iv",
+    "vasopressin_iv",
 }
 
-# Medications whose primary route is IV bolus (may also be used as infusion with "drip")
-_BOLUS_PREFERRED = {"labetalol_iv", "hydralazine_iv"}
+# Medications whose primary route is IV bolus
+_BOLUS_PREFERRED = {"labetalol_iv", "hydralazine_iv", "phenylephrine_iv"}
 
-# Verbs that indicate starting an infusion
-_START_RE = re.compile(r"\b(start|begin|initiate|hang|run|get|start up)\b")
+# Known-safe max bolus doses (mg) — above this triggers unsafe flag
+_UNSAFE_BOLUS_DOSE_MG: dict[str, float] = {
+    "phenylephrine_iv": 5.0,     # phenylephrine push is in mcg; >5mg almost certainly a unit error
+    "labetalol_iv": 200.0,
+    "hydralazine_iv": 40.0,
+}
 
-# Verbs that indicate adjusting an infusion
+_START_RE = re.compile(r"\b(start|begin|initiate|hang|run|get|start up|give|administer)\b")
 _ADJUST_RE = re.compile(
     r"\b(increase|decrease|reduce|lower|raise|titrate|adjust|change|"
     r"uptitrate|bump up|slow down|turn up|turn down|up to|down to)\b"
 )
-
-# Verbs that indicate stopping an infusion
 _STOP_RE = re.compile(r"\b(stop|discontinue|hold|turn off|d/c|wean off|pull|off)\b")
-
-# Verbs that indicate giving a bolus
-_BOLUS_RE = re.compile(r"\b(give|push|administer|inject|bolus)\b")
+_BOLUS_RE = re.compile(r"\b(give|push|administer|inject|bolus|iv push|ivp)\b")
 
 # ---------------------------------------------------------------------------
-# Diagnostic vocabulary  (regex, diagnostic_id, order_type)
+# Diagnostic vocabulary
 # ---------------------------------------------------------------------------
 
 _DIAGNOSTICS: list[tuple[str, str, str]] = [
-    (r"\bct\b.*\bhead\b|\bhead\b.*\bct\b|non.?contrast\s+ct|\bncct\b", "head_ct_noncontrast", "imaging"),
+    (r"\bct\b.*\bhead\b|\bhead\b.*\bct\b|non.?contrast\s+ct|\bncct\b|head\s+ct|ct\s+head", "head_ct_noncontrast", "imaging"),
     (r"\bmri(?:\s+(?:brain|head))?\b|brain\s+mri", "mri_brain", "imaging"),
-    (r"\b(?:ecg|ekg|twelve.?lead|electrocardiogram)\b", "ecg", "diagnostic"),
+    (r"\b(?:ecg|ekg|twelve.?lead|12.?lead|electrocardiogram)\b", "ecg", "diagnostic"),
     (r"\bcmp\b|\bbmp\b|comprehensive\s+metabolic|basic\s+metabolic|\belectrolytes\b|chem\s*(?:7|panel)", "cmp", "lab"),
     (r"\btroponin\b|\btrop\b", "troponin", "lab"),
-    (r"pregnancy\s+test|urine\s+preg|beta.?hcg|\bhcg\b", "pregnancy_test", "lab"),
+    (r"pregnancy\s+test|urine\s+preg|beta.?hcg|\bhcg\b|urine\s+hcg", "pregnancy_test", "lab"),
     (r"\bua\b|urinalysis|urine\s+(?:analysis|culture)", "urinalysis", "lab"),
     (r"\bbnp\b|nt.?probnp|brain\s+natriuretic", "bnp", "lab"),
     (r"\bcbc\b|complete\s+blood\s+count", "cbc", "lab"),
+    (r"\bcoags?\b|coagulation\s+(?:panel|studies?|study)|coag\s+(?:panel|study)|pt\s+ptt|ptt\s+inr", "coagulation_panel", "lab"),
+    (r"\bfingerstick\b|\bfsbg?\b|\bfsbs?\b|finger\s+stick|point\s+of\s+care\s+glucose|poc\s+glucose", "fingerstick_glucose", "lab"),
+    (r"\bchest\s+(?:x.?ray|xr|cxr)\b|\bcxr\b|\bchest\s+film\b", "chest_xray", "imaging"),
+    (r"\bd.?dimer\b", "d_dimer", "lab"),
+    (r"\blactic?\s+acid\b|\blactate\b", "lactate", "lab"),
 ]
 
-# Verb context required for most diagnostics (imaging keywords bypass this)
-_ORDER_RE = re.compile(r"\b(order|get|obtain|send|check|draw|request|do|run)\b")
-_IMAGING_BYPASS = re.compile(r"\b(ct|mri|scan|ecg|ekg)\b")
+# Order verb (for labs) and imaging/common-lab bypass patterns
+_ORDER_RE = re.compile(r"\b(order|get|obtain|send|check|draw|request|do|run|stat)\b")
+# Labs and imaging that can be recognized without an explicit order verb
+_LAB_BYPASS = re.compile(
+    r"\b(cbc|bmp|cmp|coags?|troponin|trop|ua\b|hcg|ecg|ekg|ct|mri|scan|labs?|"
+    r"fingerstick|fsbg|bnp|d.?dimer|lactate|lactic|cxr|x.?ray|xray)\b"
+)
 
 # ---------------------------------------------------------------------------
-# Assessment vocabulary  (regex, concept_id)
+# Assessment vocabulary
 # ---------------------------------------------------------------------------
 
 _ASSESSMENTS: list[tuple[str, str]] = [
@@ -99,10 +133,12 @@ _ASSESSMENTS: list[tuple[str, str]] = [
     ),
     (r"\bpres\b|posterior\s+reversible", "pres_syndrome"),
     (r"hypertensive\s+urgency|htn\s+urgency", "hypertensive_urgency"),
+    (r"ischemic\s+stroke|cva\b|cerebrovascular", "ischemic_stroke"),
+    (r"hemorrhagic\s+stroke|ich\b|intracranial\s+hemorrhage", "hemorrhagic_stroke"),
 ]
 
 # ---------------------------------------------------------------------------
-# Disposition vocabulary  (regex, disposition_id)
+# Disposition vocabulary
 # ---------------------------------------------------------------------------
 
 _DISPOSITIONS: list[tuple[str, str]] = [
@@ -113,7 +149,7 @@ _DISPOSITIONS: list[tuple[str, str]] = [
 ]
 
 # ---------------------------------------------------------------------------
-# NIBP interval vocabulary  (regex, interval_seconds)
+# NIBP interval vocabulary
 # ---------------------------------------------------------------------------
 
 _NIBP_INTERVALS: list[tuple[str, int]] = [
@@ -125,26 +161,37 @@ _NIBP_INTERVALS: list[tuple[str, int]] = [
     (r"\bcontinuous\s+(?:bp|blood\s+pressure)", 60),
 ]
 
+# ---------------------------------------------------------------------------
+# Supportive care vocabulary
+# ---------------------------------------------------------------------------
+
+_O2_RE = re.compile(
+    r"\b(o2|oxygen|supplemental\s+o2|nasal\s+cannula|non.?rebreather|high.?flow\s+o2|"
+    r"nc\b|nrb\b|face\s+mask|blow.?by)\b"
+)
+_IV_ACCESS_RE = re.compile(
+    r"\biv\s+access\b|\biv\s+line\b|\bperipheral\s+iv\b|\bpiv\b|\biv\s+(?:x\s*\d+|start|establish)\b|"
+    r"\bplace\s+iv\b|\baccess\s+x\s*\d+\b|\blarge\s+bore\b"
+)
+_FOLEY_RE = re.compile(r"\bfoley\b|\burinary\s+catheter\b|\bfoley\s+catheter\b|\bfoley\s+cath\b")
+_IV_FLUID_RE = re.compile(
+    r"\biv\s+fluid|\bfluids?\b(?:\s+(?:bolus|wide\s+open|wob|running|open))?"
+    r"|\bnormal\s+saline\b|\bns\b(?!\w)|\blactated\s+ringer|\blr\b(?!\w)"
+    r"|\bisotonic\b|\bns\s+bolus\b|\bfluid\s+bolus\b"
+)
+_HELP_RE = re.compile(r"^\s*(?:help|hint|guidance|what\s+(?:do\s+i\s+do|should\s+i\s+do|next)|"
+                       r"assist(?:ance)?|confused|stuck|not\s+sure)\s*\??$")
+
+# ---------------------------------------------------------------------------
+# Helper
+# ---------------------------------------------------------------------------
 
 def _drip_keyword(text: str) -> bool:
-    """True if text contains a keyword indicating a continuous infusion."""
     return bool(re.search(r"\b(drip|infusion|gtt|continuous|infusing)\b", text))
 
 
 class ParserService:
-    """Deterministic rule-based parser for the hypertensive encephalopathy case family.
-
-    Covers all actions a resident trainee would take:
-    - IV antihypertensive management (start / adjust / stop / bolus)
-    - Diagnostic ordering (CT, MRI, ECG, labs)
-    - Monitoring setup (telemetry, NIBP intervals)
-    - Clinical assessment documentation
-    - Patient disposition
-    - Neurological/hemodynamic reassessment
-
-    Ambiguous inputs (e.g. "stop infusion" with multiple active drips) return
-    clarification_required so the UI can prompt the user.
-    """
+    """Deterministic rule-based parser for the hypertensive encephalopathy case family."""
 
     # ------------------------------------------------------------------
     # Public entry point
@@ -157,11 +204,45 @@ class ParserService:
         if not text:
             return self._empty_response(request, normalized)
 
+        # Help command — highest priority
+        if _HELP_RE.match(normalized):
+            return RuntimeParserContract(
+                contract_version="0.1.0",
+                turnId=request.turn_id,
+                timestampSimSec=request.timestamp_sim_sec,
+                rawInput=request.input_text,
+                normalizedInput=normalized,
+                parserMode=request.parser_mode,
+                speaker=request.speaker,
+                intentSummary="Help command",
+                actions=[self._action(
+                    tool_name="help_command",
+                    action_label="help_command",
+                    payload={},
+                    raw=raw_input,
+                    confidence=1.0,
+                    execution_mode="parallel_safe",
+                    mapping_action_id="help_command",
+                    engine_hooks=[],
+                ) for raw_input in [request.input_text]],
+                needsClarification=False,
+                clarificationQuestion=None,
+                clarificationTargets=[],
+                overallConfidence=1.0,
+                parserStatus="ok",
+                nonActionableText=[],
+                parserNotes=["Help command requested"],
+                safetyFlags=[],
+            )
+
         actions: list[dict] = []
         needs_clarification = False
         clarification_question: str | None = None
         status = "ok"
-        notes: list[str] = ["Rule-based parser v2"]
+        notes: list[str] = ["Rule-based parser v3"]
+
+        # ---- supportive care (IV access, O2, foley, fluids) ----
+        actions.extend(self._match_supportive_care(normalized, text))
 
         # ---- medication intents (order matters: stop > adjust > start > bolus) ----
         stop_actions = self._match_stop_infusion(normalized, text, request.active_infusions)
@@ -170,14 +251,18 @@ class ParserService:
         if not stop_actions:
             actions.extend(self._match_infusion_adjust(normalized, text))
             actions.extend(self._match_infusion_start(normalized, text))
-            bolus_actions, bolus_clar, bolus_q = self._match_bolus(normalized, text)
+            bolus_actions, bolus_clar, bolus_q, bolus_unsafe = self._match_bolus(normalized, text)
             actions.extend(bolus_actions)
-            if bolus_clar:
+            if bolus_unsafe:
+                # Unsafe dose — still add action but mark status
+                status = "partial_parse"
+                notes.append(bolus_q or "Medication dose/unit appears nonstandard.")
+            elif bolus_clar:
                 needs_clarification = True
                 clarification_question = bolus_q
                 status = "clarification_required"
 
-        # Ambiguous stop: stop verb present, no med named, >1 active infusion
+        # Ambiguous stop
         if not stop_actions and self._is_ambiguous_stop(normalized, request.active_infusions):
             needs_clarification = True
             names = ", ".join(
@@ -186,7 +271,7 @@ class ParserService:
             clarification_question = f"Which infusion would you like to stop? Active: {names}."
             status = "clarification_required"
 
-        # ---- non-medication intents (order-independent) ----
+        # ---- non-medication intents ----
         actions.extend(self._match_diagnostics(normalized, text))
         actions.extend(self._match_monitoring(normalized, text))
         actions.extend(self._match_assessment(normalized, text))
@@ -222,21 +307,77 @@ class ParserService:
         )
 
     # ------------------------------------------------------------------
+    # Intent: supportive care (O2, IV access, foley, IV fluids)
+    # ------------------------------------------------------------------
+
+    def _match_supportive_care(self, normalized: str, raw: str) -> list[dict]:
+        actions: list[dict] = []
+
+        if _O2_RE.search(normalized):
+            actions.append(self._action(
+                tool_name="give_supportive_care",
+                action_label="apply_oxygen",
+                payload={"care_type": "oxygen"},
+                raw=raw,
+                confidence=0.97,
+                execution_mode="parallel_safe",
+                mapping_action_id="apply_oxygen",
+                engine_hooks=[],
+            ))
+
+        if _IV_ACCESS_RE.search(normalized):
+            actions.append(self._action(
+                tool_name="give_supportive_care",
+                action_label="establish_iv_access",
+                payload={"care_type": "iv_access"},
+                raw=raw,
+                confidence=0.97,
+                execution_mode="parallel_safe",
+                mapping_action_id="establish_iv_access",
+                engine_hooks=[],
+            ))
+
+        if _FOLEY_RE.search(normalized):
+            actions.append(self._action(
+                tool_name="give_supportive_care",
+                action_label="place_foley_catheter",
+                payload={"care_type": "foley_catheter"},
+                raw=raw,
+                confidence=0.97,
+                execution_mode="parallel_safe",
+                mapping_action_id="place_foley_catheter",
+                engine_hooks=[],
+            ))
+
+        if _IV_FLUID_RE.search(normalized):
+            # Don't double-count if it's medication (e.g. "nicardipine in NS")
+            med_id, _ = self._detect_med(normalized)
+            if med_id is None:
+                actions.append(self._action(
+                    tool_name="give_supportive_care",
+                    action_label="give_iv_fluid_bolus",
+                    payload={"care_type": "iv_fluid_bolus"},
+                    raw=raw,
+                    confidence=0.93,
+                    execution_mode="parallel_safe",
+                    mapping_action_id="give_iv_fluid_bolus",
+                    engine_hooks=[],
+                ))
+
+        return actions
+
+    # ------------------------------------------------------------------
     # Intent: start infusion
     # ------------------------------------------------------------------
 
     def _match_infusion_start(self, normalized: str, raw: str) -> list[dict]:
-        """Detect 'start/begin/initiate [med] [at rate]'."""
         med_id, med_name = self._detect_med(normalized)
         if med_id is None:
             return []
-        # Bolus-preferred meds only qualify here when "drip/infusion" keyword present
         if med_id in _BOLUS_PREFERRED and not _drip_keyword(normalized):
             return []
-        # Require a start verb unless medication is infusion-primary (standalone mention)
         if not (_START_RE.search(normalized) or med_id in _INFUSION_PREFERRED):
             return []
-        # Yield to stop/adjust handlers
         if _STOP_RE.search(normalized) or _ADJUST_RE.search(normalized):
             return []
         rate = self._extract_rate(normalized) or _DEFAULT_RATE.get(med_id, 5.0)
@@ -251,7 +392,7 @@ class ParserService:
                 payload={
                     "medication_id": med_id,
                     "infusion_rate": rate,
-                    "dose_unit": "mg_per_hour",
+                    "dose_unit": "mcg_per_kg_per_min" if "mcg" in normalized else "mg_per_hour",
                     "route": "IV",
                     "administration_mode": "infusion_start",
                 },
@@ -268,7 +409,6 @@ class ParserService:
     # ------------------------------------------------------------------
 
     def _match_infusion_adjust(self, normalized: str, raw: str) -> list[dict]:
-        """Detect 'increase/decrease/titrate [med] to [rate]'."""
         if not _ADJUST_RE.search(normalized):
             return []
         med_id, med_name = self._detect_med(normalized)
@@ -276,18 +416,13 @@ class ParserService:
             return []
         rate = self._extract_rate(normalized)
         if rate is None:
-            return []  # directional without a target rate is not actionable
+            return []
         label = f"adjust_{med_name.replace(' ', '_')}"
         return [
             self._action(
                 tool_name="adjust_infusion",
                 action_label=label,
-                payload={
-                    "medication_id": med_id,
-                    "new_infusion_rate": rate,
-                    "dose_unit": "mg_per_hour",
-                    "route": "IV",
-                },
+                payload={"medication_id": med_id, "new_infusion_rate": rate, "dose_unit": "mg_per_hour", "route": "IV"},
                 raw=raw,
                 confidence=0.92,
                 execution_mode="sequential",
@@ -300,10 +435,7 @@ class ParserService:
     # Intent: stop infusion
     # ------------------------------------------------------------------
 
-    def _match_stop_infusion(
-        self, normalized: str, raw: str, active_infusions: list[dict]
-    ) -> list[dict]:
-        """Detect 'stop/hold/discontinue [med]'. Auto-disambiguates when one infusion active."""
+    def _match_stop_infusion(self, normalized: str, raw: str, active_infusions: list[dict]) -> list[dict]:
         if not _STOP_RE.search(normalized):
             return []
         med_id, med_name = self._detect_med(normalized)
@@ -321,7 +453,6 @@ class ParserService:
                     engine_hooks=[],
                 )
             ]
-        # Auto-disambiguate when exactly one infusion is running
         if len(active_infusions) == 1:
             only_id = active_infusions[0].get("medication_id", "unknown_iv")
             label = f"stop_{only_id.replace('_iv', '')}"
@@ -337,7 +468,7 @@ class ParserService:
                     engine_hooks=[],
                 )
             ]
-        return []  # let ambiguity detection in parse_turn handle >1 case
+        return []
 
     def _is_ambiguous_stop(self, normalized: str, active_infusions: list[dict]) -> bool:
         if not _STOP_RE.search(normalized):
@@ -353,25 +484,64 @@ class ParserService:
 
     def _match_bolus(
         self, normalized: str, raw: str
-    ) -> tuple[list[dict], bool, str | None]:
-        """Detect 'give/push/administer [med] [dose] mg'.
-
-        Returns (actions, needs_clarification, clarification_question).
-        """
+    ) -> tuple[list[dict], bool, str | None, bool]:
+        """Returns (actions, needs_clarification, message, is_unsafe)."""
         med_id, med_name = self._detect_med(normalized)
         if med_id is None or med_id not in _BOLUS_PREFERRED:
-            return [], False, None
+            return [], False, None, False
         if _drip_keyword(normalized):
-            return [], False, None  # defer to start_infusion
-        if not _BOLUS_RE.search(normalized):
-            return [], False, None
+            return [], False, None, False
+
+        # Allow labetalol/hydralazine without explicit bolus verb if dose present
+        has_bolus_verb = bool(_BOLUS_RE.search(normalized))
         dose = self._extract_dose(normalized)
+        if not has_bolus_verb and dose is None:
+            return [], False, None, False
+
         if dose is None:
             return (
                 [],
                 True,
                 f"What dose of {med_name} would you like to give? (e.g., 20 mg IV)",
+                False,
             )
+
+        # Safety check — flag implausible doses
+        max_safe = _UNSAFE_BOLUS_DOSE_MG.get(med_id)
+        if max_safe is not None and dose > max_safe:
+            unsafe_msg = (
+                f"{med_name.capitalize()} recognized, but the entered dose ({dose} mg) "
+                f"appears outside the expected IV push range. "
+                f"Check units — did you mean {int(dose * 1000)} mcg?"
+                if med_id == "phenylephrine_iv"
+                else f"{med_name.capitalize()} dose {dose} mg exceeds expected range. Please verify."
+            )
+            label = f"give_{med_name.replace(' ', '_')}_bolus"
+            return (
+                [
+                    self._action(
+                        tool_name="give_medication",
+                        action_label=label,
+                        payload={
+                            "medication_id": med_id,
+                            "dose": dose,
+                            "dose_unit": "mg",
+                            "route": "IV",
+                            "administration_mode": "bolus",
+                            "safety_flag": "dose_unit_warning",
+                        },
+                        raw=raw,
+                        confidence=0.60,
+                        execution_mode="sequential",
+                        mapping_action_id=label,
+                        engine_hooks=[],
+                    )
+                ],
+                False,
+                unsafe_msg,
+                True,
+            )
+
         label = f"give_{med_name.replace(' ', '_')}_bolus"
         hooks = (
             ["mark_critical_action_start_titratable_iv_agent_if_no_prior_iv_agent"]
@@ -399,6 +569,7 @@ class ParserService:
             ],
             False,
             None,
+            False,
         )
 
     # ------------------------------------------------------------------
@@ -408,11 +579,11 @@ class ParserService:
     def _match_diagnostics(self, normalized: str, raw: str) -> list[dict]:
         actions: list[dict] = []
         has_order_verb = bool(_ORDER_RE.search(normalized))
-        has_imaging_bypass = bool(_IMAGING_BYPASS.search(normalized))
+        has_bypass = bool(_LAB_BYPASS.search(normalized))
         for pattern, diag_id, order_type in _DIAGNOSTICS:
             if not re.search(pattern, normalized):
                 continue
-            if not has_order_verb and not has_imaging_bypass:
+            if not has_order_verb and not has_bypass:
                 continue
             hooks: list[str] = []
             if diag_id in {"head_ct_noncontrast", "mri_brain"}:
@@ -444,18 +615,15 @@ class ParserService:
         actions: list[dict] = []
         if re.search(
             r"\b(telemetry|continuous\s+monitor(?:ing)?|cardiac\s+monitor(?:ing)?|"
-            r"put\s+(?:her|him|them)\s+on\s+(?:the\s+)?monitor|on\s+telemetry)\b",
+            r"put\s+(?:her|him|them)\s+on\s+(?:the\s+)?monitor|on\s+telemetry|"
+            r"monitor(?:ing)?\s+(?:set\s+up|established)|place\s+on\s+monitor)\b",
             normalized,
         ):
             actions.append(
                 self._action(
                     tool_name="set_monitoring",
                     action_label="enable_continuous_monitoring",
-                    payload={
-                        "monitor_action": "enable_continuous_monitoring",
-                        "telemetry": True,
-                        "pulse_ox": True,
-                    },
+                    payload={"monitor_action": "enable_continuous_monitoring", "telemetry": True, "pulse_ox": True},
                     raw=raw,
                     confidence=0.92,
                     execution_mode="parallel_safe",
@@ -470,10 +638,7 @@ class ParserService:
                 self._action(
                     tool_name="set_monitoring",
                     action_label=label,
-                    payload={
-                        "monitor_action": "set_nibp_cycle",
-                        "nibp_cycle_sec": nibp_sec,
-                    },
+                    payload={"monitor_action": "set_nibp_cycle", "nibp_cycle_sec": nibp_sec},
                     raw=raw,
                     confidence=0.93,
                     execution_mode="parallel_safe",
@@ -518,10 +683,7 @@ class ParserService:
                     self._action(
                         tool_name="set_disposition",
                         action_label=label,
-                        payload={
-                            "disposition": disposition,
-                            "reason": "hypertensive emergency with neurologic dysfunction",
-                        },
+                        payload={"disposition": disposition, "reason": "hypertensive emergency with neurologic dysfunction"},
                         raw=raw,
                         confidence=0.93,
                         execution_mode="parallel_safe",
@@ -536,7 +698,7 @@ class ParserService:
     # ------------------------------------------------------------------
 
     def _match_reassessment(self, normalized: str, raw: str) -> list[dict]:
-        if not re.search(r"\b(reassess|reassessment|re-assess|recheck|re-evaluate)\b", normalized):
+        if not re.search(r"\b(reassess|reassessment|re-assess|recheck|re-evaluate|reassess)\b", normalized):
             return []
         actions: list[dict] = []
         for rtype in ("neurologic_reassessment", "hemodynamic_reassessment"):
@@ -560,7 +722,6 @@ class ParserService:
 
     @staticmethod
     def _detect_med(normalized: str) -> tuple[str | None, str]:
-        """Return (med_id, matched_name) or (None, '') if no medication found."""
         for name in _MED_NAMES:
             if name in normalized:
                 return _MED_ID[name], name
@@ -568,16 +729,15 @@ class ParserService:
 
     @staticmethod
     def _extract_rate(text: str) -> float | None:
-        """Extract infusion rate; returns mg/hr equivalent (or raw value for mcg units)."""
-        # "X mg/hr" or "X mg per hour"
         m = re.search(r"(\d+(?:\.\d+)?)\s*mg\s*(?:per\s+)?/?h(?:r|our)?", text)
         if m:
             return float(m.group(1))
-        # "at X" or "to X" (optionally followed by mg)
+        m = re.search(r"(\d+(?:\.\d+)?)\s*(?:mcg|μg)\s*/\s*kg\s*/\s*min", text)
+        if m:
+            return float(m.group(1))
         m = re.search(r"(?:at|to)\s+(\d+(?:\.\d+)?)\s*(?:mg)?", text)
         if m:
             return float(m.group(1))
-        # "X mg" bare (e.g., "nicardipine 5 mg")
         m = re.search(r"(\d+(?:\.\d+)?)\s*mg\b", text)
         if m:
             return float(m.group(1))
@@ -585,11 +745,12 @@ class ParserService:
 
     @staticmethod
     def _extract_dose(text: str) -> float | None:
-        """Extract a bolus dose in mg."""
         m = re.search(r"(\d+(?:\.\d+)?)\s*mg\b", text)
         if m:
             return float(m.group(1))
-        # bare integer as last resort
+        m = re.search(r"(\d+(?:\.\d+)?)\s*(?:mcg|μg)\b", text)
+        if m:
+            return float(m.group(1)) / 1000  # convert to mg for comparison
         m = re.search(r"\b(\d+)\b", text)
         if m:
             return float(m.group(1))
@@ -600,10 +761,7 @@ class ParserService:
         for pattern, sec in _NIBP_INTERVALS:
             if re.search(pattern, text):
                 return sec
-        # generic "BP every X minutes"
-        m = re.search(
-            r"(?:bp|blood\s+pressure|cuff)\s+(?:check\s+)?every\s+(\d+)\s*(?:min|minute)", text
-        )
+        m = re.search(r"(?:bp|blood\s+pressure|cuff)\s+(?:check\s+)?every\s+(\d+)\s*(?:min|minute)", text)
         if m:
             return int(m.group(1)) * 60
         return None
@@ -622,7 +780,7 @@ class ParserService:
     ) -> dict:
         return {
             "actionUuid": str(uuid4()),
-            "sequenceIndex": 0,  # re-numbered by caller
+            "sequenceIndex": 0,
             "actionType": "tool_call",
             "toolName": tool_name,
             "actionLabel": action_label,
@@ -655,6 +813,6 @@ class ParserService:
             overallConfidence=0.1,
             parserStatus="rejected",
             nonActionableText=[],
-            parserNotes=["Rule-based parser v2"],
+            parserNotes=["Rule-based parser v3"],
             safetyFlags=[],
         )
