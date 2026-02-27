@@ -436,6 +436,7 @@
 <script>
   const API = '';  // same origin
   let sessionId = null;
+  let currentActiveInfusions = [];  // tracks running drips for parser disambiguation
   let caseData  = null;
   let turnCount = 0;
   let simTimeSec = 0;
@@ -619,7 +620,7 @@
           inputText: text,
           parserMode: 'rule',
           speaker: 'resident',
-          activeInfusions: [],
+          activeInfusions: currentActiveInfusions,
           contextHints: {},
           advanceTimeSec: 60,
           includeFullState: true,
@@ -652,8 +653,13 @@
     simTimeSec = engine.timestampSimSecAfter ?? simTimeSec;
     document.getElementById('sim-timer').textContent = fmtTime(simTimeSec);
 
-    // Updated vitals
+    // Updated vitals and active infusions
     const updatedState = engine.updatedPatientState || {};
+    if (updatedState.active_medications) {
+      currentActiveInfusions = (updatedState.active_medications || [])
+        .filter(m => m.active && m.mode === 'infusion')
+        .map(m => ({ medication_id: m.medication_id, current_infusion_rate: m.current_infusion_rate }));
+    }
     const hemo = updatedState.hemodynamics || {};
     const resp = updatedState.respiratory  || {};
     if (Object.keys(hemo).length) {
@@ -673,37 +679,56 @@
       updateScore(scoring.scoreDelta, scoring.runningScore);
     }
 
-    // Action results
+    // Action results — skip tools whose feedback comes entirely from engine events
+    const _silentTools = new Set(['perform_reassessment', 'document_assessment', 'help_command',
+                                   'give_supportive_care', 'set_monitoring', 'set_disposition',
+                                   'order_diagnostic']);
     const actions = engine.actionResults || [];
     for (const action of actions) {
-      const stateChanges = action.stateChangeSummary || [];
-      const warnings     = action.warnings           || [];
-      const allChanges   = [...stateChanges, ...warnings];
+      const warnings = action.warnings || [];
+      if (_silentTools.has(action.toolName)) continue;  // event messages cover these
       if (action.executionResult === 'rejected') {
         logEvent({
           who: 'ENGINE', whoClass: 'engine',
-          text: `✗ ${action.toolName || 'Action'} rejected: ${(action.blockingErrors || []).join('; ')}`,
+          text: `✗ ${action.actionLabel || action.toolName || 'Action'} rejected: ${(action.blockingErrors || []).join('; ')}`,
           severity: 'moderate',
-          stateChanges: allChanges,
+          stateChanges: warnings,
           time: simTimeSec,
         });
-      } else if (stateChanges.length || action.executionResult !== 'noop') {
+      } else if (action.executionResult && action.executionResult !== 'noop') {
         logEvent({
           who: 'ENGINE', whoClass: 'engine',
-          text: `✓ ${action.toolName || 'Action'} — ${action.executionResult}`,
+          text: `✓ ${action.actionLabel || action.toolName || 'action'} — ${action.executionResult}${warnings.length ? ' ⚠ ' + warnings.join('; ') : ''}`,
           severity: 'low',
-          stateChanges: allChanges,
+          stateChanges: action.stateChangeSummary || [],
           time: simTimeSec,
         });
       }
     }
 
-    // New events
+    // New events — use clinician-facing labels
+    const _evtLabels = {
+      'state_update': 'SYSTEM',
+      'medication_effect': 'MEDICATION',
+      'diagnostic_result_available': 'RESULT',
+      'clinical_improvement': 'IMPROVING',
+      'clinical_deterioration': 'DETERIORATION',
+      'adverse_event': 'ADVERSE EVENT',
+      'critical_action_completed': 'CRITICAL ACTION',
+      'harm_event_triggered': 'HARM EVENT',
+      'monitor_alarm': 'MONITOR ALARM',
+      'dialogue_trigger': 'SYSTEM',
+      'case_progression': 'CASE UPDATE',
+    };
     const events = engine.newEvents || [];
     for (const ev of events) {
+      const label = _evtLabels[ev.eventType] || ev.eventType.replace(/_/g, ' ').toUpperCase();
       logEvent({
-        who: ev.eventType.replace(/_/g, ' ').toUpperCase(),
-        whoClass: ev.severity === 'critical' || ev.severity === 'high' ? 'system' : 'engine',
+        who: label,
+        whoClass: (ev.severity === 'critical' || ev.severity === 'high') ? 'system'
+                  : ev.eventType === 'medication_effect' ? 'engine'
+                  : ev.eventType === 'clinical_improvement' ? 'engine'
+                  : 'engine',
         text: ev.summary,
         severity: ev.severity,
         time: ev.timeSec,
