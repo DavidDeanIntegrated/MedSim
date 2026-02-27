@@ -1,0 +1,24 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Pip editable install artifacts
+*.egg-info/
+
+# Runtime session data (kept via .gitkeep)
+clinical-sim-backend-bundle-fresh-20260226-222555/clinical-sim-backend/app/data/sessions/*.json
+
+# Virtual environments
+.venv/
+venv/
+
+# Environment files
+.env
+
+# pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# mypy
+.mypy_cache/
