@@ -23,7 +23,7 @@ if FRONTEND_DIR.exists():
     app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
 
-@app.get("/", include_in_schema=False)
+@app.get("/", include_in_schema=False, response_model=None)
 def root() -> FileResponse | RedirectResponse:
     index = FRONTEND_DIR / "index.html"
     if index.exists():
