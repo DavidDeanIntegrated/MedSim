@@ -7,15 +7,18 @@ from typing import Any
 class SimulationStateMachine:
     """Deterministic MVP engine for hypertensive emergency case families.
 
-    v2 improvements:
-    - All actions produce explicit feedback events (no silent failures)
-    - Vasopressor/fluid support for overcorrection rescue
-    - Harm events cite offending medications, not latest unrelated action
-    - Overcorrection is recoverable; deterioration loop replaced by MAP-trend logic
-    - Reassessment returns clinician-facing findings, not backend labels
-    - Diagnostic results use seconds-based timing aligned to spec
-    - Critical-action crediting tightened (avoid_overcorrection requires treatment; monitoring requires explicit order)
-    - Help command returns state-aware educational guidance
+    v3 improvements (QA report #2):
+    - MAP always derived from SBP/DBP (no inconsistency)
+    - Vasopressor instant-effect model: WASHOUT-then-ADD with higher CE accumulation factors
+    - Rate queries (query_infusion_status) are read-only, never mutate state
+    - start_titratable_iv_agent only credits nicardipine/clevidipine infusions (not labetalol bolus)
+    - avoid_overcorrection requires ≥300 sec of observation after treatment started
+    - Contradictory symptom/trend messages fixed; template "BP now X → Y MAP" replaced
+    - Stale "stabilizing" message rate-limited to once per 120 sec
+    - RSI/intubation, clinical queries, result retrieval handled explicitly
+    - Bradycardic harm event includes actual vital values
+    - All diagnostics return in 60 sec per spec
+    - Titration without target rate uses default step size
     """
 
     # Antihypertensive medication IDs (cause MAP drop)
@@ -80,6 +83,14 @@ class SimulationStateMachine:
                 self._give_supportive_care(state_after, payload, next_time, events)
             elif tool_name == "help_command":
                 events.append(self._build_help_event(state_after, next_time))
+            elif tool_name == "query_infusion_status":
+                self._query_infusion_status(state_after, payload, next_time, events)
+            elif tool_name == "retrieve_diagnostic_result":
+                self._retrieve_diagnostic_result(state_after, payload, next_time, events)
+            elif tool_name == "unsupported_procedure":
+                self._handle_unsupported_procedure(state_after, payload, next_time, events)
+            elif tool_name == "clinical_query":
+                self._handle_clinical_query(state_after, payload, next_time, events)
             # Unknown actions produce an acknowledgment
             elif tool_name:
                 events.append(self._evt(
@@ -167,6 +178,17 @@ class SimulationStateMachine:
                                     f"{self._med_display(med_id)} started while {active_names} already active. "
                                     f"Monitor for additive BP-lowering effect and overcorrection risk.",
                                     {"medication_id": med_id, "concurrent_agents": [m["medication_id"] for m in active_antihypertensives]}))
+        elif med_id in self._VASOPRESSORS:
+            _onset_notes = {
+                "norepinephrine_iv": "1–2 min", "epinephrine_iv": "1–2 min",
+                "phenylephrine_iv": "1–2 min", "dopamine_iv": "2–4 min",
+                "vasopressin_iv": "5–10 min",
+            }
+            events.append(self._evt(now, "medication_effect", "info",
+                                    f"{self._med_display(med_id)} infusion started at {rate}. "
+                                    f"Educational note: real-world onset {_onset_notes.get(med_id, '2–5 min')}. "
+                                    f"Hemodynamic support tracked.",
+                                    {"medication_id": med_id, "rate": rate}))
         else:
             events.append(self._evt(now, "medication_effect", "info",
                                     f"{self._med_display(med_id)} infusion started.",
@@ -174,7 +196,10 @@ class SimulationStateMachine:
 
         # Mark that BP-active meds have been given (needed for avoid_overcorrection scoring)
         if med_id in self._ANTIHYPERTENSIVES:
-            state["case_runtime"]["bp_active_meds_given"] = True
+            cr = state.setdefault("case_runtime", {})
+            cr["bp_active_meds_given"] = True
+            if "treatment_started_sec" not in cr:
+                cr["treatment_started_sec"] = now
 
     def _adjust_infusion(self, state: dict, payload: dict, now: int, events: list) -> None:
         med_id = payload.get("medication_id")
@@ -238,7 +263,10 @@ class SimulationStateMachine:
 
         # Warn about additive effect if antihypertensive already infusing
         if med_id in self._ANTIHYPERTENSIVES:
-            state["case_runtime"]["bp_active_meds_given"] = True
+            cr = state.setdefault("case_runtime", {})
+            cr["bp_active_meds_given"] = True
+            if "treatment_started_sec" not in cr:
+                cr["treatment_started_sec"] = now
             active_infusions = [
                 m for m in state["active_medications"]
                 if m.get("medication_id") in self._ANTIHYPERTENSIVES
@@ -265,23 +293,8 @@ class SimulationStateMachine:
                                     {"diagnostic_id": diag_id}))
             return
 
-        # Seconds-based result delays aligned to spec
-        result_delay_sec = {
-            "fingerstick_glucose": 18,
-            "ecg": 54,
-            "cbc": 108,
-            "cmp": 108,
-            "troponin": 144,
-            "coagulation_panel": 144,
-            "d_dimer": 144,
-            "lactate": 108,
-            "head_ct_noncontrast": 126,
-            "mri_brain": 600,
-            "chest_xray": 72,
-            "pregnancy_test": 90,
-            "urinalysis": 90,
-            "bnp": 144,
-        }.get(diag_id, 108)
+        # All diagnostics return in 60 seconds per spec (case definitions may override)
+        result_delay_sec = 60
 
         result_at = now + result_delay_sec
         state["orders"].append({
@@ -295,24 +308,24 @@ class SimulationStateMachine:
             },
         })
 
-        # Acknowledgment message
+        # Acknowledgment message (all results in ~1 min per spec)
         ack_map = {
-            "fingerstick_glucose": "Fingerstick glucose obtained. Result in ~18 seconds.",
-            "ecg": "12-lead ECG ordered. Result in ~1 minute.",
-            "cbc": "CBC ordered. Result pending in ~2 minutes.",
-            "cmp": "BMP/CMP ordered. Result pending in ~2 minutes.",
-            "troponin": "Troponin ordered to assess for cardiac end-organ injury. Result in ~2-3 minutes.",
-            "coagulation_panel": "Coagulation studies ordered. Result pending in ~2-3 minutes.",
-            "head_ct_noncontrast": "CT head without contrast ordered. Patient will need transport to CT suite. Result in ~2 minutes.",
-            "mri_brain": "MRI brain ordered. This will take approximately 10 minutes.",
-            "chest_xray": "Chest X-ray ordered. Result in ~1-2 minutes.",
-            "pregnancy_test": "Urine pregnancy test ordered. Result in ~90 seconds.",
-            "urinalysis": "Urinalysis ordered. Result in ~90 seconds.",
-            "bnp": "BNP ordered. Result pending.",
-            "d_dimer": "D-dimer ordered. Result pending.",
-            "lactate": "Lactate ordered. Result pending.",
+            "fingerstick_glucose": "Fingerstick glucose obtained. Result available in ~1 minute.",
+            "ecg": "12-lead ECG ordered. Result available in ~1 minute.",
+            "cbc": "CBC ordered. Result available in ~1 minute.",
+            "cmp": "BMP/CMP ordered. Result available in ~1 minute.",
+            "troponin": "Troponin ordered to assess for cardiac end-organ injury. Result in ~1 minute.",
+            "coagulation_panel": "Coagulation studies ordered. Result available in ~1 minute.",
+            "head_ct_noncontrast": "CT head without contrast ordered. Result available in ~1 minute.",
+            "mri_brain": "MRI brain ordered. Result available in ~1 minute.",
+            "chest_xray": "Chest X-ray ordered. Result available in ~1 minute.",
+            "pregnancy_test": "Urine pregnancy test ordered. Result in ~1 minute.",
+            "urinalysis": "Urinalysis ordered. Result in ~1 minute.",
+            "bnp": "BNP ordered. Result in ~1 minute.",
+            "d_dimer": "D-dimer ordered. Result in ~1 minute.",
+            "lactate": "Lactate ordered. Result in ~1 minute.",
         }
-        ack = ack_map.get(diag_id, f"{self._diag_display(diag_id)} ordered. Result pending.")
+        ack = ack_map.get(diag_id, f"{self._diag_display(diag_id)} ordered. Result in ~1 minute.")
         events.append(self._evt(now, "state_update", "info", ack, {"diagnostic_id": diag_id, "result_available_at_sec": result_at}))
 
     def _set_monitoring(self, state: dict, payload: dict, now: int, events: list) -> None:
@@ -537,10 +550,11 @@ class SimulationStateMachine:
             ce = float(med.get("effect_site_concentration", 0) or 0)
             active = bool(med.get("active", False))
 
+            # WASHOUT first, then add new effect (correct PK accumulation order)
+            ce *= self._washout_factor(med_id, dt_sec)
             if active and rate > 0:
                 med["cumulative_dose"] += self._infusion_dose_increment(med_id, rate, dt_sec)
                 ce += self._infusion_to_effect(med_id, rate, dt_sec)
-            ce *= self._washout_factor(med_id, dt_sec)
             med["effect_site_concentration"] = max(0.0, ce)
 
             # Antihypertensives — drop MAP
@@ -613,8 +627,9 @@ class SimulationStateMachine:
                 neuro["mental_status"] = "anxious"
                 neuro["gcs"] = max(14, int(neuro.get("gcs", 14)))
                 events.append(self._evt(now, "clinical_improvement", "moderate",
-                                        f"BP now {int(map_before + (total_svr_drop * 40) * -1):.0f} → {int(new_map)} MAP. "
-                                        f"Neurologic symptoms improving with controlled BP reduction.",
+                                        f"MAP {int(map_before)} → {int(new_map)} mmHg. "
+                                        f"Mental status improving (less confused). "
+                                        f"Headache and visual symptoms may lag hemodynamic response — continue monitoring.",
                                         {}))
 
         # ── Overcorrection: MAP dropped too far ──
@@ -645,21 +660,24 @@ class SimulationStateMachine:
                                         f"Neurologic status declining (now {neuro['mental_status']}).",
                                         {"map_drop_fraction": round(map_drop_fraction, 3),
                                          "offending_meds": all_relevant}))
-            elif map_trend >= 0 and deterioration_already_fired:
-                # MAP stabilizing or recovering — emit stabilization message (not deterioration)
-                pressor_ids = [m.get("medication_id") for m in state.get("active_medications", [])
-                               if m.get("active") and m.get("medication_id") in self._VASOPRESSORS]
-                if pressor_ids:
-                    pressor_str = ", ".join(self._med_display(p) for p in pressor_ids)
-                    events.append(self._evt(now, "state_update", "moderate",
-                                            f"MAP now {int(new_map)} mmHg — stabilizing with {pressor_str}. "
-                                            f"Neurologic status remains impaired but trajectory is improving.",
-                                            {"map": int(new_map)}))
-                else:
-                    events.append(self._evt(now, "state_update", "moderate",
-                                            f"MAP now {int(new_map)} mmHg — no longer actively falling. "
-                                            f"Neurologic recovery may lag. Monitor closely.",
-                                            {"map": int(new_map)}))
+            elif map_trend >= 2 and deterioration_already_fired:
+                # MAP meaningfully recovering — emit stabilization message at most once per 120 sec
+                last_stab_sec = state.get("case_runtime", {}).get("last_stabilization_sec", -300)
+                if now - last_stab_sec >= 120:
+                    state.setdefault("case_runtime", {})["last_stabilization_sec"] = now
+                    pressor_ids = [m.get("medication_id") for m in state.get("active_medications", [])
+                                   if m.get("active") and m.get("medication_id") in self._VASOPRESSORS]
+                    if pressor_ids:
+                        pressor_str = ", ".join(self._med_display(p) for p in pressor_ids)
+                        events.append(self._evt(now, "state_update", "moderate",
+                                                f"MAP recovering: {int(map_before)} → {int(new_map)} mmHg with {pressor_str}. "
+                                                f"Neurologic status remains impaired; recovery may lag hemodynamics.",
+                                                {"map": int(new_map)}))
+                    else:
+                        events.append(self._evt(now, "state_update", "moderate",
+                                                f"MAP recovering: {int(map_before)} → {int(new_map)} mmHg. "
+                                                f"Neurologic recovery may lag. Monitor closely.",
+                                                {"map": int(new_map)}))
 
         # ── Bradycardia from beta-blockade ──
         if total_brady_risk > 0.35 and hr < 55:
@@ -668,23 +686,27 @@ class SimulationStateMachine:
             hemo["rhythm"] = "high_grade_av_block"
 
         # ── Compute updated hemodynamics ──
-        pulse_pressure = max(20, (new_map * 0.72) - (new_map * 0.45))
-        sbp = int(round(new_map + pulse_pressure / 2))
-        dbp = int(round(new_map - pulse_pressure / 2))
+        # Use physiologically correct formula: MAP = DBP + (SBP-DBP)/3
+        # → SBP = MAP + 2*PP/3,  DBP = MAP - PP/3  (ensures MAP_check == MAP)
+        pulse_pressure = max(20, new_map * 0.27)
+        dbp = max(20, int(round(new_map - pulse_pressure / 3)))
+        sbp = max(40, dbp + int(round(pulse_pressure)))
+        # MAP derived from SBP/DBP — should equal new_map within ±1 (rounding only)
+        map_derived = int(round(dbp + (sbp - dbp) / 3))
 
         hemo["svr_index"] = round(svr_index, 3)
         hemo["hr"] = int(round(hr))
-        hemo["map"] = int(round(new_map))
-        hemo["sbp"] = max(40, sbp)
-        hemo["dbp"] = max(20, dbp)
+        hemo["sbp"] = sbp
+        hemo["dbp"] = dbp
+        hemo["map"] = map_derived
 
         # ── Emit vitals update after any significant hemodynamic change ──
-        map_change = abs(new_map - map_before)
+        map_change = abs(map_derived - map_before)
         if map_change >= 5 and (total_svr_drop > 0.05 or total_map_gain > 0.05):
-            direction = "falling" if new_map < map_before else "recovering"
+            direction = "falling" if map_derived < map_before else "recovering"
             events.append(self._evt(now, "state_update", "info",
                                     f"Vitals: BP {hemo['sbp']}/{hemo['dbp']} (MAP {hemo['map']}), HR {hemo['hr']}. "
-                                    f"MAP {direction} from {int(map_before)} → {hemo['map']} mmHg.",
+                                    f"MAP {direction}: {int(map_before)} → {hemo['map']} mmHg.",
                                     {"sbp": hemo["sbp"], "dbp": hemo["dbp"], "map": hemo["map"], "hr": hemo["hr"]}))
 
     def _apply_disease_progression(self, state: dict, dt_sec: int, now: int, events: list) -> None:
@@ -796,9 +818,14 @@ class SimulationStateMachine:
                 runtime["establish_monitoring"] = True
                 completed.append("establish_monitoring")
 
+        # Bug 2 fix: only nicardipine/clevidipine INFUSIONS count as titratable IV agents
+        # Labetalol bolus does not satisfy this — it's not truly titratable
         if not runtime.get("start_titratable_iv_agent"):
-            if any(m.get("medication_id") in {"nicardipine_iv", "clevidipine_iv", "labetalol_iv"}
-                   for m in state.get("active_medications", [])):
+            if any(
+                m.get("medication_id") in {"nicardipine_iv", "clevidipine_iv"}
+                and m.get("mode") == "infusion"
+                for m in state.get("active_medications", [])
+            ):
                 runtime["start_titratable_iv_agent"] = True
                 runtime["bp_active_meds_given"] = True
                 completed.append("start_titratable_iv_agent")
@@ -822,13 +849,16 @@ class SimulationStateMachine:
                 runtime["disposition"] = True
                 completed.append("disposition")
 
-        # avoid_overcorrection: only credit AFTER treatment started AND MAP within safe range
+        # Bug 3 fix: avoid_overcorrection requires treatment AND ≥300 sec observation window
         if not runtime.get("avoid_overcorrection"):
             bp_started = runtime.get("bp_active_meds_given") or state.get("case_runtime", {}).get("bp_active_meds_given", False)
             if bp_started:
+                treatment_start_sec = state.get("case_runtime", {}).get("treatment_started_sec", 0)
+                current_time_sec = state.get("case_metadata", {}).get("time_elapsed_sec", 0)
+                treatment_duration = current_time_sec - treatment_start_sec
                 starting_map = state.get("case_runtime", {}).get("starting_map", state.get("hemodynamics", {}).get("map", 0))
                 current_map = state.get("hemodynamics", {}).get("map", 0)
-                if starting_map:
+                if starting_map and treatment_duration >= 300:
                     drop_fraction = (starting_map - current_map) / starting_map
                     if 0.05 < drop_fraction <= 0.25:
                         runtime["avoid_overcorrection"] = True
@@ -871,12 +901,16 @@ class SimulationStateMachine:
                                      "map_drop_fraction": round(drop_fraction, 3),
                                      "offending_medications": all_relevant}))
 
-        if float(hemo.get("hr", 100)) < 45 and current_map < 65 and not runtime.get("iatrogenic_bradycardic_hypoperfusion"):
+        actual_hr = float(hemo.get("hr", 100))
+        if actual_hr < 45 and current_map < 65 and not runtime.get("iatrogenic_bradycardic_hypoperfusion"):
             runtime["iatrogenic_bradycardic_hypoperfusion"] = True
             harms.append("iatrogenic_bradycardic_hypoperfusion")
             events.append(self._evt(now, "harm_event_triggered", "high",
-                                    "HARM: Bradycardic hypoperfusion — HR < 45 with MAP < 65. Likely from excessive beta-blockade.",
-                                    {"harm_event_id": "iatrogenic_bradycardic_hypoperfusion"}))
+                                    f"HARM: Bradycardic hypoperfusion — HR {int(actual_hr)} bpm with MAP {int(current_map)} mmHg "
+                                    f"(from {int(starting_map)} baseline). Likely from excessive beta-blockade. "
+                                    f"Consider atropine, vasopressor support, or reducing beta-blocker dosing.",
+                                    {"harm_event_id": "iatrogenic_bradycardic_hypoperfusion",
+                                     "hr": int(actual_hr), "map": int(current_map)}))
 
         if neuro.get("mental_status") == "seizing" and not runtime.get("progression_to_seizure"):
             runtime["progression_to_seizure"] = True
@@ -896,6 +930,122 @@ class SimulationStateMachine:
                                         {"harm_event_id": "missed_hypertensive_emergency"}))
 
         return harms, events
+
+    # --------------------
+    # New action handlers (v3)
+    # --------------------
+
+    def _query_infusion_status(self, state: dict, payload: dict, now: int, events: list) -> None:
+        """Read-only: return current infusion rate — does NOT mutate state."""
+        med_id = payload.get("medication_id")
+        if med_id:
+            med = self._find_active_med(state, med_id)
+            if med:
+                rate = med.get("current_infusion_rate", 0)
+                events.append(self._evt(now, "state_update", "info",
+                                        f"{self._med_display(med_id)} is running at {rate}.",
+                                        {"medication_id": med_id, "current_infusion_rate": rate}))
+            else:
+                events.append(self._evt(now, "state_update", "info",
+                                        f"{self._med_display(med_id)} is not currently active.",
+                                        {"medication_id": med_id}))
+        else:
+            active = [m for m in state.get("active_medications", [])
+                      if m.get("active") and m.get("mode") == "infusion"]
+            if active:
+                parts = [f"{self._med_display(m['medication_id'])} at {m.get('current_infusion_rate', 0)}"
+                         for m in active]
+                events.append(self._evt(now, "state_update", "info",
+                                        f"Active infusions: {', '.join(parts)}.",
+                                        {"active_infusions": [m.get("medication_id") for m in active]}))
+            else:
+                events.append(self._evt(now, "state_update", "info",
+                                        "No active infusions currently running.", {}))
+
+    def _retrieve_diagnostic_result(self, state: dict, payload: dict, now: int, events: list) -> None:
+        """Return a previously resulted diagnostic without re-running it."""
+        diag_id = payload.get("diagnostic_id")
+        if not diag_id:
+            events.append(self._evt(now, "state_update", "info",
+                                    "Please specify which diagnostic result you would like to retrieve.", {}))
+            return
+        for order in state.get("orders", []):
+            op = order.get("payload", {})
+            if op.get("diagnostic_id") == diag_id and op.get("status") == "resulted":
+                result_text = op.get("result_text", "Result available.")
+                events.append(self._evt(now, "diagnostic_result_available", "info",
+                                        f"RESULT — {self._diag_display(diag_id)}: {result_text}",
+                                        {"diagnostic_id": diag_id, "result_text": result_text}))
+                return
+        # Check pending
+        for order in state.get("orders", []):
+            op = order.get("payload", {})
+            if op.get("diagnostic_id") == diag_id and op.get("status") == "pending":
+                eta = max(0, int(op.get("result_available_at_sec", now) - now))
+                events.append(self._evt(now, "state_update", "info",
+                                        f"{self._diag_display(diag_id)} is pending — result expected in ~{eta} seconds.",
+                                        {"diagnostic_id": diag_id, "eta_sec": eta}))
+                return
+        events.append(self._evt(now, "state_update", "info",
+                                f"{self._diag_display(diag_id)} has not been ordered yet.",
+                                {"diagnostic_id": diag_id}))
+
+    def _handle_unsupported_procedure(self, state: dict, payload: dict, now: int, events: list) -> None:
+        procedure = payload.get("procedure_name", "this procedure")
+        events.append(self._evt(now, "state_update", "moderate",
+                                f"'{procedure}' is not modeled in this simulation. "
+                                f"In clinical practice, RSI/intubation requires anesthesia or intensivist involvement. "
+                                f"For this scenario, focus on IV antihypertensive titration and neurologic monitoring.",
+                                {"procedure": procedure}))
+
+    def _handle_clinical_query(self, state: dict, payload: dict, now: int, events: list) -> None:
+        """Return educational response to a clinical question without mutating state."""
+        query = payload.get("query", "").lower()
+        hemo = state.get("hemodynamics", {})
+        _edu = {
+            "nicardipine": (
+                "Nicardipine is a dihydropyridine calcium channel blocker — it dilates peripheral arterioles, "
+                "reducing SVR and MAP. IV infusion onset ~2–5 min, easily titratable. First-line for hypertensive emergencies."
+            ),
+            "clevidipine": (
+                "Clevidipine is an ultra-short-acting dihydropyridine CCB (half-life ~1 min). "
+                "Highly titratable with predictable offset. Ideal for precise BP control in the ICU."
+            ),
+            "labetalol": (
+                "Labetalol is a combined alpha/beta blocker. IV bolus onset 2–5 min, duration 3–6 hr. "
+                "Reduces HR and causes vasodilation. Useful as bolus therapy but less titratable than infusions."
+            ),
+            "norepinephrine": (
+                "Norepinephrine (noradrenaline) is a potent alpha-1 agonist with some beta-1 activity. "
+                "It raises MAP by increasing SVR. First-line vasopressor for vasodilatory shock. IV onset 1–2 min."
+            ),
+            "map": (
+                "MAP = DBP + (SBP − DBP) / 3. Normal range 70–100 mmHg. "
+                "In hypertensive emergencies, target a 15–25% MAP reduction in the first hour. "
+                "Faster reduction risks cerebral watershed ischemia."
+            ),
+            "pres": (
+                "PRES (Posterior Reversible Encephalopathy Syndrome): cerebral edema from failed vascular autoregulation "
+                "under extreme hypertension. Presents with headache, visual changes, confusion, and seizures. "
+                "Reversed with controlled BP reduction. MRI shows parieto-occipital FLAIR/T2 changes."
+            ),
+            "overcorrection": (
+                "Rapid MAP reduction >25% of baseline risks 'watershed stroke' from cerebral hypoperfusion, "
+                "AKI from renal hypoperfusion, and worsening encephalopathy. "
+                "Target controlled, incremental reduction: 10–25% in the first hour, further reduction over 24–48 hr."
+            ),
+        }
+        for kw, answer in _edu.items():
+            if kw in query:
+                events.append(self._evt(now, "state_update", "info",
+                                        f"CLINICAL INFO: {answer}",
+                                        {"query": query}))
+                return
+        # Default: acknowledge and direct to help
+        events.append(self._evt(now, "state_update", "info",
+                                f"Clinical question noted. Current: BP {hemo.get('sbp')}/{hemo.get('dbp')} "
+                                f"(MAP {hemo.get('map')} mmHg). Type 'help' for management guidance.",
+                                {"query": query}))
 
     # --------------------
     # Utility helpers
@@ -923,6 +1073,7 @@ class SimulationStateMachine:
     def _infusion_to_effect(self, med_id: str, rate: float, dt_sec: int) -> float:
         dt_min = dt_sec / 60.0
         effects = {
+            # Antihypertensives — slow half-lives, factors designed for 30 min half-life
             "nicardipine_iv": 0.06,
             "clevidipine_iv": 0.18,
             "labetalol_iv": 0.10,
@@ -930,11 +1081,15 @@ class SimulationStateMachine:
             "nitroglycerin_iv": 0.015,
             "nitroprusside_iv": 0.20,
             "hydralazine_iv": 0.05,
-            "norepinephrine_iv": 0.30,
-            "epinephrine_iv": 0.25,
-            "phenylephrine_iv": 0.22,
-            "dopamine_iv": 0.12,
-            "vasopressin_iv": 0.20,
+            # Vasopressors — short half-lives (2–5 min); factors boosted so WASHOUT-then-ADD
+            # model produces meaningful immediate effect at clinical doses.
+            # Designed so: at standard rate, first tick CE ≥ threshold for ~10 mmHg MAP gain.
+            "norepinephrine_iv": 1.90,   # 0.1 mcg/kg/min → CE 0.95/tick → MAP +10 mmHg
+            "epinephrine_iv": 3.50,      # 0.05 mcg/kg/min → CE 0.875/tick
+            "phenylephrine_iv": 0.50,    # 0.5 mcg/kg/min → CE 1.25/tick → MAP +8 mmHg
+            "dopamine_iv": 0.12,         # 5 mcg/kg/min → CE 3.0/tick (already capped at 0.4)
+            "dobutamine_iv": 0.08,
+            "vasopressin_iv": 12.0,      # 0.03 U/min → CE 1.8/tick → MAP +9 mmHg
         }
         return rate * effects.get(med_id, 0.05) * dt_min
 

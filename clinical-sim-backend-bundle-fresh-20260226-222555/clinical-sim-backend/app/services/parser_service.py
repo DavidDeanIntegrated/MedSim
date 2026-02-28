@@ -173,7 +173,7 @@ _IV_ACCESS_RE = re.compile(
     r"\biv\s+access\b|\biv\s+line\b|\bperipheral\s+iv\b|\bpiv\b|\biv\s+(?:x\s*\d+|start|establish)\b|"
     r"\bplace\s+iv\b|\baccess\s+x\s*\d+\b|\blarge\s+bore\b"
 )
-_FOLEY_RE = re.compile(r"\bfoley\b|\burinary\s+catheter\b|\bfoley\s+catheter\b|\bfoley\s+cath\b")
+_FOLEY_RE = re.compile(r"\bfole(?:y)?\b|\burinary\s+catheter\b|\bfoley\s+catheter\b|\bfoley\s+cath\b|\bfole\s+catheter\b")
 _IV_FLUID_RE = re.compile(
     r"\biv\s+fluid|\bfluids?\b(?:\s+(?:bolus|wide\s+open|wob|running|open))?"
     r"|\bnormal\s+saline\b|\bns\b(?!\w)|\blactated\s+ringer|\blr\b(?!\w)"
@@ -181,6 +181,60 @@ _IV_FLUID_RE = re.compile(
 )
 _HELP_RE = re.compile(r"^\s*(?:help|hint|guidance|what\s+(?:do\s+i\s+do|should\s+i\s+do|next)|"
                        r"assist(?:ance)?|confused|stuck|not\s+sure)\s*\??$")
+
+# Rate / status query — read-only, must not trigger action handlers
+# Matches "what is the nicardipine rate", "what is the current epi drip rate", etc.
+_RATE_QUERY_RE = re.compile(
+    r"\b(?:what(?:'?s|\s+is)\s+(?:the\s+)?(?:current\s+)?(?:\w+\s+){0,3}(?:rate|dose|drip\s+rate|infusion\s+rate)|"
+    r"how\s+fast\s+(?:is\s+the|are\s+we\s+running)\s|"
+    r"what\s+(?:dose|rate)\s+(?:is|are)\s+(?:the|my|we)|"
+    r"(?:check|tell\s+me)\s+(?:the\s+)?(?:current\s+)?(?:drip|infusion)\s+rate|"
+    r"what(?:'?s|\s+is)\s+(?:running|infusing))\b"
+)
+
+# RSI / intubation — not modeled in this sim
+_RSI_RE = re.compile(
+    r"\b(?:rsi|rapid\s+sequence|intubat(?:e|ion)|intubating|"
+    r"oral\s+tracheal\s+intubation|orotracheal|nasotracheal|"
+    r"succinylcholine|suxamethonium|ketamine\s+for\s+rsi|"
+    r"rocuronium|etomidate|place(?:ment)?\s+of\s+(?:ett|endotracheal\s+tube)|"
+    r"endotracheal|ett\b|(?:bag\s+)?valve\s+mask\b|bvm\b)\b"
+)
+
+# Retrieve prior diagnostic result
+_RETRIEVE_RESULT_RE = re.compile(
+    r"\b(?:what\s+(?:is|are|were|did|was)\s+(?:the\s+)?(?:results?|findings?)|"
+    r"(?:show|tell|give)\s+me\s+(?:the\s+)?(?:results?|findings?)|"
+    r"what\s+did\s+(?:the\s+)?(?:ct|mri|ecg|ekg|labs?|cbc|bmp|cmp|troponin|echo)\s+(?:show|reveal|find)|"
+    r"results?\s+of\s+(?:the\s+)?(?:ct|mri|ecg|ekg|labs?|cbc|bmp|cmp)|"
+    r"(?:ct|mri|ecg|ekg|cbc|bmp|cmp|troponin)\s+results?\b)\b"
+)
+
+# Clinical / educational query
+_CLINICAL_QUERY_RE = re.compile(
+    r"\b(?:what\s+(?:is|are|does|do)\s+|"
+    r"how\s+does\s+|tell\s+me\s+about\s+|"
+    r"explain\s+|why\s+(?:is|are|did|does)\s+|"
+    r"what\s+(?:mechanism|effect|action)|"
+    r"should\s+(?:i|we)\s+(?:use|give|start|consider))\b"
+)
+
+# Titration step sizes when no target rate is given
+_TITRATION_STEP: dict[str, float] = {
+    "nicardipine_iv": 2.5,
+    "clevidipine_iv": 0.5,
+    "labetalol_iv": 2.0,
+    "esmolol_iv": 25.0,
+    "nitroglycerin_iv": 10.0,
+    "nitroprusside_iv": 0.1,
+    "hydralazine_iv": 2.5,
+    "norepinephrine_iv": 0.05,
+    "epinephrine_iv": 0.02,
+    "phenylephrine_iv": 0.2,
+    "dopamine_iv": 2.0,
+    "dobutamine_iv": 2.0,
+    "vasopressin_iv": 0.01,
+}
 
 # ---------------------------------------------------------------------------
 # Helper
@@ -241,42 +295,62 @@ class ParserService:
         status = "ok"
         notes: list[str] = ["Rule-based parser v3"]
 
-        # ---- supportive care (IV access, O2, foley, fluids) ----
-        actions.extend(self._match_supportive_care(normalized, text))
+        # ---- Rate/status queries — read-only, skip all action parsers ----
+        rate_queries = self._match_rate_query(normalized, text, request.active_infusions)
+        if rate_queries:
+            actions.extend(rate_queries)
+            notes.append("Rate query detected — no state mutation.")
+            # fall through to renumbering and return below
 
-        # ---- medication intents (order matters: stop > adjust > start > bolus) ----
-        stop_actions = self._match_stop_infusion(normalized, text, request.active_infusions)
-        actions.extend(stop_actions)
+        # ---- RSI / intubation — unsupported procedure ----
+        elif _RSI_RE.search(normalized):
+            actions.extend(self._match_unsupported_procedure(normalized, text))
 
-        if not stop_actions:
-            actions.extend(self._match_infusion_adjust(normalized, text))
-            actions.extend(self._match_infusion_start(normalized, text))
-            bolus_actions, bolus_clar, bolus_q, bolus_unsafe = self._match_bolus(normalized, text)
-            actions.extend(bolus_actions)
-            if bolus_unsafe:
-                # Unsafe dose — still add action but mark status
-                status = "partial_parse"
-                notes.append(bolus_q or "Medication dose/unit appears nonstandard.")
-            elif bolus_clar:
+        # ---- Result retrieval ----
+        elif _RETRIEVE_RESULT_RE.search(normalized) and not _ORDER_RE.search(normalized):
+            actions.extend(self._match_retrieve_result(normalized, text))
+
+        # ---- Clinical / educational queries ----
+        elif _CLINICAL_QUERY_RE.search(normalized) and not _ORDER_RE.search(normalized) and not _START_RE.search(normalized):
+            actions.extend(self._match_clinical_query(normalized, text))
+
+        else:
+            # ---- Supportive care (IV access, O2, foley, fluids) ----
+            actions.extend(self._match_supportive_care(normalized, text))
+
+            # ---- Medication intents (order matters: stop > adjust > start > bolus) ----
+            stop_actions = self._match_stop_infusion(normalized, text, request.active_infusions)
+            actions.extend(stop_actions)
+
+            if not stop_actions:
+                actions.extend(self._match_infusion_adjust(normalized, text, request.active_infusions))
+                actions.extend(self._match_infusion_start(normalized, text))
+                bolus_actions, bolus_clar, bolus_q, bolus_unsafe = self._match_bolus(normalized, text)
+                actions.extend(bolus_actions)
+                if bolus_unsafe:
+                    # Unsafe dose — still add action but mark status
+                    status = "partial_parse"
+                    notes.append(bolus_q or "Medication dose/unit appears nonstandard.")
+                elif bolus_clar:
+                    needs_clarification = True
+                    clarification_question = bolus_q
+                    status = "clarification_required"
+
+            # Ambiguous stop
+            if not stop_actions and self._is_ambiguous_stop(normalized, request.active_infusions):
                 needs_clarification = True
-                clarification_question = bolus_q
+                names = ", ".join(
+                    i.get("medication_id", "?").replace("_iv", "") for i in request.active_infusions
+                )
+                clarification_question = f"Which infusion would you like to stop? Active: {names}."
                 status = "clarification_required"
 
-        # Ambiguous stop
-        if not stop_actions and self._is_ambiguous_stop(normalized, request.active_infusions):
-            needs_clarification = True
-            names = ", ".join(
-                i.get("medication_id", "?").replace("_iv", "") for i in request.active_infusions
-            )
-            clarification_question = f"Which infusion would you like to stop? Active: {names}."
-            status = "clarification_required"
-
-        # ---- non-medication intents ----
-        actions.extend(self._match_diagnostics(normalized, text))
-        actions.extend(self._match_monitoring(normalized, text))
-        actions.extend(self._match_assessment(normalized, text))
-        actions.extend(self._match_disposition(normalized, text))
-        actions.extend(self._match_reassessment(normalized, text))
+            # ---- Non-medication intents ----
+            actions.extend(self._match_diagnostics(normalized, text))
+            actions.extend(self._match_monitoring(normalized, text))
+            actions.extend(self._match_assessment(normalized, text))
+            actions.extend(self._match_disposition(normalized, text))
+            actions.extend(self._match_reassessment(normalized, text))
 
         # Re-number sequence indices
         for i, a in enumerate(actions):
@@ -383,7 +457,8 @@ class ParserService:
         rate = self._extract_rate(normalized) or _DEFAULT_RATE.get(med_id, 5.0)
         label = f"start_{med_name.replace(' ', '_')}"
         hooks: list[str] = []
-        if med_id in {"nicardipine_iv", "clevidipine_iv", "labetalol_iv"}:
+        # Bug 2 fix: only nicardipine/clevidipine infusions count as "titratable IV agent"
+        if med_id in {"nicardipine_iv", "clevidipine_iv"}:
             hooks.append("mark_critical_action_start_titratable_iv_agent")
         return [
             self._action(
@@ -408,7 +483,9 @@ class ParserService:
     # Intent: adjust infusion
     # ------------------------------------------------------------------
 
-    def _match_infusion_adjust(self, normalized: str, raw: str) -> list[dict]:
+    def _match_infusion_adjust(
+        self, normalized: str, raw: str, active_infusions: list[dict] | None = None
+    ) -> list[dict]:
         if not _ADJUST_RE.search(normalized):
             return []
         med_id, med_name = self._detect_med(normalized)
@@ -416,7 +493,15 @@ class ParserService:
             return []
         rate = self._extract_rate(normalized)
         if rate is None:
-            return []
+            # Bug 9b fix: apply default titration step when no target rate given
+            current_rate = _DEFAULT_RATE.get(med_id, 5.0)
+            for inf in (active_infusions or []):
+                if inf.get("medication_id") == med_id:
+                    current_rate = float(inf.get("current_infusion_rate", current_rate))
+                    break
+            step = _TITRATION_STEP.get(med_id, round(current_rate * 0.25, 1))
+            is_increase = bool(re.search(r"\b(increase|raise|uptitrate|bump\s+up|turn\s+up|up)\b", normalized))
+            rate = round(max(0.1, current_rate + (step if is_increase else -step)), 2)
         label = f"adjust_{med_name.replace(' ', '_')}"
         return [
             self._action(
@@ -424,7 +509,7 @@ class ParserService:
                 action_label=label,
                 payload={"medication_id": med_id, "new_infusion_rate": rate, "dose_unit": "mg_per_hour", "route": "IV"},
                 raw=raw,
-                confidence=0.92,
+                confidence=0.90,
                 execution_mode="sequential",
                 mapping_action_id=label,
                 engine_hooks=[],
@@ -715,6 +800,86 @@ class ParserService:
                 )
             )
         return actions
+
+    # ------------------------------------------------------------------
+    # Intent: rate/status query (read-only)
+    # ------------------------------------------------------------------
+
+    def _match_rate_query(self, normalized: str, raw: str, active_infusions: list[dict]) -> list[dict]:
+        if not _RATE_QUERY_RE.search(normalized):
+            return []
+        med_id, med_name = self._detect_med(normalized)
+        return [self._action(
+            tool_name="query_infusion_status",
+            action_label=f"query_{med_name.replace(' ', '_') or 'all_infusions'}_rate",
+            payload={"medication_id": med_id},
+            raw=raw,
+            confidence=0.90,
+            execution_mode="parallel_safe",
+            mapping_action_id="query_infusion_status",
+            engine_hooks=[],
+        )]
+
+    # ------------------------------------------------------------------
+    # Intent: unsupported procedure (RSI / intubation)
+    # ------------------------------------------------------------------
+
+    def _match_unsupported_procedure(self, normalized: str, raw: str) -> list[dict]:
+        return [self._action(
+            tool_name="unsupported_procedure",
+            action_label="unsupported_rsi_intubation",
+            payload={"procedure_name": "RSI/intubation"},
+            raw=raw,
+            confidence=0.95,
+            execution_mode="parallel_safe",
+            mapping_action_id="unsupported_procedure",
+            engine_hooks=[],
+        )]
+
+    # ------------------------------------------------------------------
+    # Intent: retrieve prior diagnostic result
+    # ------------------------------------------------------------------
+
+    def _match_retrieve_result(self, normalized: str, raw: str) -> list[dict]:
+        # Try to identify which diagnostic is being asked about
+        for pattern, diag_id, _ in _DIAGNOSTICS:
+            if re.search(pattern, normalized):
+                return [self._action(
+                    tool_name="retrieve_diagnostic_result",
+                    action_label=f"retrieve_{diag_id}_result",
+                    payload={"diagnostic_id": diag_id},
+                    raw=raw,
+                    confidence=0.88,
+                    execution_mode="parallel_safe",
+                    mapping_action_id="retrieve_diagnostic_result",
+                    engine_hooks=[],
+                )]
+        return [self._action(
+            tool_name="retrieve_diagnostic_result",
+            action_label="retrieve_unspecified_result",
+            payload={"diagnostic_id": None},
+            raw=raw,
+            confidence=0.70,
+            execution_mode="parallel_safe",
+            mapping_action_id="retrieve_diagnostic_result",
+            engine_hooks=[],
+        )]
+
+    # ------------------------------------------------------------------
+    # Intent: clinical / educational query
+    # ------------------------------------------------------------------
+
+    def _match_clinical_query(self, normalized: str, raw: str) -> list[dict]:
+        return [self._action(
+            tool_name="clinical_query",
+            action_label="clinical_query",
+            payload={"query": normalized},
+            raw=raw,
+            confidence=0.75,
+            execution_mode="parallel_safe",
+            mapping_action_id="clinical_query",
+            engine_hooks=[],
+        )]
 
     # ------------------------------------------------------------------
     # Helpers
