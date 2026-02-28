@@ -24,6 +24,7 @@
       color: var(--text);
       font-family: 'Courier New', monospace;
       height: 100vh;
+      height: 100dvh; /* dynamic viewport height — handles mobile virtual keyboard */
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -315,6 +316,131 @@
       cursor: pointer;
       letter-spacing: 1px;
     }
+
+    /* ── Mobile: ≤ 768px ── */
+    @media (max-width: 768px) {
+      /* Header: compact, allow wrap */
+      header {
+        padding: 6px 10px;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      header h1 { font-size: 11px; letter-spacing: 1px; }
+      .case-info { font-size: 10px; }
+      .sim-timer { font-size: 16px; letter-spacing: 1px; margin-left: 0; }
+      .status-badge { font-size: 9px; padding: 2px 6px; }
+
+      /* Main: single-column stack */
+      main {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto auto;
+      }
+
+      /* Monitor panel → horizontal scrollable strip across top */
+      .monitor-panel {
+        grid-row: 1;
+        grid-column: 1;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
+        border-right: none;
+        border-bottom: 2px solid var(--border);
+        /* scrollbar hidden but scrollable */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .monitor-panel::-webkit-scrollbar { display: none; }
+
+      .monitor-section {
+        padding: 8px 12px;
+        border-bottom: none;
+        border-right: 1px solid var(--border);
+        flex-shrink: 0;
+        min-width: 80px;
+      }
+      .monitor-section-title {
+        font-size: 8px;
+        margin-bottom: 6px;
+        letter-spacing: 1px;
+      }
+
+      /* Vital tiles — compact for the strip */
+      .vital-tile { margin-bottom: 6px; }
+      .vital-value { font-size: 22px; }
+      .vital-label { font-size: 9px; }
+      .vital-unit  { font-size: 9px; margin-top: 1px; }
+
+      .rhythm-box { font-size: 11px; padding: 4px 8px; margin-bottom: 6px; }
+      .alarm-flag { font-size: 10px; padding: 3px 6px; }
+
+      .score-display { font-size: 20px; padding: 3px 0; }
+      .patient-row   { font-size: 10px; margin-bottom: 3px; }
+
+      /* Event log — fills remaining space */
+      .event-log {
+        grid-row: 2;
+        grid-column: 1;
+        padding: 8px;
+        gap: 6px;
+      }
+      .event-item { font-size: 12px; padding: 7px 9px; }
+
+      /* Suggestion chips — horizontal scroll, no wrap */
+      .suggestion-chips {
+        grid-row: 3;
+        grid-column: 1;
+        padding: 6px 8px;
+        gap: 6px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .suggestion-chips::-webkit-scrollbar { display: none; }
+      .chip {
+        font-size: 11px;
+        padding: 7px 12px; /* larger touch target */
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+
+      /* Order bar — bigger touch targets, 16px prevents iOS auto-zoom */
+      .order-bar {
+        grid-row: 4;
+        grid-column: 1;
+        padding: 8px 10px;
+        gap: 6px;
+      }
+      .order-bar input {
+        font-size: 16px; /* prevents iOS auto-zoom on focus */
+        padding: 10px 12px;
+        min-height: 44px;
+      }
+      .order-bar button {
+        min-height: 44px;
+        padding: 10px 14px;
+        font-size: 12px;
+      }
+      .order-bar .hint { display: none; } /* reclaim space on mobile */
+
+      /* Report modal — full screen on mobile */
+      #report-modal { padding: 8px; }
+      .report-box   { padding: 16px; }
+      .report-box h2 { font-size: 13px; }
+      .report-section h3 { font-size: 11px; }
+      .report-section p,
+      .report-section li { font-size: 12px; }
+    }
+
+    /* ── Small phones: ≤ 480px ── */
+    @media (max-width: 480px) {
+      header h1  { font-size: 10px; }
+      .sim-timer { font-size: 14px; }
+      .vital-value { font-size: 18px; }
+      .monitor-section { min-width: 70px; padding: 6px 10px; }
+      .event-item { font-size: 11px; }
+    }
   </style>
 </head>
 <body>
@@ -571,7 +697,8 @@
       setStatus('RUNNING', 'running');
       document.getElementById('order-input').disabled = false;
       document.getElementById('submit-btn').disabled  = false;
-      document.getElementById('order-input').focus();
+      // Don't auto-focus on mobile — would immediately pop the keyboard
+      if (window.innerWidth > 768) document.getElementById('order-input').focus();
 
       hideLoading();
     } catch (err) {
@@ -642,7 +769,7 @@
     busy = false;
     input.disabled = false;
     document.getElementById('submit-btn').disabled = false;
-    input.focus();
+    if (window.innerWidth > 768) input.focus();
   }
 
   function handleTurnResult(result) {
