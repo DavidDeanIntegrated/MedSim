@@ -1,49 +1,58 @@
-/* Simulation layout */
+/* ═══════════════════════════════════════════════
+   App Layout — Material Design 3
+   ═══════════════════════════════════════════════ */
+
 .sim-layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: var(--surface-container-low);
 }
 
-/* Header */
+/* ── Header ── */
 .sim-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 16px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  background: var(--surface-container-lowest);
+  box-shadow: var(--elevation-1);
+  z-index: 10;
 }
-.sh-left { display: flex; align-items: center; gap: 12px; }
-.sh-title { font-size: 0.95rem; color: var(--text); }
+.sh-left { display: flex; align-items: center; gap: 16px; }
+.sh-title { font: 500 1.25rem/1.5 var(--font-family); color: var(--on-surface); }
 .sh-status {
-  font-size: 0.65rem;
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: var(--green);
-  color: #000;
+  font: 500 0.6875rem/1 var(--font-family);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background: var(--success-container);
+  color: var(--success);
   text-transform: uppercase;
-  font-weight: bold;
+  letter-spacing: 0.05em;
 }
-.sh-right { display: flex; gap: 8px; }
+.sh-right { display: flex; gap: 12px; }
 .sh-btn {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 6px 14px;
-  color: var(--text);
-  font-family: inherit;
-  font-size: 0.75rem;
+  background: var(--surface-container-high);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 10px 20px;
+  color: var(--on-surface);
+  font: 500 0.875rem/1.25 var(--font-family);
   cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
 }
-.sh-btn:hover { background: var(--border); }
-.sh-btn.debrief-btn { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
-.sh-btn.debrief-btn:hover { opacity: 0.9; }
+.sh-btn:hover { background: var(--surface-container-highest); box-shadow: var(--elevation-1); }
+.sh-btn.debrief-btn {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+.sh-btn.debrief-btn:hover { box-shadow: var(--elevation-2); filter: brightness(1.1); }
+.sh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Body layout: sidebar + main */
+/* ── Body: sidebar + main ── */
 .sim-body {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 360px 1fr;
   flex: 1;
   overflow: hidden;
 }
@@ -51,20 +60,20 @@
 .sim-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 8px;
+  gap: 12px;
+  padding: 16px;
   overflow-y: auto;
-  border-right: 1px solid var(--border);
-  max-height: calc(100vh - 52px);
+  background: var(--surface-container-low);
+  max-height: calc(100vh - 60px);
 }
 
 .sim-main {
   display: flex;
   flex-direction: column;
-  padding: 8px;
-  gap: 8px;
+  padding: 16px;
+  gap: 12px;
   overflow: hidden;
-  max-height: calc(100vh - 52px);
+  max-height: calc(100vh - 60px);
 }
 .sim-main > .event-log {
   flex: 1;
@@ -75,47 +84,46 @@
   flex: 1;
 }
 
-/* Error toast */
+/* ── Error Toast (M3 snackbar) ── */
 .error-toast {
   position: fixed;
-  bottom: 20px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--red);
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 0.8rem;
+  background: var(--inverse-surface);
+  color: var(--inverse-on-surface);
+  padding: 14px 24px;
+  border-radius: var(--radius-sm);
+  font: 400 0.875rem/1.25 var(--font-family);
   z-index: 1000;
-  animation: toast-in 0.3s ease-out, toast-out 0.5s ease-in 4.5s forwards;
+  box-shadow: var(--elevation-3);
+  animation: toast-in 0.3s ease-out, toast-out 0.4s ease-in 4.5s forwards;
 }
 @keyframes toast-in { from { opacity: 0; transform: translateX(-50%) translateY(20px); } }
 @keyframes toast-out { to { opacity: 0; transform: translateX(-50%) translateY(20px); } }
 
-/* Mobile responsive */
+/* ── Mobile ── */
 @media (max-width: 768px) {
   .sim-body {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
   }
   .sim-sidebar {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
     max-height: none;
     overflow: visible;
     flex-direction: row;
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding: 4px;
-    gap: 4px;
+    padding: 8px;
+    gap: 8px;
   }
-  .sim-sidebar > * { min-width: 280px; }
+  .sim-sidebar > * { min-width: 300px; }
   .sim-main { max-height: none; }
-  .sh-title { font-size: 0.8rem; }
+  .sh-title { font: 500 1rem/1.4 var(--font-family); }
+  .sim-header { padding: 10px 16px; }
 }
 
 @media (max-width: 480px) {
-  .sim-header { padding: 8px 10px; }
-  .sh-title { font-size: 0.7rem; }
-  .sh-btn { font-size: 0.65rem; padding: 4px 10px; }
+  .sim-header { padding: 8px 12px; }
+  .sh-btn { padding: 8px 14px; font: 500 0.75rem/1 var(--font-family); }
 }

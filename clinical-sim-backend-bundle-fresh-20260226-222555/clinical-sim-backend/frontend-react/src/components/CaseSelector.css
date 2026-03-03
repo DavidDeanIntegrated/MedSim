@@ -1,62 +1,69 @@
+/* ═══════════════════════════════════════════════
+   Case Selector — Material Design 3
+   ═══════════════════════════════════════════════ */
+
 .case-selector {
-  max-width: 1000px;
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 48px 24px;
 }
-.cs-header { text-align: center; margin-bottom: 32px; }
-.cs-header h1 { font-size: 2rem; color: var(--accent); margin-bottom: 4px; }
-.cs-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 8px; }
-.cs-desc { color: var(--text-muted); font-size: 0.8rem; }
+.cs-header { text-align: center; margin-bottom: 40px; }
+.cs-header h1 { font: 400 2.8rem/1.15 var(--font-family); color: var(--primary); margin-bottom: 8px; }
+.cs-subtitle { color: var(--on-surface-variant); font: 400 1rem/1.5 var(--font-family); margin-bottom: 8px; }
+.cs-desc { color: var(--on-surface-variant); font: 400 0.875rem/1.4 var(--font-family); }
+
 .cs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
 }
+
 .case-card {
-  background: rgba(22, 27, 34, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(48, 54, 61, 0.6);
+  background: var(--surface-container-lowest);
+  border: none;
   border-left: 4px solid;
-  border-radius: 12px;
-  padding: 18px;
+  border-radius: var(--radius-md);
+  padding: 20px;
   text-align: left;
   cursor: pointer;
-  font-family: inherit;
-  color: var(--text);
-  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  font-family: var(--font-family);
+  color: var(--on-surface);
+  box-shadow: var(--elevation-1);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 .case-card:hover:not(:disabled) {
-  background: rgba(28, 35, 51, 0.9);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(88, 166, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: var(--elevation-3);
 }
+.case-card:active:not(:disabled) { transform: translateY(0); box-shadow: var(--elevation-1); }
 .case-card:disabled { opacity: 0.5; cursor: wait; }
-.cc-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
-.cc-title { font-weight: bold; font-size: 0.85rem; }
-.cc-diff { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; white-space: nowrap; }
-.diff-easy { background: #3fb950; color: #000; }
-.diff-moderate { background: #d29922; color: #000; }
-.diff-hard { background: #db6d28; color: #fff; }
-.diff-expert { background: #f85149; color: #fff; }
-.cc-category { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.cc-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; line-height: 1.4; }
-.cs-loading { text-align: center; padding: 24px; color: var(--accent); }
-.cs-error { color: var(--red); text-align: center; padding: 12px; margin-bottom: 16px; }
 
-/* Skeleton loading cards */
+.cc-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+.cc-title { font: 500 0.9375rem/1.4 var(--font-family); color: var(--on-surface); }
+.cc-diff { font: 500 0.6875rem/1 var(--font-family); padding: 4px 10px; border-radius: var(--radius-full); text-transform: uppercase; white-space: nowrap; letter-spacing: 0.03em; }
+.diff-easy { background: var(--success-container); color: var(--success); }
+.diff-moderate { background: var(--warning-container); color: var(--warning); }
+.diff-hard { background: #fde2cd; color: #9c4200; }
+.diff-expert { background: var(--error-container); color: var(--error); }
+.cc-category { font: 500 0.75rem/1 var(--font-family); color: var(--on-surface-variant); text-transform: uppercase; letter-spacing: 0.06em; }
+.cc-desc { font: 400 0.875rem/1.5 var(--font-family); color: var(--on-surface-variant); margin-top: 10px; }
+
+.cs-loading { text-align: center; padding: 32px; color: var(--primary); font: 400 0.875rem/1.4 var(--font-family); }
+.cs-error { color: var(--error); text-align: center; padding: 16px; margin-bottom: 16px; font: 400 0.875rem/1.4 var(--font-family); }
+
+/* Skeleton */
 .case-card.skeleton {
   cursor: default;
   pointer-events: none;
-  border-left-color: var(--border);
+  border-left-color: var(--outline-variant);
 }
 .skel-line {
-  border-radius: 4px;
-  background: linear-gradient(90deg, var(--surface-2) 25%, var(--border) 50%, var(--surface-2) 75%);
+  border-radius: var(--radius-xs);
+  background: linear-gradient(90deg, var(--surface-container) 25%, var(--surface-container-high) 50%, var(--surface-container) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
-.skel-title { width: 70%; height: 14px; margin-bottom: 10px; }
-.skel-cat { width: 40%; height: 10px; margin-bottom: 8px; }
-.skel-desc { width: 90%; height: 10px; }
+.skel-title { width: 70%; height: 16px; margin-bottom: 12px; }
+.skel-cat { width: 40%; height: 12px; margin-bottom: 10px; }
+.skel-desc { width: 90%; height: 12px; }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
