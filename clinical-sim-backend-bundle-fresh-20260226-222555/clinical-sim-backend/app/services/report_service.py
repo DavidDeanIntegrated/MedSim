@@ -14,11 +14,20 @@ class ReportService:
         events = session.get("events", [])
         transcript = session.get("transcript", []) if include_transcript else []
         scoring = patient_state.get("scoring", {})
+        case_def = patient_state.get("case_definition_inline", {})
 
         # Generate structured debrief
         debrief = self._debrief.generate_debrief(session)
 
+        condition = case_def.get("hidden_truth", {}).get("final_diagnosis", "Unknown Condition")
+        management = case_def.get("authoring_notes", {}).get("summary", "No management summary provided.")
+        opt_logic = case_def.get("recommended_management_logic", {})
+        opt_ops = f"Preferred Strategy: {opt_logic.get('preferred_strategy', 'N/A')}\nPreferred Agents: {', '.join(opt_logic.get('preferred_agents', []))}"
+
         return {
+            "condition": condition,
+            "management": management,
+            "optimalOperations": opt_ops,
             "summary": debrief.get("overall_assessment", {}).get("summary", "Simulation complete"),
             "caseId": session.get("activeCaseId"),
             "sessionId": session.get("sessionId"),
@@ -38,5 +47,5 @@ class ReportService:
             # Legacy fields for backward compatibility
             "whatWentWell": debrief.get("strengths", []),
             "whatCouldHaveGoneBetter": debrief.get("areas_for_improvement", []),
-            "teachingPoints": patient_state.get("case_definition_inline", {}).get("debrief_template", {}).get("teaching_points", []),
+            "teachingPoints": case_def.get("debrief_template", {}).get("teaching_points", []),
         }
