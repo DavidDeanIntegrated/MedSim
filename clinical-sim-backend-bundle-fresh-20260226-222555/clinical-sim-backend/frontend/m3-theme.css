@@ -1,0 +1,56 @@
+:root {
+  /* Colors */
+  --primary: #0b57d0;
+  --on-primary: #ffffff;
+  --primary-container: #d3e3fd;
+  --on-primary-container: #041e49;
+  
+  --secondary: #00639b;
+  --on-secondary: #ffffff;
+  --secondary-container: #cde5ff;
+  --on-secondary-container: #001d32;
+
+  /* Surfaces & Outlines */
+  --surface: #fdfbff;
+  --surface-variant: #e1e2e8;
+  --surface-container: #ffffff;
+  --on-surface: #1a1c1e;
+  --on-surface-variant: #44474f;
+  
+  --outline: #74777f;
+  --outline-variant: #c4c6d0;
+  
+  /* Semantic */
+  --error: #ba1a1a;
+  --on-error: #ffffff;
+  --error-container: #ffdad6;
+  --on-error-container: #410002;
+  --success: #146c2e;
+  --on-success: #ffffff;
+  --warning: #8c5000;
+  --on-warning: #ffffff;
+
+  /* Shape / Corner Radii */
+  --radius-sm: 8px;     /* Small components */
+  --radius-md: 12px;    /* Cards */
+  --radius-lg: 16px;    /* Large cards */
+  --radius-xl: 24px;    /* Dialogs / Modals */
+  --radius-full: 100px; /* Pills, Search Bars, FABs */
+  
+  /* Elevation (Shadows) */
+  --elevation-1: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --elevation-2: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --elevation-3: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  /* Typography Scales */
+  --font-family: 'Roboto', 'Segoe UI', system-ui, sans-serif;
+  --display-md: 400 2.5rem/1.1 var(--font-family);
+  --headline-md: 400 2rem/2.5rem var(--font-family);
+  --title-md: 500 1.25rem/1.5rem var(--font-family);
+  --body-lg: 400 1rem/1.5rem var(--font-family);
+  --body-md: 400 0.875rem/1.25rem var(--font-family);
+  --body-sm: 400 0.75rem/1rem var(--font-family);
+  --label-lg: 500 0.875rem/1.25rem var(--font-family);
+  --label-md: 500 0.75rem/1rem var(--font-family);
+  --label-sm: 500 0.6875rem/1rem var(--font-family);
+}
