@@ -43,13 +43,25 @@ export async function startCase(
 export async function submitTurn(
   sessionId: string,
   inputText: string,
-  parserMode = 'text_to_actions',
-  advanceTimeSec = 5,
+  opts: {
+    parserMode?: string;
+    advanceTimeSec?: number;
+    timestampSimSec?: number;
+    activeInfusions?: Array<{ medication_id: string; rate_value: number; rate_unit: string }>;
+  } = {},
 ): Promise<TurnResponse> {
+  const turnId = `turn-${crypto.randomUUID().slice(0, 8)}`;
   const res = await fetch(`${BASE}/sessions/${sessionId}/turns`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ inputText, parserMode, advanceTimeSec }),
+    body: JSON.stringify({
+      turnId,
+      inputText,
+      parserMode: opts.parserMode ?? 'text_to_actions',
+      advanceTimeSec: opts.advanceTimeSec ?? 5,
+      timestampSimSec: opts.timestampSimSec ?? 0,
+      activeInfusions: opts.activeInfusions ?? [],
+    }),
   });
   if (!res.ok) throw new Error('Failed to submit turn');
   return res.json();

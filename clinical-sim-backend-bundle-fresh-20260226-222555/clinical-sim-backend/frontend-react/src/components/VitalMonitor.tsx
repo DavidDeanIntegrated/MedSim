@@ -20,7 +20,20 @@ function fmtTime(sec: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
+function vitalClass(value: number, critLow: number, warnLow: number, warnHigh: number, critHigh: number): string {
+  if (value <= 0) return '';
+  if (value < critLow || value > critHigh) return 'vital-critical';
+  if (value < warnLow || value > warnHigh) return 'vital-warning';
+  return 'vital-normal';
+}
+
 export default function VitalMonitor({ vitals, patientName, patientAge, patientSex, patientWeight, score, simTimeSec }: Props) {
+  const bpClass = vitalClass(vitals.sbp, 80, 90, 160, 200);
+  const mapClass = vitalClass(vitals.map, 55, 65, 105, 120);
+  const hrClass = vitalClass(vitals.hr, 40, 50, 110, 150);
+  const spo2Class = vitalClass(vitals.spo2, 85, 92, 101, 101);
+  const rrClass = vitalClass(vitals.rr, 6, 10, 24, 35);
+
   return (
     <div className="vital-monitor">
       {/* Waveform displays */}
@@ -32,23 +45,23 @@ export default function VitalMonitor({ vitals, patientName, patientAge, patientS
 
       {/* Numeric vitals */}
       <div className="vitals-grid">
-        <div className="vital-tile bp">
+        <div className={`vital-tile bp ${bpClass}`}>
           <span className="vital-label">BP</span>
           <span className="vital-value">{vitals.sbp}/{vitals.dbp}</span>
         </div>
-        <div className="vital-tile map">
+        <div className={`vital-tile map ${mapClass}`}>
           <span className="vital-label">MAP</span>
           <span className="vital-value">{vitals.map}</span>
         </div>
-        <div className="vital-tile hr">
+        <div className={`vital-tile hr ${hrClass}`}>
           <span className="vital-label">HR</span>
           <span className="vital-value">{vitals.hr}</span>
         </div>
-        <div className="vital-tile spo2">
+        <div className={`vital-tile spo2 ${spo2Class}`}>
           <span className="vital-label">SpO2</span>
           <span className="vital-value">{vitals.spo2}%</span>
         </div>
-        <div className="vital-tile rr">
+        <div className={`vital-tile rr ${rrClass}`}>
           <span className="vital-label">RR</span>
           <span className="vital-value">{vitals.rr}</span>
         </div>

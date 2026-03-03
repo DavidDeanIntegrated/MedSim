@@ -1,4 +1,5 @@
 import logging
+from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -119,9 +120,16 @@ def process_turn(
 
     parser_mode = request.get("parserMode", "rule")
 
+    # Auto-generate turnId and timestampSimSec if not provided (BUG-6 fix)
+    turn_id = request.get("turnId") or f"turn-{uuid4().hex[:8]}"
+    patient_state = session.get("patientState", {})
+    timestamp_sim_sec = request.get("timestampSimSec")
+    if timestamp_sim_sec is None:
+        timestamp_sim_sec = patient_state.get("case_metadata", {}).get("time_elapsed_sec", 0)
+
     parse_request = ParseTurnRequest(
-        turnId=request["turnId"],
-        timestampSimSec=request["timestampSimSec"],
+        turnId=turn_id,
+        timestampSimSec=timestamp_sim_sec,
         inputText=request["inputText"],
         parserMode=parser_mode,
         speaker=request.get("speaker", "resident"),

@@ -118,7 +118,14 @@ export function useSimulation() {
     if (!state.sessionId || !text.trim()) return;
     setState(s => ({ ...s, loading: true }));
     try {
-      const result = await api.submitTurn(state.sessionId, text);
+      const result = await api.submitTurn(state.sessionId, text, {
+        timestampSimSec: state.simTimeSec,
+        activeInfusions: state.activeInfusions.map(i => ({
+          medication_id: i.medication_id,
+          rate_value: i.rate_value,
+          rate_unit: i.rate_unit,
+        })),
+      });
       const ui = result.engineResult?.uiUpdates;
       const scoring = result.engineResult?.scoringUpdates;
       const newEvents = result.engineResult?.newEvents || [];

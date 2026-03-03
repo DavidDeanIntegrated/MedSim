@@ -43,11 +43,15 @@ class SimulationStateMachine:
         state_after.setdefault("orders", [])
         state_after.setdefault("event_log", [])
         state_after.setdefault("active_medications", [])
-        state_after.setdefault("monitor", {}).setdefault("waveform_flags", [])
-        state_after.setdefault("scoring", {}).setdefault("critical_actions", [])
-        state_after.setdefault("scoring", {}).setdefault("harm_events", [])
-        state_after.setdefault("scoring", {}).setdefault("teaching_points", [])
-        state_after.setdefault("scoring", {}).setdefault("final_score", 0)
+        # Explicit nested init — chained setdefault fails when parent key
+        # already exists from case JSON but lacks sub-keys (BUG-4 fix)
+        monitor = state_after.setdefault("monitor", {})
+        monitor.setdefault("waveform_flags", [])
+        scoring = state_after.setdefault("scoring", {})
+        scoring.setdefault("critical_actions", [])
+        scoring.setdefault("harm_events", [])
+        scoring.setdefault("teaching_points", [])
+        scoring.setdefault("final_score", 0)
 
         critical_completed: list[str] = []
         harm_triggered: list[str] = []

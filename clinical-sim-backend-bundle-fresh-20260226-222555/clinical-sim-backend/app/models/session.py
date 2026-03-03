@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any, Literal
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from app.models.common import APIModel
 
@@ -30,9 +30,15 @@ class CreateSessionResponse(APIModel):
 
 class StartCaseRequest(APIModel):
     case_id: str = Field(alias="caseId")
-    difficulty: Literal["easy", "moderate", "hard", "expert"] = "moderate"
+    difficulty: Literal["easy", "moderate", "hard", "expert", "standard", "guided"] = "moderate"
     custom_case_overrides: dict[str, Any] = Field(default_factory=dict, alias="customCaseOverrides")
     attending_entered_prompt: str | None = Field(default=None, alias="attendingEnteredPrompt")
+
+    @field_validator("difficulty", mode="before")
+    @classmethod
+    def _normalize_difficulty(cls, v: str) -> str:
+        mapping = {"standard": "moderate", "guided": "easy"}
+        return mapping.get(v, v)
 
 
 class StartCaseResponse(APIModel):

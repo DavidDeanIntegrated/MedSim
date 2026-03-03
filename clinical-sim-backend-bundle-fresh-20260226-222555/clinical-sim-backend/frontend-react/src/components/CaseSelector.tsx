@@ -24,12 +24,14 @@ interface Props {
 
 export default function CaseSelector({ onSelect, loading }: Props) {
   const [cases, setCases] = useState<CaseInfo[]>([]);
+  const [fetching, setFetching] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     fetchCases()
       .then(setCases)
-      .catch(() => setError('Failed to load cases'));
+      .catch(() => setError('Failed to load cases'))
+      .finally(() => setFetching(false));
   }, []);
 
   return (
@@ -43,6 +45,13 @@ export default function CaseSelector({ onSelect, loading }: Props) {
       {error && <div className="cs-error">{error}</div>}
 
       <div className="cs-grid">
+        {fetching && cases.length === 0 && Array.from({ length: 6 }).map((_, i) => (
+          <div key={`skel-${i}`} className="case-card skeleton">
+            <div className="skel-line skel-title" />
+            <div className="skel-line skel-cat" />
+            <div className="skel-line skel-desc" />
+          </div>
+        ))}
         {cases.map(c => (
           <button
             key={c.case_id}

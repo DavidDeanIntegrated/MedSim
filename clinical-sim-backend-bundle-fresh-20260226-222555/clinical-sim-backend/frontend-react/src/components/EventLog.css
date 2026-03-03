@@ -27,13 +27,14 @@
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  padding: 6px 14px;
+  padding: 7px 14px;
   font-size: 0.8rem;
   line-height: 1.4;
   border-left: 3px solid transparent;
+  transition: background 0.15s;
 }
 .el-item:hover { background: var(--surface-2); }
-.el-time { color: var(--text-muted); font-size: 0.7rem; min-width: 48px; flex-shrink: 0; padding-top: 1px; }
+.el-time { color: var(--text-muted); font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.7rem; min-width: 48px; flex-shrink: 0; padding-top: 1px; }
 .el-icon { flex-shrink: 0; width: 16px; text-align: center; }
 .el-text { flex: 1; }
 
@@ -42,11 +43,17 @@
 .ev-info .el-icon { color: var(--text-muted); }
 .ev-low { border-left-color: var(--green); }
 .ev-low .el-icon { color: var(--green); }
+.ev-low .el-text { color: var(--green); }
 .ev-mod { border-left-color: var(--yellow); }
 .ev-mod .el-icon { color: var(--yellow); }
-.ev-high { border-left-color: var(--orange); }
-.ev-high .el-text { color: var(--orange); }
+.ev-mod .el-text { color: var(--yellow); }
+.ev-high { border-left-color: var(--orange); background: rgba(219, 109, 40, 0.05); }
+.ev-high .el-text { color: var(--orange); font-weight: 500; }
 .ev-high .el-icon { color: var(--orange); }
-.ev-crit { border-left-color: var(--red); background: rgba(248,81,73,0.05); }
+.ev-crit { border-left-color: var(--red); background: rgba(248, 81, 73, 0.08); }
 .ev-crit .el-text { color: var(--red); font-weight: bold; }
-.ev-crit .el-icon { color: var(--red); }
+.ev-crit .el-icon { color: var(--red); animation: crit-glow 1.2s infinite; }
+@keyframes crit-glow {
+  0%, 100% { text-shadow: 0 0 4px rgba(248, 81, 73, 0.5); }
+  50% { text-shadow: 0 0 10px rgba(248, 81, 73, 0.9); }
+}

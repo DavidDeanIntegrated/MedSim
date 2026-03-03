@@ -8,6 +8,13 @@ interface Props {
   examFindings: string[];
 }
 
+function cleanMedName(id: string): string {
+  return id
+    .replace(/_(iv|po|neb|im|sq|sl|pr|inhaled|topical)$/i, '')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
 export default function InfoPanel({ activeInfusions, labResults, imagingResults, examFindings }: Props) {
   return (
     <div className="info-panel">
@@ -21,7 +28,7 @@ export default function InfoPanel({ activeInfusions, labResults, imagingResults,
             {activeInfusions.map((inf, i) => (
               <li key={i} className="ip-item infusion">
                 <span className="ip-dot" />
-                <span className="ip-med">{inf.medication_id.replace(/_/g, ' ')}</span>
+                <span className="ip-med">{cleanMedName(inf.medication_id)}</span>
                 <span className="ip-rate">{inf.display_rate}</span>
               </li>
             ))}
