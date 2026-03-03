@@ -1,70 +1,72 @@
+/* ═══════════════════════════════════════════════
+   Order Bar — Material Design 3
+   ═══════════════════════════════════════════════ */
+
 .order-bar {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  background: var(--surface-container-lowest);
+  border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--elevation-1);
 }
+
 .ob-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
+  gap: 8px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--outline-variant);
   max-height: 120px;
   overflow-y: auto;
 }
+
 .ob-chip {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 5px 14px;
-  color: var(--text-muted);
-  font-family: inherit;
-  font-size: 0.75rem;
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
+  border-radius: var(--radius-full);
+  padding: 8px 16px;
+  color: var(--on-surface-variant);
+  font: 500 0.8125rem/1 var(--font-family);
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.2s;
   white-space: nowrap;
 }
 .ob-chip:hover:not(:disabled) {
-  background: var(--accent);
-  color: #000;
-  border-color: var(--accent);
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border-color: var(--primary-container);
 }
-.ob-chip:disabled { opacity: 0.4; cursor: wait; }
+.ob-chip:disabled { opacity: 0.38; cursor: wait; }
+
 .ob-input-row {
   display: flex;
-  gap: 0;
-  border-top: 1px solid var(--border);
 }
+
 .ob-input {
   flex: 1;
-  background: var(--surface-2);
+  background: var(--surface-container-low);
   border: none;
-  padding: 16px;
-  color: var(--text);
-  font-family: inherit;
-  font-size: 1rem;
+  padding: 16px 20px;
+  color: var(--on-surface);
+  font: 400 1rem/1.5 var(--font-family);
   outline: none;
-  border-right: 1px solid var(--border);
 }
-.ob-input:focus { background: rgba(88, 166, 255, 0.05); }
-.ob-input::placeholder { color: var(--text-muted); font-size: 0.85rem; }
+.ob-input:focus { background: var(--surface-container); }
+.ob-input::placeholder { color: var(--on-surface-variant); font: 400 0.875rem/1.4 var(--font-family); }
 .ob-input:disabled { opacity: 0.5; }
+
 .ob-submit {
-  background: var(--accent);
-  color: #000;
+  background: var(--primary);
+  color: var(--on-primary);
   border: none;
   padding: 16px 28px;
-  font-family: inherit;
-  font-weight: bold;
-  font-size: 0.9rem;
+  font: 500 0.9375rem/1 var(--font-family);
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: box-shadow 0.2s, filter 0.2s;
 }
-.ob-submit:hover:not(:disabled) { opacity: 0.9; }
-.ob-submit:disabled { opacity: 0.3; cursor: not-allowed; }
+.ob-submit:hover:not(:disabled) { box-shadow: var(--elevation-1); filter: brightness(1.1); }
+.ob-submit:disabled { opacity: 0.38; cursor: not-allowed; }
 
 @media (max-width: 640px) {
   .ob-chips { overflow-x: auto; flex-wrap: nowrap; max-height: none; }
-  .ob-input { font-size: 16px; min-height: 48px; } /* prevent iOS zoom */
+  .ob-input { font-size: 16px; min-height: 48px; }
 }
