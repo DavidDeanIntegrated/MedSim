@@ -6,17 +6,17 @@
   <title>MedSim — Clinical Simulation</title>
   <style>
     :root {
-      --bg: #0a0e1a;
-      --panel: #111827;
-      --border: #1f2d40;
-      --green: #00ff88;
-      --yellow: #ffd700;
-      --red: #ff4444;
-      --cyan: #00cfff;
-      --orange: #ff9500;
-      --text: #d0e0f0;
-      --muted: #506070;
-      --accent: #1a3a5c;
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --border: #e2e8f0;
+      --green: #059669;
+      --yellow: #d97706;
+      --red: #dc2626;
+      --cyan: #0284c7;
+      --orange: #ea580c;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #e0f2fe;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -32,7 +32,7 @@
 
     /* ── Header ── */
     header {
-      background: #060b14;
+      background: #ffffff;
       border-bottom: 1px solid var(--border);
       padding: 8px 16px;
       display: flex;
@@ -56,12 +56,12 @@
       font-size: 11px;
       font-weight: bold;
       letter-spacing: 1px;
-      background: #1a1a00;
+      background: #fef3c7;
       color: var(--yellow);
       border: 1px solid var(--yellow);
     }
-    .status-badge.running { background: #001a0a; color: var(--green); border-color: var(--green); }
-    .status-badge.loading { background: #1a0a00; color: var(--orange); border-color: var(--orange); }
+    .status-badge.running { background: #d1fae5; color: var(--green); border-color: var(--green); }
+    .status-badge.loading { background: #ffedd5; color: var(--orange); border-color: var(--orange); }
 
     /* ── Main layout ── */
     main {
@@ -121,7 +121,7 @@
       border-radius: 4px;
       font-size: 13px;
       color: var(--green);
-      background: #040a06;
+      background: #ecfdf5;
       margin-bottom: 8px;
     }
 
@@ -131,7 +131,7 @@
       padding: 4px 8px;
       border-radius: 3px;
       font-size: 11px;
-      background: #2a0a00;
+      background: #fee2e2;
       color: var(--red);
       border-left: 3px solid var(--red);
     }
@@ -165,7 +165,7 @@
     .event-item {
       border-left: 3px solid var(--muted);
       padding: 8px 10px;
-      background: #0d1520;
+      background: #ffffff;
       border-radius: 0 4px 4px 0;
       font-size: 12px;
       line-height: 1.5;
@@ -176,16 +176,16 @@
 
     /* severity colours */
     .ev-info     { border-color: var(--muted); }
-    .ev-low      { border-color: #3a6; }
+    .ev-low      { border-color: var(--green); }
     .ev-moderate { border-color: var(--yellow); }
     .ev-high     { border-color: var(--orange); }
-    .ev-critical { border-color: var(--red); background: #1a0808; }
+    .ev-critical { border-color: var(--red); background: #fef2f2; }
     .ev-order    { border-color: var(--cyan); }
-    .ev-opening  { border-color: #8844ff; background: #0e0a1a; }
-    .ev-system   { border-color: var(--muted); background: #0a0a0a; font-style: italic; }
+    .ev-opening  { border-color: #8b5cf6; background: #f5f3ff; }
+    .ev-system   { border-color: var(--muted); background: #f1f5f9; font-style: italic; }
 
-    .ev-who.patient { color: #ff99cc; }
-    .ev-who.nurse   { color: #99ccff; }
+    .ev-who.patient { color: #ec4899; }
+    .ev-who.nurse   { color: #3b82f6; }
     .ev-who.system  { color: var(--muted); }
     .ev-who.you     { color: var(--cyan); }
     .ev-who.engine  { color: var(--green); }
@@ -196,7 +196,7 @@
     .order-bar {
       grid-column: 2;
       grid-row: 2;
-      background: #060b14;
+      background: #ffffff;
       border-top: 1px solid var(--border);
       padding: 10px 12px;
       display: flex;
@@ -205,7 +205,7 @@
     }
     .order-bar input {
       flex: 1;
-      background: #111827;
+      background: #f8fafc;
       border: 1px solid var(--border);
       border-radius: 4px;
       color: var(--text);
@@ -230,7 +230,7 @@
       transition: background 0.2s;
       white-space: nowrap;
     }
-    .order-bar button:hover { background: #1f4a7a; }
+    .order-bar button:hover { background: #bae6fd; }
     .order-bar button:disabled { opacity: 0.4; cursor: not-allowed; }
     .order-bar .hint { font-size: 10px; color: var(--muted); white-space: nowrap; }
 
@@ -241,11 +241,11 @@
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
-      background: #060b14;
+      background: #ffffff;
       border-top: 1px solid var(--border);
     }
     .chip {
-      background: #0d1520;
+      background: #f8fafc;
       border: 1px solid var(--border);
       border-radius: 12px;
       color: var(--muted);
@@ -473,7 +473,7 @@
   <div class="case-info">Patient: <span id="patient-name">—</span></div>
   <div class="status-badge loading" id="status-badge">LOADING</div>
   <div class="sim-timer" id="sim-timer">00:00</div>
-  <button onclick="requestReport()" style="background:#1a1a00;border:1px solid #ffd700;border-radius:4px;color:#ffd700;font-family:'Courier New',monospace;font-size:11px;padding:5px 12px;cursor:pointer;letter-spacing:1px;">DEBRIEF</button>
+  <button onclick="requestReport()" style="background:#fef3c7;border:1px solid #d97706;border-radius:4px;color:#d97706;font-family:'Courier New',monospace;font-size:11px;padding:5px 12px;cursor:pointer;letter-spacing:1px;font-weight:bold;">DEBRIEF</button>
 </header>
 
 <main>

@@ -1,208 +1,510 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>MedSim — Input Review Dashboard</title>
-<style>
-:root {
-  --bg: #0d1117; --surface: #161b22; --surface-2: #1c2333;
-  --border: #30363d; --text: #e6edf3; --text-muted: #8b949e;
-  --accent: #58a6ff; --green: #3fb950; --yellow: #d29922;
-  --red: #f85149; --orange: #db6d28;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-a { color: var(--accent); text-decoration: none; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedSim — Input Review Dashboard</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --accent: #0284c7;
+      --green: #059669;
+      --yellow: #d97706;
+      --red: #dc2626;
+      --orange: #ea580c;
+    }
 
-.container { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
-header h1 { font-size: 1.2rem; color: var(--accent); }
-.header-actions { display: flex; gap: 10px; }
-.btn { background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; color: var(--text); font-size: 0.8rem; cursor: pointer; transition: background 0.15s; }
-.btn:hover { background: var(--border); }
-.btn-primary { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
-.btn-primary:hover { opacity: 0.9; }
-.btn-danger { background: var(--red); color: #fff; border-color: var(--red); }
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
 
-/* Stats strip */
-.stats-strip { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 20px; flex: 1; min-width: 140px; }
-.stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
-.stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
-.stat-card.flagged .stat-value { color: var(--red); }
-.stat-card.failures .stat-value { color: var(--orange); }
-.stat-card.feedback .stat-value { color: var(--yellow); }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
 
-/* Tabs */
-.tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
-.tab { padding: 8px 16px; font-size: 0.8rem; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; }
-.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-.tab:hover { color: var(--text); }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
 
-/* Filters */
-.filters { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
-.filters input, .filters select { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; color: var(--text); font-size: 0.8rem; }
-.filters input { flex: 1; min-width: 200px; }
-.filters select { min-width: 120px; }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-/* Table */
-.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-th { background: var(--surface-2); padding: 10px 12px; text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
-td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
-tr:hover td { background: rgba(88, 166, 255, 0.03); }
-.raw-input { max-width: 400px; word-break: break-word; }
-.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; }
-.badge-flag { background: var(--red); color: #fff; }
-.badge-fail { background: var(--orange); color: #fff; }
-.badge-ok { background: var(--green); color: #000; }
-.badge-open { background: var(--yellow); color: #000; }
-.badge-resolved { background: var(--green); color: #000; }
-.badge-sev-critical { background: var(--red); color: #fff; }
-.badge-sev-high { background: var(--orange); color: #fff; }
-.badge-sev-medium { background: var(--yellow); color: #000; }
-.badge-sev-low { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
-.action-btn { background: none; border: 1px solid var(--border); border-radius: 4px; padding: 3px 8px; color: var(--text-muted); font-size: 0.7rem; cursor: pointer; }
-.action-btn:hover { background: var(--surface-2); color: var(--text); }
+    header h1 {
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
 
-.pagination { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font-size: 0.75rem; color: var(--text-muted); }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+    }
 
-/* Modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-.modal { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; width: 90%; max-width: 500px; }
-.modal h2 { font-size: 1rem; margin-bottom: 16px; }
-.modal label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; margin-top: 12px; }
-.modal input, .modal select, .modal textarea { width: 100%; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; color: var(--text); font-size: 0.85rem; font-family: inherit; }
-.modal textarea { min-height: 80px; resize: vertical; }
-.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
-.hidden { display: none !important; }
+    .btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 14px;
+      color: var(--text);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
 
-.empty { text-align: center; padding: 40px; color: var(--text-muted); }
-</style>
+    .btn:hover {
+      background: var(--border);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+
+    .btn-danger {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red);
+    }
+
+    /* Stats strip */
+    .stats-strip {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 20px;
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+
+    .stat-card.flagged .stat-value {
+      color: var(--red);
+    }
+
+    .stat-card.failures .stat-value {
+      color: var(--orange);
+    }
+
+    .stat-card.feedback .stat-value {
+      color: var(--yellow);
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab {
+      padding: 8px 16px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tab:hover {
+      color: var(--text);
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filters input,
+    .filters select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      color: var(--text);
+      font-size: 0.8rem;
+    }
+
+    .filters input {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .filters select {
+      min-width: 120px;
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    th {
+      background: var(--surface-2);
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tr:hover td {
+      background: rgba(2, 132, 199, 0.05);
+    }
+
+    .raw-input {
+      max-width: 400px;
+      word-break: break-word;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-flag {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .badge-fail {
+      background: var(--orange);
+      color: #fff;
+    }
+
+    .badge-ok {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .badge-open {
+      background: var(--yellow);
+      color: #fff;
+    }
+
+    .badge-resolved {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .badge-sev-critical {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .badge-sev-high {
+      background: var(--orange);
+      color: #fff;
+    }
+
+    .badge-sev-medium {
+      background: var(--yellow);
+      color: #fff;
+    }
+
+    .badge-sev-low {
+      background: var(--surface-2);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .action-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 3px 8px;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    .modal h2 {
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+
+    .modal label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      margin-top: 12px;
+    }
+
+    .modal input,
+    .modal select,
+    .modal textarea {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+
+    .modal textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+    }
+  </style>
 </head>
+
 <body>
 
-<header>
-  <h1>MedSim Input Review</h1>
-  <div class="header-actions">
-    <button class="btn" onclick="exportCSV()">Export CSV</button>
-    <button class="btn btn-primary" onclick="showFeedbackModal()">+ New Issue</button>
-    <a href="/" class="btn">Back to Sim</a>
+  <header>
+    <h1>MedSim Input Review</h1>
+    <div class="header-actions">
+      <button class="btn" onclick="exportCSV()">Export CSV</button>
+      <button class="btn btn-primary" onclick="showFeedbackModal()">+ New Issue</button>
+      <a href="/" class="btn">Back to Sim</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Stats -->
+    <div class="stats-strip" id="stats"></div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="inputs" onclick="switchTab('inputs')">All Inputs</button>
+      <button class="tab" data-tab="flagged" onclick="switchTab('flagged')">Flagged</button>
+      <button class="tab" data-tab="failures" onclick="switchTab('failures')">Parse Failures</button>
+      <button class="tab" data-tab="feedback" onclick="switchTab('feedback')">Issues / Feedback</button>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters" id="input-filters">
+      <input type="text" id="search-input" placeholder="Search raw input text..." oninput="debounceSearch()" />
+      <select id="case-filter" onchange="loadInputs()">
+        <option value="">All Cases</option>
+      </select>
+      <select id="category-filter" onchange="loadInputs()">
+        <option value="">All Categories</option>
+        <option value="bug">Bug</option>
+        <option value="parser_fail">Parser Fail</option>
+        <option value="ux">UX</option>
+        <option value="content">Content</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <!-- Content -->
+    <div id="tab-content"></div>
+    <div class="pagination" id="pagination"></div>
   </div>
-</header>
 
-<div class="container">
-  <!-- Stats -->
-  <div class="stats-strip" id="stats"></div>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" data-tab="inputs" onclick="switchTab('inputs')">All Inputs</button>
-    <button class="tab" data-tab="flagged" onclick="switchTab('flagged')">Flagged</button>
-    <button class="tab" data-tab="failures" onclick="switchTab('failures')">Parse Failures</button>
-    <button class="tab" data-tab="feedback" onclick="switchTab('feedback')">Issues / Feedback</button>
-  </div>
-
-  <!-- Filters -->
-  <div class="filters" id="input-filters">
-    <input type="text" id="search-input" placeholder="Search raw input text..." oninput="debounceSearch()" />
-    <select id="case-filter" onchange="loadInputs()">
-      <option value="">All Cases</option>
-    </select>
-    <select id="category-filter" onchange="loadInputs()">
-      <option value="">All Categories</option>
-      <option value="bug">Bug</option>
-      <option value="parser_fail">Parser Fail</option>
-      <option value="ux">UX</option>
-      <option value="content">Content</option>
-      <option value="other">Other</option>
-    </select>
-  </div>
-
-  <!-- Content -->
-  <div id="tab-content"></div>
-  <div class="pagination" id="pagination"></div>
-</div>
-
-<!-- Flag Modal -->
-<div class="modal-overlay hidden" id="flag-modal">
-  <div class="modal">
-    <h2>Flag Input for Review</h2>
-    <input type="hidden" id="flag-input-id" />
-    <label>Category</label>
-    <select id="flag-category">
-      <option value="bug">Bug</option>
-      <option value="parser_fail">Parser Failure</option>
-      <option value="ux">UX Issue</option>
-      <option value="content">Content Issue</option>
-      <option value="other">Other</option>
-    </select>
-    <label>Reason</label>
-    <textarea id="flag-reason" placeholder="Describe the problem..."></textarea>
-    <label>Notes (optional)</label>
-    <textarea id="flag-notes" placeholder="Developer notes..."></textarea>
-    <div class="modal-actions">
-      <button class="btn" onclick="closeFlagModal()">Cancel</button>
-      <button class="btn btn-danger" onclick="submitFlag()">Flag It</button>
+  <!-- Flag Modal -->
+  <div class="modal-overlay hidden" id="flag-modal">
+    <div class="modal">
+      <h2>Flag Input for Review</h2>
+      <input type="hidden" id="flag-input-id" />
+      <label>Category</label>
+      <select id="flag-category">
+        <option value="bug">Bug</option>
+        <option value="parser_fail">Parser Failure</option>
+        <option value="ux">UX Issue</option>
+        <option value="content">Content Issue</option>
+        <option value="other">Other</option>
+      </select>
+      <label>Reason</label>
+      <textarea id="flag-reason" placeholder="Describe the problem..."></textarea>
+      <label>Notes (optional)</label>
+      <textarea id="flag-notes" placeholder="Developer notes..."></textarea>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeFlagModal()">Cancel</button>
+        <button class="btn btn-danger" onclick="submitFlag()">Flag It</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Feedback Modal -->
-<div class="modal-overlay hidden" id="feedback-modal">
-  <div class="modal">
-    <h2>Report an Issue</h2>
-    <label>Title</label>
-    <input type="text" id="fb-title" placeholder="Short description of the issue" />
-    <label>Category</label>
-    <select id="fb-category">
-      <option value="bug">Bug</option>
-      <option value="parser_fail">Parser Failure</option>
-      <option value="ux">UX Issue</option>
-      <option value="content">Content Issue</option>
-      <option value="feature_request">Feature Request</option>
-      <option value="other">Other</option>
-    </select>
-    <label>Severity</label>
-    <select id="fb-severity">
-      <option value="low">Low</option>
-      <option value="medium">Medium</option>
-      <option value="high">High</option>
-      <option value="critical">Critical</option>
-    </select>
-    <label>Description</label>
-    <textarea id="fb-description" placeholder="Detailed description, steps to reproduce, etc."></textarea>
-    <label>Session ID (optional)</label>
-    <input type="text" id="fb-session" placeholder="Paste session ID if applicable" />
-    <div class="modal-actions">
-      <button class="btn" onclick="closeFeedbackModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="submitFeedback()">Submit</button>
+  <!-- Feedback Modal -->
+  <div class="modal-overlay hidden" id="feedback-modal">
+    <div class="modal">
+      <h2>Report an Issue</h2>
+      <label>Title</label>
+      <input type="text" id="fb-title" placeholder="Short description of the issue" />
+      <label>Category</label>
+      <select id="fb-category">
+        <option value="bug">Bug</option>
+        <option value="parser_fail">Parser Failure</option>
+        <option value="ux">UX Issue</option>
+        <option value="content">Content Issue</option>
+        <option value="feature_request">Feature Request</option>
+        <option value="other">Other</option>
+      </select>
+      <label>Severity</label>
+      <select id="fb-severity">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="critical">Critical</option>
+      </select>
+      <label>Description</label>
+      <textarea id="fb-description" placeholder="Detailed description, steps to reproduce, etc."></textarea>
+      <label>Session ID (optional)</label>
+      <input type="text" id="fb-session" placeholder="Paste session ID if applicable" />
+      <div class="modal-actions">
+        <button class="btn" onclick="closeFeedbackModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitFeedback()">Submit</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-const API = '';
-let currentTab = 'inputs';
-let currentOffset = 0;
-const PAGE_SIZE = 50;
-let searchTimeout = null;
+  <script>
+    const API = '';
+    let currentTab = 'inputs';
+    let currentOffset = 0;
+    const PAGE_SIZE = 50;
+    let searchTimeout = null;
 
-async function api(path, opts = {}) {
-  const res = await fetch(`${API}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...opts,
-  });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json();
-}
+    async function api(path, opts = {}) {
+      const res = await fetch(`${API}${path}`, {
+        headers: { 'Content-Type': 'application/json' },
+        ...opts,
+      });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    }
 
-// ── Stats ──
-async function loadStats() {
-  const s = await api('/admin/inputs/stats');
-  document.getElementById('stats').innerHTML = `
+    // ── Stats ──
+    async function loadStats() {
+      const s = await api('/admin/inputs/stats');
+      document.getElementById('stats').innerHTML = `
     <div class="stat-card"><div class="stat-value">${s.total_inputs}</div><div class="stat-label">Total Inputs</div></div>
     <div class="stat-card flagged"><div class="stat-value">${s.flagged_inputs}</div><div class="stat-label">Flagged</div></div>
     <div class="stat-card failures"><div class="stat-value">${s.parse_failures}</div><div class="stat-label">Parse Failures</div></div>
@@ -210,62 +512,62 @@ async function loadStats() {
     <div class="stat-card"><div class="stat-value">${s.unique_sessions}</div><div class="stat-label">Sessions</div></div>
     <div class="stat-card"><div class="stat-value">${s.unique_cases}</div><div class="stat-label">Cases</div></div>
   `;
-}
+    }
 
-// ── Tabs ──
-function switchTab(tab) {
-  currentTab = tab;
-  currentOffset = 0;
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
-  document.getElementById('input-filters').classList.toggle('hidden', tab === 'feedback');
-  if (tab === 'feedback') loadFeedback();
-  else loadInputs();
-}
+    // ── Tabs ──
+    function switchTab(tab) {
+      currentTab = tab;
+      currentOffset = 0;
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      document.getElementById('input-filters').classList.toggle('hidden', tab === 'feedback');
+      if (tab === 'feedback') loadFeedback();
+      else loadInputs();
+    }
 
-// ── Load inputs ──
-async function loadInputs() {
-  const search = document.getElementById('search-input').value;
-  const caseId = document.getElementById('case-filter').value;
-  const category = document.getElementById('category-filter').value;
+    // ── Load inputs ──
+    async function loadInputs() {
+      const search = document.getElementById('search-input').value;
+      const caseId = document.getElementById('case-filter').value;
+      const category = document.getElementById('category-filter').value;
 
-  let params = `limit=${PAGE_SIZE}&offset=${currentOffset}`;
-  if (search) params += `&search=${encodeURIComponent(search)}`;
-  if (caseId) params += `&case_id=${encodeURIComponent(caseId)}`;
-  if (category) params += `&category=${encodeURIComponent(category)}`;
-  if (currentTab === 'flagged') params += '&flagged_only=true';
+      let params = `limit=${PAGE_SIZE}&offset=${currentOffset}`;
+      if (search) params += `&search=${encodeURIComponent(search)}`;
+      if (caseId) params += `&case_id=${encodeURIComponent(caseId)}`;
+      if (category) params += `&category=${encodeURIComponent(category)}`;
+      if (currentTab === 'flagged') params += '&flagged_only=true';
 
-  // For parse failures tab, we'll fetch all and filter client-side
-  // (server doesn't have a had_parse_failure filter, so fetch more and show)
-  const data = await api(`/admin/inputs?${params}`);
-  let items = data.items;
-  if (currentTab === 'failures') {
-    // Re-fetch with bigger limit for failures
-    const allData = await api(`/admin/inputs?limit=500&offset=0`);
-    items = allData.items.filter(i => i.had_parse_failure);
-    data.total = items.length;
-    items = items.slice(currentOffset, currentOffset + PAGE_SIZE);
-  }
+      // For parse failures tab, we'll fetch all and filter client-side
+      // (server doesn't have a had_parse_failure filter, so fetch more and show)
+      const data = await api(`/admin/inputs?${params}`);
+      let items = data.items;
+      if (currentTab === 'failures') {
+        // Re-fetch with bigger limit for failures
+        const allData = await api(`/admin/inputs?limit=500&offset=0`);
+        items = allData.items.filter(i => i.had_parse_failure);
+        data.total = items.length;
+        items = items.slice(currentOffset, currentOffset + PAGE_SIZE);
+      }
 
-  if (items.length === 0) {
-    document.getElementById('tab-content').innerHTML = '<div class="empty">No inputs found. Start a simulation and submit orders to see them here.</div>';
-    document.getElementById('pagination').innerHTML = '';
-    return;
-  }
+      if (items.length === 0) {
+        document.getElementById('tab-content').innerHTML = '<div class="empty">No inputs found. Start a simulation and submit orders to see them here.</div>';
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
 
-  let html = '<div class="table-wrap"><table><thead><tr>';
-  html += '<th>Time</th><th>Session</th><th>Case</th><th>Turn</th><th>Raw Input</th><th>Actions</th><th>Status</th><th></th>';
-  html += '</tr></thead><tbody>';
+      let html = '<div class="table-wrap"><table><thead><tr>';
+      html += '<th>Time</th><th>Session</th><th>Case</th><th>Turn</th><th>Raw Input</th><th>Actions</th><th>Status</th><th></th>';
+      html += '</tr></thead><tbody>';
 
-  for (const i of items) {
-    const time = new Date(i.created_at).toLocaleString();
-    const shortSess = (i.session_id || '').slice(0, 8);
-    const statusBadge = i.flagged
-      ? `<span class="badge badge-flag">${i.flag_category || 'flagged'}</span>`
-      : i.had_parse_failure
-        ? '<span class="badge badge-fail">no parse</span>'
-        : `<span class="badge badge-ok">${i.action_count} actions</span>`;
+      for (const i of items) {
+        const time = new Date(i.created_at).toLocaleString();
+        const shortSess = (i.session_id || '').slice(0, 8);
+        const statusBadge = i.flagged
+          ? `<span class="badge badge-flag">${i.flag_category || 'flagged'}</span>`
+          : i.had_parse_failure
+            ? '<span class="badge badge-fail">no parse</span>'
+            : `<span class="badge badge-ok">${i.action_count} actions</span>`;
 
-    html += `<tr>
+        html += `<tr>
       <td style="white-space:nowrap;font-size:0.7rem">${time}</td>
       <td style="font-family:monospace;font-size:0.7rem" title="${i.session_id}">${shortSess}</td>
       <td style="font-size:0.75rem">${(i.case_id || '').replace(/_/g, ' ')}</td>
@@ -277,49 +579,49 @@ async function loadInputs() {
         ${!i.flagged ? `<button class="action-btn" onclick="showFlagModal('${i.id}')">Flag</button>` : ''}
       </td>
     </tr>`;
-    if (i.flagged && i.flag_reason) {
-      html += `<tr><td colspan="8" style="padding:4px 12px 10px 48px;font-size:0.75rem;color:var(--text-muted);border-bottom:1px solid var(--border)">
+        if (i.flagged && i.flag_reason) {
+          html += `<tr><td colspan="8" style="padding:4px 12px 10px 48px;font-size:0.75rem;color:var(--text-muted);border-bottom:1px solid var(--border)">
         <strong>Reason:</strong> ${escHtml(i.flag_reason)}${i.notes ? ` | <strong>Notes:</strong> ${escHtml(i.notes)}` : ''}
       </td></tr>`;
-    }
-  }
+        }
+      }
 
-  html += '</tbody></table></div>';
-  document.getElementById('tab-content').innerHTML = html;
+      html += '</tbody></table></div>';
+      document.getElementById('tab-content').innerHTML = html;
 
-  // Pagination
-  const total = data.total;
-  const showing = Math.min(currentOffset + PAGE_SIZE, total);
-  document.getElementById('pagination').innerHTML = `
+      // Pagination
+      const total = data.total;
+      const showing = Math.min(currentOffset + PAGE_SIZE, total);
+      document.getElementById('pagination').innerHTML = `
     <span>Showing ${currentOffset + 1}–${showing} of ${total}</span>
     <div>
       <button class="btn" ${currentOffset === 0 ? 'disabled' : ''} onclick="paginate(-1)">Prev</button>
       <button class="btn" ${showing >= total ? 'disabled' : ''} onclick="paginate(1)">Next</button>
     </div>
   `;
-}
+    }
 
-// ── Load feedback ──
-async function loadFeedback() {
-  const data = await api(`/admin/feedback?limit=${PAGE_SIZE}&offset=${currentOffset}`);
-  const items = data.items;
+    // ── Load feedback ──
+    async function loadFeedback() {
+      const data = await api(`/admin/feedback?limit=${PAGE_SIZE}&offset=${currentOffset}`);
+      const items = data.items;
 
-  if (items.length === 0) {
-    document.getElementById('tab-content').innerHTML = '<div class="empty">No feedback yet. Click "+ New Issue" to report one.</div>';
-    document.getElementById('pagination').innerHTML = '';
-    return;
-  }
+      if (items.length === 0) {
+        document.getElementById('tab-content').innerHTML = '<div class="empty">No feedback yet. Click "+ New Issue" to report one.</div>';
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
 
-  let html = '<div class="table-wrap"><table><thead><tr>';
-  html += '<th>Created</th><th>Title</th><th>Category</th><th>Severity</th><th>Status</th><th></th>';
-  html += '</tr></thead><tbody>';
+      let html = '<div class="table-wrap"><table><thead><tr>';
+      html += '<th>Created</th><th>Title</th><th>Category</th><th>Severity</th><th>Status</th><th></th>';
+      html += '</tr></thead><tbody>';
 
-  for (const f of items) {
-    const time = new Date(f.created_at).toLocaleString();
-    const sevClass = `badge-sev-${f.severity}`;
-    const statusClass = f.status === 'resolved' ? 'badge-resolved' : f.status === 'open' ? 'badge-open' : '';
+      for (const f of items) {
+        const time = new Date(f.created_at).toLocaleString();
+        const sevClass = `badge-sev-${f.severity}`;
+        const statusClass = f.status === 'resolved' ? 'badge-resolved' : f.status === 'open' ? 'badge-open' : '';
 
-    html += `<tr>
+        html += `<tr>
       <td style="white-space:nowrap;font-size:0.7rem">${time}</td>
       <td>${escHtml(f.title)}</td>
       <td><span class="badge" style="background:var(--surface-2);border:1px solid var(--border)">${f.category}</span></td>
@@ -329,102 +631,103 @@ async function loadFeedback() {
         ${f.status === 'open' ? `<button class="action-btn" onclick="resolveFeedback('${f.id}')">Resolve</button>` : ''}
       </td>
     </tr>`;
-    if (f.description) {
-      html += `<tr><td colspan="6" style="padding:4px 12px 10px 48px;font-size:0.75rem;color:var(--text-muted);border-bottom:1px solid var(--border)">
-        ${escHtml(f.description)}${f.session_id ? ` | Session: <code>${f.session_id.slice(0,8)}</code>` : ''}
+        if (f.description) {
+          html += `<tr><td colspan="6" style="padding:4px 12px 10px 48px;font-size:0.75rem;color:var(--text-muted);border-bottom:1px solid var(--border)">
+        ${escHtml(f.description)}${f.session_id ? ` | Session: <code>${f.session_id.slice(0, 8)}</code>` : ''}
       </td></tr>`;
-    }
-  }
+        }
+      }
 
-  html += '</tbody></table></div>';
-  document.getElementById('tab-content').innerHTML = html;
+      html += '</tbody></table></div>';
+      document.getElementById('tab-content').innerHTML = html;
 
-  const total = data.total;
-  const showing = Math.min(currentOffset + PAGE_SIZE, total);
-  document.getElementById('pagination').innerHTML = `
+      const total = data.total;
+      const showing = Math.min(currentOffset + PAGE_SIZE, total);
+      document.getElementById('pagination').innerHTML = `
     <span>Showing ${currentOffset + 1}–${showing} of ${total}</span>
     <div>
       <button class="btn" ${currentOffset === 0 ? 'disabled' : ''} onclick="paginate(-1)">Prev</button>
       <button class="btn" ${showing >= total ? 'disabled' : ''} onclick="paginate(1)">Next</button>
     </div>
   `;
-}
+    }
 
-function paginate(dir) {
-  currentOffset += dir * PAGE_SIZE;
-  if (currentOffset < 0) currentOffset = 0;
-  if (currentTab === 'feedback') loadFeedback();
-  else loadInputs();
-}
+    function paginate(dir) {
+      currentOffset += dir * PAGE_SIZE;
+      if (currentOffset < 0) currentOffset = 0;
+      if (currentTab === 'feedback') loadFeedback();
+      else loadInputs();
+    }
 
-function debounceSearch() {
-  clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => { currentOffset = 0; loadInputs(); }, 300);
-}
+    function debounceSearch() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => { currentOffset = 0; loadInputs(); }, 300);
+    }
 
-// ── Flag modal ──
-function showFlagModal(inputId) {
-  document.getElementById('flag-input-id').value = inputId;
-  document.getElementById('flag-modal').classList.remove('hidden');
-}
-function closeFlagModal() { document.getElementById('flag-modal').classList.add('hidden'); }
+    // ── Flag modal ──
+    function showFlagModal(inputId) {
+      document.getElementById('flag-input-id').value = inputId;
+      document.getElementById('flag-modal').classList.remove('hidden');
+    }
+    function closeFlagModal() { document.getElementById('flag-modal').classList.add('hidden'); }
 
-async function submitFlag() {
-  const id = document.getElementById('flag-input-id').value;
-  const body = {
-    reason: document.getElementById('flag-reason').value,
-    category: document.getElementById('flag-category').value,
-    notes: document.getElementById('flag-notes').value || null,
-  };
-  await api(`/admin/inputs/${id}/flag`, { method: 'POST', body: JSON.stringify(body) });
-  closeFlagModal();
-  loadStats();
-  loadInputs();
-}
+    async function submitFlag() {
+      const id = document.getElementById('flag-input-id').value;
+      const body = {
+        reason: document.getElementById('flag-reason').value,
+        category: document.getElementById('flag-category').value,
+        notes: document.getElementById('flag-notes').value || null,
+      };
+      await api(`/admin/inputs/${id}/flag`, { method: 'POST', body: JSON.stringify(body) });
+      closeFlagModal();
+      loadStats();
+      loadInputs();
+    }
 
-// ── Feedback modal ──
-function showFeedbackModal() { document.getElementById('feedback-modal').classList.remove('hidden'); }
-function closeFeedbackModal() { document.getElementById('feedback-modal').classList.add('hidden'); }
+    // ── Feedback modal ──
+    function showFeedbackModal() { document.getElementById('feedback-modal').classList.remove('hidden'); }
+    function closeFeedbackModal() { document.getElementById('feedback-modal').classList.add('hidden'); }
 
-async function submitFeedback() {
-  const body = {
-    title: document.getElementById('fb-title').value,
-    category: document.getElementById('fb-category').value,
-    severity: document.getElementById('fb-severity').value,
-    description: document.getElementById('fb-description').value || null,
-    session_id: document.getElementById('fb-session').value || null,
-  };
-  await api('/admin/feedback', { method: 'POST', body: JSON.stringify(body) });
-  closeFeedbackModal();
-  document.getElementById('fb-title').value = '';
-  document.getElementById('fb-description').value = '';
-  document.getElementById('fb-session').value = '';
-  loadStats();
-  if (currentTab === 'feedback') loadFeedback();
-}
+    async function submitFeedback() {
+      const body = {
+        title: document.getElementById('fb-title').value,
+        category: document.getElementById('fb-category').value,
+        severity: document.getElementById('fb-severity').value,
+        description: document.getElementById('fb-description').value || null,
+        session_id: document.getElementById('fb-session').value || null,
+      };
+      await api('/admin/feedback', { method: 'POST', body: JSON.stringify(body) });
+      closeFeedbackModal();
+      document.getElementById('fb-title').value = '';
+      document.getElementById('fb-description').value = '';
+      document.getElementById('fb-session').value = '';
+      loadStats();
+      if (currentTab === 'feedback') loadFeedback();
+    }
 
-async function resolveFeedback(id) {
-  await api(`/admin/feedback/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'resolved' }) });
-  loadStats();
-  loadFeedback();
-}
+    async function resolveFeedback(id) {
+      await api(`/admin/feedback/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'resolved' }) });
+      loadStats();
+      loadFeedback();
+    }
 
-function exportCSV() {
-  const flaggedOnly = currentTab === 'flagged';
-  const caseId = document.getElementById('case-filter').value;
-  let url = `/admin/inputs/export?flagged_only=${flaggedOnly}`;
-  if (caseId) url += `&case_id=${encodeURIComponent(caseId)}`;
-  window.open(url);
-}
+    function exportCSV() {
+      const flaggedOnly = currentTab === 'flagged';
+      const caseId = document.getElementById('case-filter').value;
+      let url = `/admin/inputs/export?flagged_only=${flaggedOnly}`;
+      if (caseId) url += `&case_id=${encodeURIComponent(caseId)}`;
+      window.open(url);
+    }
 
-function escHtml(s) {
-  if (!s) return '';
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
+    function escHtml(s) {
+      if (!s) return '';
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
 
-// ── Init ──
-loadStats();
-loadInputs();
-</script>
+    // ── Init ──
+    loadStats();
+    loadInputs();
+  </script>
 </body>
+
 </html>
