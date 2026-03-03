@@ -1,0 +1,802 @@
+{
+  "case_file_version": "2.0.0",
+  "case_id": "aortic_dissection_001",
+  "title": "Acute Type A Aortic Dissection with Tearing Chest Pain",
+  "difficulty": "hard",
+  "scenario_type": "aortic_dissection_type_a",
+  "category": "aortic_dissection",
+  "authoring_notes": {
+    "summary": "58-year-old male with sudden-onset tearing chest pain radiating to back presents with severe hypertension, inter-arm blood pressure differential, and widened mediastinum on CXR. This is an acute Stanford Type A aortic dissection requiring emergent heart rate and blood pressure control followed by urgent cardiothoracic surgical consultation. The case tests recognition of dissection, appropriate anti-impulse therapy (rate control BEFORE afterload reduction), avoidance of thrombolytics, and timely surgical escalation.",
+    "teaching_focus": [
+      "Recognize acute aortic dissection from history (tearing/ripping pain, worst of life, radiating to back), exam (inter-arm BP differential, new diastolic murmur), and imaging (widened mediastinum)",
+      "Institute anti-impulse therapy: IV beta-blocker (esmolol or labetalol) to achieve HR <60 BEFORE adding vasodilators",
+      "Understand why isolated vasodilators (nitroprusside, hydralazine) without prior beta-blockade cause reflex tachycardia and increased aortic wall shear stress (dP/dt)",
+      "Obtain CTA chest/abdomen/pelvis as definitive diagnostic study",
+      "Distinguish Stanford Type A (ascending aorta, surgical emergency) from Type B (descending, often medical management)",
+      "Avoid catastrophic errors: thrombolytics (mistaking for STEMI or PE), anticoagulation without diagnosis",
+      "Provide adequate pain control with IV opioids to reduce sympathetic drive",
+      "Recognize D-dimer utility as sensitive (not specific) screening test for dissection",
+      "Appreciate Marfan-like habitus and uncontrolled HTN as major risk factors"
+    ]
+  },
+  "case_metadata": {
+    "case_id": "aortic_dissection_001",
+    "title": "Acute Type A Aortic Dissection with Tearing Chest Pain",
+    "difficulty": "hard",
+    "scenario_type": "aortic_dissection_type_a",
+    "time_elapsed_sec": 0,
+    "time_step_sec": 5,
+    "status": "not_started"
+  },
+  "patient_profile": {
+    "name": "Thomas Washington",
+    "age_years": 58,
+    "sex": "male",
+    "weight_kg": 95,
+    "height_cm": 190,
+    "bsa_m2": 2.23,
+    "pregnant": false,
+    "gestational_weeks": 0,
+    "chronic_hypertension": true,
+    "baseline_sbp": 155,
+    "baseline_dbp": 90,
+    "baseline_hr": 78,
+    "comorbidities": {
+      "ckd": false,
+      "hfrEF": false,
+      "copd": false,
+      "asthma_or_reactive_airways": false,
+      "cad": false,
+      "diabetes": false,
+      "aortic_aneurysm_history": false,
+      "baseline_beta_blocker_use": false,
+      "baseline_bradycardia": false,
+      "av_conduction_disease": false,
+      "volume_depletion": false,
+      "marfan_habitus": true,
+      "uncontrolled_hypertension": true,
+      "bicuspid_aortic_valve": false,
+      "family_history_aortic_disease": true,
+      "tobacco_use": true
+    }
+  },
+  "disease_model": {
+    "primary_pathology": "acute_aortic_dissection_stanford_type_a",
+    "severity_index": 0.88,
+    "dissection_classification": {
+      "stanford": "A",
+      "debakey": "I",
+      "intimal_tear_location": "ascending_aorta",
+      "propagation": "ascending_to_arch_to_descending",
+      "false_lumen_patent": true,
+      "coronary_involvement_risk": 0.25,
+      "aortic_regurgitation_risk": 0.35,
+      "pericardial_effusion_risk": 0.20,
+      "malperfusion_risk": {
+        "cerebral": 0.15,
+        "coronary": 0.25,
+        "mesenteric": 0.10,
+        "renal": 0.10,
+        "limb": 0.20
+      }
+    },
+    "end_organ_risk": {
+      "brain": 0.25,
+      "heart": 0.55,
+      "kidney": 0.20,
+      "aorta": 0.95,
+      "lungs": 0.10
+    },
+    "aortic_shear_index": 0.82,
+    "aortic_wall_stress_index": 0.85,
+    "catecholamine_excess_index": 0.65,
+    "pericardial_effusion_index": 0.08,
+    "aortic_regurgitation_index": 0.15,
+    "false_lumen_propagation_index": 0.70,
+    "rupture_risk_index": 0.30,
+    "cerebral_edema_index": 0.0,
+    "pulmonary_edema_index": 0.05
+  },
+  "initial_state": {
+    "hemodynamics": {
+      "svr_index": 1.85,
+      "preload_index": 0.95,
+      "contractility_index": 1.05,
+      "cardiac_output_index": 1.05,
+      "stroke_volume_index": 1.0,
+      "map": 141,
+      "sbp": 198,
+      "dbp": 112,
+      "hr": 105,
+      "rhythm": "sinus_tachycardia",
+      "av_node_conduction_index": 1.0,
+      "coronary_supply_demand_mismatch_index": 0.40,
+      "bp_right_arm": {
+        "sbp": 198,
+        "dbp": 112
+      },
+      "bp_left_arm": {
+        "sbp": 168,
+        "dbp": 98
+      },
+      "inter_arm_sbp_differential_mmhg": 30,
+      "aortic_regurgitation_murmur": "early_diastolic_faint",
+      "pulse_deficit": "left_radial_diminished"
+    },
+    "respiratory": {
+      "rr": 24,
+      "spo2": 97,
+      "fio2": 0.21,
+      "oxygen_device": "room_air",
+      "work_of_breathing_index": 0.20,
+      "crackles_index": 0.0,
+      "bronchospasm_index": 0.0,
+      "pulmonary_edema_index": 0.05
+    },
+    "neurologic": {
+      "gcs": 15,
+      "mental_status": "alert_distressed",
+      "headache_index": 0.10,
+      "vision_change_index": 0.0,
+      "focal_deficit_index": 0.0,
+      "cerebral_hypoperfusion_index": 0.05,
+      "syncope_history": false,
+      "diaphoretic": true
+    },
+    "renal": {
+      "urine_output_ml_per_hr": 50,
+      "renal_perfusion_index": 0.85,
+      "aki_risk_index": 0.15
+    },
+    "cardiac": {
+      "chest_pain_index": 0.95,
+      "chest_pain_character": "tearing_ripping",
+      "chest_pain_radiation": "interscapular_back",
+      "chest_pain_onset": "sudden_maximal_at_onset",
+      "ischemia_index": 0.15,
+      "troponin_leak_index": 0.10,
+      "acute_heart_failure_index": 0.05,
+      "pericardial_effusion_index": 0.08
+    },
+    "monitor": {
+      "ecg_text": "Sinus tachycardia, rate 105. Left ventricular hypertrophy by voltage criteria. No ST elevation. No acute ST depression. Normal axis.",
+      "telemetry_quality": "good",
+      "nibp_cycle_sec": 60,
+      "waveform_flags": [
+        "hypertension_alarm",
+        "tachycardia_alarm"
+      ]
+    },
+    "labs": {
+      "creatinine_mg_dl": 1.0,
+      "bnp_pg_ml": 85,
+      "troponin_ng_l": 28,
+      "d_dimer_ng_ml": 12540,
+      "lactate_mmol_l": 2.1,
+      "hemoglobin_g_dl": 13.8,
+      "hematocrit_pct": 41.2,
+      "platelet_count_k": 218,
+      "inr": 1.0,
+      "ptt_sec": 28,
+      "fibrinogen_mg_dl": 310,
+      "abg": {
+        "ph": 7.38,
+        "pco2": 34,
+        "po2": 88,
+        "hco3": 22,
+        "base_excess": -1.5
+      },
+      "cmp": {
+        "na": 140,
+        "k": 4.1,
+        "cl": 103,
+        "co2": 22,
+        "bun": 16,
+        "glucose": 148,
+        "calcium": 9.2,
+        "ast": 28,
+        "alt": 22,
+        "albumin": 3.8
+      },
+      "cbc": {
+        "wbc": 12.8,
+        "hemoglobin": 13.8,
+        "hematocrit": 41.2,
+        "platelets": 218
+      }
+    },
+    "active_medications": [],
+    "orders": [],
+    "event_log": [],
+    "scoring": {
+      "critical_actions": [],
+      "harm_events": [],
+      "teaching_points": [],
+      "final_score": 0
+    }
+  },
+  "hidden_truth": {
+    "final_diagnosis": "Acute Stanford Type A aortic dissection (DeBakey Type I) with intimal tear in the ascending aorta propagating into the aortic arch and proximal descending aorta",
+    "must_not_miss_alternatives": [
+      "Acute ST-elevation myocardial infarction",
+      "Massive pulmonary embolism",
+      "Tension pneumothorax",
+      "Esophageal rupture (Boerhaave syndrome)",
+      "Acute pericarditis with tamponade",
+      "Aortic aneurysm rupture without dissection"
+    ],
+    "cta_chest_abdomen_pelvis_result_if_ordered": "FINDINGS: Intimal flap identified in the ascending aorta beginning 2 cm above the aortic root, extending through the aortic arch and into the proximal descending thoracic aorta to the level of the diaphragmatic hiatus. The false lumen is patent and partially thrombosed in the descending segment. The true lumen is compressed in the ascending aorta. No active contrast extravasation. Coronary arteries arise from the true lumen. Trace pericardial effusion. No hemopericardium. Celiac, SMA, and renal arteries appear to arise from the true lumen. IMPRESSION: Acute Stanford Type A (DeBakey Type I) aortic dissection. Emergent surgical consultation recommended.",
+    "cxr_result_if_ordered": "AP portable chest: Widened superior mediastinum measuring 9.2 cm. Abnormal aortic contour with loss of the normal aortic knob definition. No pleural effusion. Lungs are clear. Heart size at upper limits of normal. Endotracheal and central venous lines not present.",
+    "ecg_result_if_ordered": "Sinus tachycardia at 105 bpm. Left ventricular hypertrophy by Sokolow-Lyon criteria. No ST-segment elevation. No reciprocal changes. No pathological Q waves. Normal PR and QTc intervals.",
+    "echo_tte_result_if_ordered": "Limited bedside TTE: Hyperdynamic LV function, EF estimated 60-65%. Intimal flap visualized in the aortic root/proximal ascending aorta. Mild aortic regurgitation. Trace pericardial effusion without echocardiographic evidence of tamponade. No regional wall motion abnormalities.",
+    "echo_tee_result_if_ordered": "Intimal flap clearly visualized in the ascending aorta with entry tear identified 2.5 cm above the sinotubular junction. True and false lumens identified. Mild-moderate aortic regurgitation. Trace pericardial effusion. LV function hyperdynamic.",
+    "head_ct_result_if_ordered": "No acute intracranial hemorrhage or territorial infarction. No midline shift.",
+    "ct_head_cta_result_if_ordered": "No acute intracranial hemorrhage. Carotid and vertebral arteries patent bilaterally. No evidence of large vessel occlusion.",
+    "ua_if_ordered": "Clear, yellow. Specific gravity 1.020. No blood, protein, or glucose.",
+    "pregnancy_test_if_ordered": "Not applicable (male patient)",
+    "type_and_screen_result_if_ordered": "Blood type A positive. Antibody screen negative. Crossmatch compatible units available.",
+    "fundoscopic_exam_if_requested": "Arteriolar narrowing and AV nicking consistent with chronic hypertension. No papilledema. No Roth spots.",
+    "peripheral_pulse_exam_if_requested": "Right radial 2+, left radial 1+. Right femoral 2+, left femoral 2+. Right dorsalis pedis 2+, left dorsalis pedis 1+. Asymmetric pulse exam consistent with malperfusion from aortic dissection flap."
+  },
+  "opening_script": {
+    "patient_voice": "Something ripped in my chest! It went straight through to my back -- this is the worst pain I've ever had in my life. It happened all at once about an hour ago. I feel like I'm going to die. Please help me.",
+    "nurse_handoff": "58-year-old male, Thomas Washington, arrived by EMS for sudden-onset severe chest pain radiating to his back. He describes it as tearing. EMS found him diaphoretic, hypertensive at 200 systolic. He has a history of high blood pressure but ran out of his medications a few weeks ago. Right arm pressure here is 198/112, heart rate 105. He's awake and in obvious distress.",
+    "appearance": [
+      "Tall male (190 cm) with long arms and arachnodactyly, suggesting Marfan habitus",
+      "Diaphoretic, pale, visibly distressed and writhing on the stretcher",
+      "Clutching his chest and upper back",
+      "Speaking in short sentences between grimaces of pain",
+      "No respiratory distress but breathing rapidly"
+    ]
+  },
+  "critical_actions": [
+    {
+      "id": "recognize_aortic_dissection",
+      "description": "Recognize clinical presentation as acute aortic dissection based on tearing chest pain, radiation to back, hypertension, and risk factors (HTN, Marfan habitus)",
+      "target_time_sec": 300,
+      "weight": 12
+    },
+    {
+      "id": "rate_control_beta_blocker_first",
+      "description": "Initiate IV beta-blocker (esmolol drip or labetalol IV) targeting HR <60 bpm BEFORE any vasodilator therapy (anti-impulse therapy to reduce aortic wall shear stress dP/dt)",
+      "target_time_sec": 600,
+      "weight": 16
+    },
+    {
+      "id": "blood_pressure_control_sbp_under_120",
+      "description": "Achieve SBP target <120 mmHg using IV antihypertensives (add vasodilator such as nicardipine or nitroprusside AFTER adequate beta-blockade if needed)",
+      "target_time_sec": 900,
+      "weight": 14
+    },
+    {
+      "id": "obtain_cta_chest_abdomen_pelvis",
+      "description": "Order CT angiography of chest, abdomen, and pelvis to confirm dissection, classify Stanford type, assess extent of dissection flap, and evaluate for malperfusion",
+      "target_time_sec": 600,
+      "weight": 12
+    },
+    {
+      "id": "pain_control_iv_opioids",
+      "description": "Administer IV opioids (morphine or fentanyl) for pain control to reduce sympathetic drive and aortic wall stress",
+      "target_time_sec": 600,
+      "weight": 8
+    },
+    {
+      "id": "emergent_surgical_consultation",
+      "description": "Obtain emergent cardiothoracic or vascular surgery consultation for Stanford Type A dissection (surgical emergency with high mortality if untreated)",
+      "target_time_sec": 900,
+      "weight": 14
+    },
+    {
+      "id": "type_and_screen_crossmatch",
+      "description": "Order type and screen with crossmatch for packed red blood cells in anticipation of emergent surgical repair and potential hemorrhage",
+      "target_time_sec": 600,
+      "weight": 6
+    },
+    {
+      "id": "bilateral_blood_pressure_measurement",
+      "description": "Measure blood pressure in both arms to evaluate for inter-arm differential (>20 mmHg systolic suggestive of dissection involving subclavian artery)",
+      "target_time_sec": 300,
+      "weight": 4
+    }
+  ],
+  "harm_events": [
+    {
+      "id": "vasodilator_without_beta_blocker",
+      "description": "Vasodilator (nitroprusside, hydralazine, nicardipine, or nitroglycerin) administered WITHOUT prior beta-blocker therapy causes reflex tachycardia, increasing heart rate and aortic wall shear stress (dP/dt), accelerating dissection propagation and increasing rupture risk",
+      "trigger": "vasodilator_given_and_no_beta_blocker_active",
+      "severity": 9,
+      "physiologic_response": {
+        "hr_change": "+20_to_+35_bpm",
+        "aortic_shear_index_change": "+0.15_to_+0.25",
+        "false_lumen_propagation_increase": true
+      }
+    },
+    {
+      "id": "no_rate_control",
+      "description": "Failure to achieve heart rate control (HR remains >80 bpm) allows continued high aortic wall shear stress and promotes dissection propagation",
+      "trigger": "hr_greater_than_80_at_1200_sec_and_no_beta_blocker_administered",
+      "severity": 8,
+      "physiologic_response": {
+        "aortic_shear_index_change": "+0.10_per_300_sec",
+        "rupture_risk_index_increase": true
+      }
+    },
+    {
+      "id": "thrombolytic_administered",
+      "description": "tPA or other thrombolytic administered (mistaken diagnosis of acute STEMI or pulmonary embolism) causes catastrophic hemorrhage into false lumen, pericardial space, or mediastinum with near-certain mortality",
+      "trigger": "tpa_or_thrombolytic_ordered",
+      "severity": 10,
+      "physiologic_response": {
+        "rupture_risk_index_change": "immediate_critical",
+        "pericardial_effusion_index_change": "rapid_increase_to_tamponade",
+        "hemoglobin_drop": "precipitous",
+        "outcome": "catastrophic_hemorrhage_likely_fatal"
+      }
+    },
+    {
+      "id": "delayed_surgical_consultation",
+      "description": "Failure to obtain emergent cardiothoracic surgery consultation within 30 minutes of Type A diagnosis delays potentially life-saving operative repair; mortality increases approximately 1-2% per hour of delay",
+      "trigger": "type_a_confirmed_and_no_surgical_consult_by_1800_sec_after_cta_result",
+      "severity": 8,
+      "physiologic_response": {
+        "rupture_risk_index_change": "+0.02_per_hour",
+        "mortality_increase_per_hour_pct": 1.5
+      }
+    },
+    {
+      "id": "persistent_hypertension",
+      "description": "SBP remains >140 mmHg after 30 minutes of treatment, indicating inadequate blood pressure control and ongoing elevated aortic wall stress",
+      "trigger": "sbp_greater_than_140_at_1800_sec_despite_treatment_initiated",
+      "severity": 6,
+      "physiologic_response": {
+        "aortic_shear_index_sustained": "elevated",
+        "false_lumen_propagation_risk": "ongoing"
+      }
+    },
+    {
+      "id": "anticoagulation_without_diagnosis",
+      "description": "Full-dose anticoagulation (heparin, enoxaparin) given empirically for suspected ACS or PE before dissection is excluded increases hemorrhage risk",
+      "trigger": "full_dose_anticoagulation_ordered_before_cta_result",
+      "severity": 7,
+      "physiologic_response": {
+        "hemorrhage_risk_increase": true,
+        "surgical_bleeding_risk_increase": true
+      }
+    },
+    {
+      "id": "excessive_hypotension",
+      "description": "Overly aggressive blood pressure reduction (SBP <90 or MAP <60) causes end-organ malperfusion (cerebral, coronary, renal, mesenteric)",
+      "trigger": "sbp_less_than_90_or_map_less_than_60",
+      "severity": 8,
+      "physiologic_response": {
+        "cerebral_hypoperfusion_index": "critical",
+        "renal_perfusion_index": "critical",
+        "mental_status_change": "obtunded",
+        "urine_output_change": "anuric"
+      }
+    }
+  ],
+  "recommended_management_logic": {
+    "preferred_agents": [
+      "esmolol_iv_infusion",
+      "labetalol_iv",
+      "morphine_iv",
+      "fentanyl_iv"
+    ],
+    "acceptable_adjunct_agents_after_beta_blockade": [
+      "nicardipine_iv",
+      "nitroprusside_iv",
+      "clevidipine_iv"
+    ],
+    "preferred_strategy": "Anti-impulse therapy: IV beta-blocker first to reduce HR to <60 bpm and reduce dP/dt (aortic wall shear stress), THEN add vasodilator if SBP remains >120 mmHg. Concurrent IV opioid analgesia. CTA chest/abdomen/pelvis for definitive diagnosis. Emergent CT surgery consult for Type A. Blood bank preparation.",
+    "esmolol_protocol": {
+      "loading_dose": "500 mcg/kg IV bolus over 1 minute",
+      "maintenance_infusion": "50-200 mcg/kg/min, titrate to HR <60 and SBP <120",
+      "advantage": "Ultra-short acting (half-life 9 minutes), easily titratable, can be stopped quickly if complications arise"
+    },
+    "labetalol_protocol": {
+      "initial_dose": "20 mg IV bolus over 2 minutes",
+      "repeat_doses": "40 mg, then 80 mg every 10 minutes (max 300 mg total)",
+      "alternative": "Infusion at 0.5-2 mg/min",
+      "advantage": "Combined alpha and beta blockade; reduces both HR and BP"
+    },
+    "target_hemodynamics": {
+      "hr_target": "<60 bpm",
+      "sbp_target": "100-120 mmHg",
+      "map_target": "60-75 mmHg"
+    },
+    "penalized_strategy": [
+      "vasodilator_before_beta_blocker",
+      "thrombolytic_administration",
+      "anticoagulation_before_excluding_dissection",
+      "isolated_nitroprusside_without_beta_blockade",
+      "hydralazine_use_causes_reflex_tachycardia",
+      "delay_in_imaging_beyond_30_minutes",
+      "delay_in_surgical_consultation_for_type_a",
+      "discharge_or_observation_status_for_type_a_dissection"
+    ]
+  },
+  "time_course": {
+    "untreated_progression": [
+      {
+        "time_sec": 300,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 202,
+            "dbp": 115,
+            "hr": 108,
+            "map": 144
+          },
+          "cardiac": {
+            "chest_pain_index": 0.97,
+            "pericardial_effusion_index": 0.10
+          },
+          "disease_model": {
+            "aortic_shear_index": 0.84,
+            "false_lumen_propagation_index": 0.72,
+            "rupture_risk_index": 0.32
+          }
+        },
+        "narrative": "The patient's pain is not improving. He is becoming more agitated and diaphoretic. Blood pressure remains severely elevated."
+      },
+      {
+        "time_sec": 600,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 208,
+            "dbp": 118,
+            "hr": 112,
+            "map": 148
+          },
+          "cardiac": {
+            "chest_pain_index": 0.98,
+            "ischemia_index": 0.22,
+            "pericardial_effusion_index": 0.14
+          },
+          "disease_model": {
+            "aortic_shear_index": 0.88,
+            "false_lumen_propagation_index": 0.76,
+            "rupture_risk_index": 0.36,
+            "aortic_regurgitation_index": 0.22
+          }
+        },
+        "narrative": "He screams that the pain is getting worse and spreading lower in his back. The nurse notes the blood pressure is climbing. You hear a faint early diastolic murmur at the right upper sternal border."
+      },
+      {
+        "time_sec": 1200,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 195,
+            "dbp": 108,
+            "hr": 118,
+            "map": 137,
+            "inter_arm_sbp_differential_mmhg": 38
+          },
+          "cardiac": {
+            "chest_pain_index": 0.99,
+            "ischemia_index": 0.30,
+            "troponin_leak_index": 0.20,
+            "pericardial_effusion_index": 0.20
+          },
+          "neurologic": {
+            "mental_status": "confused_intermittent",
+            "cerebral_hypoperfusion_index": 0.15
+          },
+          "disease_model": {
+            "aortic_shear_index": 0.92,
+            "false_lumen_propagation_index": 0.82,
+            "rupture_risk_index": 0.42,
+            "aortic_regurgitation_index": 0.30
+          }
+        },
+        "conditional_event": "if_no_beta_blocker_started",
+        "narrative": "The patient appears briefly confused, then re-orients. The nurse reports the left arm pressure has dropped further. The diastolic murmur is louder. The dissection flap may be extending."
+      },
+      {
+        "time_sec": 1800,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 180,
+            "dbp": 95,
+            "hr": 124,
+            "map": 123
+          },
+          "cardiac": {
+            "ischemia_index": 0.45,
+            "troponin_leak_index": 0.35,
+            "pericardial_effusion_index": 0.30,
+            "acute_heart_failure_index": 0.20
+          },
+          "neurologic": {
+            "mental_status": "confused",
+            "gcs": 14,
+            "focal_deficit_index": 0.10,
+            "cerebral_hypoperfusion_index": 0.25
+          },
+          "respiratory": {
+            "rr": 28,
+            "spo2": 94,
+            "crackles_index": 0.15,
+            "pulmonary_edema_index": 0.15
+          },
+          "disease_model": {
+            "aortic_shear_index": 0.95,
+            "false_lumen_propagation_index": 0.88,
+            "rupture_risk_index": 0.52,
+            "aortic_regurgitation_index": 0.45
+          }
+        },
+        "conditional_event": "if_no_treatment_initiated",
+        "narrative": "The patient is now confused and complaining of left arm weakness. He is tachycardic and the blood pressure is widening in pulse pressure. Bibasilar crackles are heard. The dissection is extending, with progressive aortic regurgitation and early signs of malperfusion."
+      },
+      {
+        "time_sec": 2700,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 160,
+            "dbp": 70,
+            "hr": 132,
+            "map": 100
+          },
+          "cardiac": {
+            "ischemia_index": 0.60,
+            "pericardial_effusion_index": 0.50,
+            "acute_heart_failure_index": 0.40
+          },
+          "neurologic": {
+            "mental_status": "obtunded",
+            "gcs": 10,
+            "focal_deficit_index": 0.30
+          },
+          "respiratory": {
+            "rr": 32,
+            "spo2": 90,
+            "crackles_index": 0.35,
+            "pulmonary_edema_index": 0.30
+          },
+          "disease_model": {
+            "rupture_risk_index": 0.65,
+            "aortic_regurgitation_index": 0.60
+          }
+        },
+        "conditional_event": "if_still_no_treatment",
+        "narrative": "The patient is obtunded. Widening pulse pressure suggests worsening aortic regurgitation. Flash pulmonary edema is developing. Pericardial effusion is increasing. Without surgical intervention, rupture is imminent."
+      },
+      {
+        "time_sec": 3600,
+        "conditional_event": "if_no_treatment_and_no_surgical_consultation",
+        "effects": {
+          "hemodynamics": {
+            "sbp": 72,
+            "dbp": 40,
+            "hr": 140,
+            "map": 51,
+            "rhythm": "sinus_tachycardia_with_pea_imminent"
+          },
+          "cardiac": {
+            "pericardial_effusion_index": 0.80,
+            "acute_heart_failure_index": 0.70
+          },
+          "neurologic": {
+            "mental_status": "unresponsive",
+            "gcs": 3
+          },
+          "disease_model": {
+            "rupture_risk_index": 0.90
+          }
+        },
+        "narrative": "Cardiovascular collapse. The patient is unresponsive with PEA arrest imminent from tamponade and aortic rupture. This is a non-survivable progression without emergent intervention."
+      }
+    ],
+    "treated_progression_optimal": [
+      {
+        "time_sec": 300,
+        "conditions": "esmolol_infusion_started_and_opioid_given",
+        "effects": {
+          "hemodynamics": {
+            "sbp": 175,
+            "dbp": 100,
+            "hr": 85,
+            "map": 125
+          },
+          "cardiac": {
+            "chest_pain_index": 0.75
+          },
+          "disease_model": {
+            "aortic_shear_index": 0.65,
+            "false_lumen_propagation_index": 0.65
+          }
+        },
+        "narrative": "Esmolol infusion is running and heart rate is coming down. The patient reports mild improvement in pain with IV opioids."
+      },
+      {
+        "time_sec": 600,
+        "conditions": "esmolol_titrated_hr_below_70_and_vasodilator_if_needed",
+        "effects": {
+          "hemodynamics": {
+            "sbp": 138,
+            "dbp": 82,
+            "hr": 64,
+            "map": 101
+          },
+          "cardiac": {
+            "chest_pain_index": 0.55
+          },
+          "disease_model": {
+            "aortic_shear_index": 0.42,
+            "false_lumen_propagation_index": 0.55,
+            "rupture_risk_index": 0.22
+          }
+        },
+        "narrative": "Heart rate is now in the 60s. Blood pressure is improving with combination therapy. Pain is better controlled. Aortic wall stress is decreasing."
+      },
+      {
+        "time_sec": 900,
+        "conditions": "hr_below_60_sbp_below_120_cta_ordered_surgery_consulted",
+        "effects": {
+          "hemodynamics": {
+            "sbp": 118,
+            "dbp": 72,
+            "hr": 58,
+            "map": 87
+          },
+          "cardiac": {
+            "chest_pain_index": 0.35
+          },
+          "disease_model": {
+            "aortic_shear_index": 0.28,
+            "false_lumen_propagation_index": 0.48,
+            "rupture_risk_index": 0.18
+          }
+        },
+        "narrative": "Hemodynamic targets achieved. HR 58, SBP 118. CTA is being performed. CT surgery has been contacted and is mobilizing. The patient is more comfortable with controlled pain."
+      }
+    ]
+  },
+  "triggered_diagnostics": {
+    "cta_chest_abdomen_pelvis_ordered": {
+      "result_delay_sec": 1200,
+      "result_text": "ACUTE STANFORD TYPE A AORTIC DISSECTION (DeBakey Type I). Intimal flap in ascending aorta beginning 2 cm above aortic root, extending through arch and into proximal descending thoracic aorta. False lumen patent with partial thrombosis distally. True lumen compressed in ascending segment. Coronary arteries arise from true lumen. Trace pericardial effusion. No hemopericardium. No active extravasation. Celiac, SMA, and renal arteries arise from true lumen. Bilateral iliac arteries show true lumen supply. Maximum ascending aortic diameter 4.8 cm."
+    },
+    "cxr_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "AP portable chest: Widened superior mediastinum measuring 9.2 cm. Abnormal aortic contour with indistinct aortic knob. No pleural effusion. Lungs clear bilaterally. Cardiac silhouette at upper limits of normal. No pneumothorax."
+    },
+    "ecg_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "Sinus tachycardia at 105 bpm. Left ventricular hypertrophy by voltage criteria (Sokolow-Lyon: SV1 + RV5 = 42 mm). Normal axis. Normal PR interval (168 ms). QTc 440 ms. No ST elevation. No pathological Q waves. No acute ST-segment depression. No T-wave inversions beyond expected LVH strain pattern."
+    },
+    "troponin_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "High-sensitivity troponin I: 28 ng/L (99th percentile URL: 26 ng/L). Mildly elevated, likely from demand ischemia and/or coronary malperfusion rather than acute plaque rupture."
+    },
+    "d_dimer_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "D-dimer: 12,540 ng/mL FEU (reference: <500 ng/mL). Markedly elevated. In the appropriate clinical context, highly suggestive of acute aortic dissection."
+    },
+    "cmp_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Na 140, K 4.1, Cl 103, CO2 22, BUN 16, Creatinine 1.0, Glucose 148, Ca 9.2, AST 28, ALT 22, Albumin 3.8. Renal function currently preserved."
+    },
+    "cbc_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "WBC 12.8 (stress leukocytosis), Hgb 13.8, Hct 41.2%, Platelets 218. No anemia. Platelet count adequate for surgical intervention."
+    },
+    "coagulation_studies_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "PT 12.1 sec, INR 1.0, PTT 28 sec, Fibrinogen 310 mg/dL. Coagulation parameters normal. No evidence of DIC."
+    },
+    "type_and_screen_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "Blood type: A positive. Antibody screen: Negative. Crossmatch: 6 units pRBC compatible and available. Recommend holding additional FFP and platelets on standby for potential massive transfusion."
+    },
+    "lactate_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "Lactate: 2.1 mmol/L (reference: <2.0). Mildly elevated, may reflect early malperfusion or catecholamine-driven anaerobic metabolism."
+    },
+    "abg_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "pH 7.38, pCO2 34, pO2 88, HCO3 22, Base excess -1.5 on room air. Mild respiratory alkalosis from tachypnea/pain. Adequate oxygenation. No significant metabolic acidosis."
+    },
+    "echo_tte_bedside_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "Bedside TTE (limited): Hyperdynamic LV function, EF 60-65%. Linear echo density in ascending aortic root consistent with intimal flap. Mild aortic regurgitation with early diastolic flow reversal. Trace pericardial effusion. No RV dilation. No regional wall motion abnormalities."
+    },
+    "bilateral_bp_ordered": {
+      "result_delay_sec": 60,
+      "result_text": "Right arm: 198/112 mmHg. Left arm: 168/98 mmHg. Inter-arm systolic differential: 30 mmHg. Significant differential suggests dissection flap involving left subclavian artery origin or proximal compression."
+    },
+    "ct_head_ordered": {
+      "result_delay_sec": 900,
+      "result_text": "Non-contrast CT head: No acute intracranial hemorrhage. No mass effect. No midline shift. No acute territorial infarction. Mild periventricular white matter hypodensity consistent with chronic microvascular changes."
+    },
+    "ua_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "Clear, yellow, SG 1.020, pH 6.0. No blood, protein, glucose, ketones, WBC, or bacteria."
+    }
+  },
+  "success_criteria": {
+    "required": [
+      "recognize_aortic_dissection",
+      "rate_control_beta_blocker_first",
+      "blood_pressure_control_sbp_under_120",
+      "obtain_cta_chest_abdomen_pelvis",
+      "pain_control_iv_opioids",
+      "emergent_surgical_consultation",
+      "type_and_screen_crossmatch"
+    ],
+    "target_end_state": {
+      "hr_max": 60,
+      "sbp_range": [100, 120],
+      "map_range": [60, 80],
+      "chest_pain_index_max": 0.4,
+      "aortic_shear_index_max": 0.35,
+      "rupture_risk_index_max": 0.25,
+      "surgical_consult_obtained": true,
+      "cta_obtained": true,
+      "type_and_screen_sent": true,
+      "no_harm_event_ids": [
+        "vasodilator_without_beta_blocker",
+        "thrombolytic_administered",
+        "excessive_hypotension"
+      ]
+    }
+  },
+  "failure_criteria": {
+    "any_of": [
+      "thrombolytic_administered",
+      "rupture_risk_index_greater_than_0.85",
+      "map_less_than_50_sustained",
+      "pericardial_tamponade_unrecognized",
+      "patient_death_from_rupture",
+      "no_surgical_consultation_by_3600_sec",
+      "unresponsive_state_persists_more_than_300_sec",
+      "disposition_is_discharge"
+    ]
+  },
+  "debrief_template": {
+    "what_went_well": [
+      "Rapid recognition of aortic dissection from classic presentation (tearing chest pain radiating to back, sudden maximal onset)",
+      "Appropriate anti-impulse therapy: beta-blocker initiated BEFORE vasodilator",
+      "Achieved hemodynamic targets (HR <60, SBP <120) in a timely manner",
+      "Obtained CTA chest/abdomen/pelvis for definitive diagnosis",
+      "Emergent surgical consultation obtained for Type A dissection",
+      "Bilateral blood pressure measurement performed",
+      "Adequate pain control with IV opioids to reduce sympathetic drive",
+      "Blood bank notification and type/crossmatch sent early"
+    ],
+    "what_could_have_gone_better": [
+      "Earlier recognition of dissection vs. initial consideration of ACS or PE",
+      "Faster initiation of beta-blocker therapy",
+      "More aggressive esmolol titration to achieve target HR <60",
+      "Earlier CTA ordering once dissection was suspected",
+      "Earlier surgical consultation -- do not wait for CTA results to call surgery",
+      "Bilateral BP should be checked within first 5 minutes",
+      "Consider bedside echo for rapid assessment of pericardial effusion and aortic root"
+    ],
+    "key_choices_to_highlight": [
+      "Did the learner give a beta-blocker FIRST before any vasodilator? This is the single most important pharmacologic decision.",
+      "Was esmolol or labetalol chosen? Both are acceptable. Esmolol offers easier titration.",
+      "Was a vasodilator given in isolation (hydralazine, nitroprusside, nicardipine) without beta-blockade? This is a critical error.",
+      "Were thrombolytics considered or given? This is a catastrophic, potentially fatal error.",
+      "Was the inter-arm blood pressure differential identified and documented?",
+      "Was the CTA ordered expeditiously, and was it chest/abdomen/pelvis (not just chest)?",
+      "How quickly was CT surgery consulted after the diagnosis was confirmed or strongly suspected?"
+    ],
+    "teaching_points": [
+      "Stanford Classification: Type A involves the ascending aorta (regardless of entry tear site) and is a SURGICAL emergency. Type B involves only the descending aorta distal to the left subclavian and is typically managed medically unless complicated.",
+      "Anti-impulse therapy rationale: Aortic wall stress is proportional to dP/dt (rate of rise of aortic pressure). Beta-blockers reduce both HR and contractility, directly lowering dP/dt. Vasodilators alone cause reflex tachycardia which INCREASES dP/dt despite lowering absolute BP.",
+      "First-line agents: Esmolol (500 mcg/kg bolus, 50-200 mcg/kg/min infusion) is preferred for its ultra-short half-life (~9 min) and easy titratability. Labetalol (20 mg IV, escalating doses) is an acceptable alternative with combined alpha/beta blockade.",
+      "Target hemodynamics: HR <60 bpm, SBP 100-120 mmHg. Rate control should be achieved FIRST, then blood pressure.",
+      "Vasodilators (nicardipine, nitroprusside) may be added ONLY AFTER adequate beta-blockade if SBP target is not met with beta-blocker alone.",
+      "D-dimer: Highly sensitive (>96%) for acute aortic dissection. A markedly elevated D-dimer (>10,000) in the setting of acute tearing chest pain is strongly suggestive. However, D-dimer is not specific and should not be used in isolation to rule in dissection.",
+      "CTA chest/abdomen/pelvis is the gold standard for diagnosis, providing dissection extent, true/false lumen anatomy, branch vessel involvement, and surgical planning information.",
+      "Inter-arm blood pressure differential >20 mmHg systolic suggests involvement of the subclavian artery by the dissection flap and supports the diagnosis.",
+      "Mortality for untreated Type A dissection is approximately 1-2% per hour in the first 48 hours. Emergent surgical repair reduces mortality significantly.",
+      "NEVER give thrombolytics. If the dissection is misdiagnosed as STEMI or PE, thrombolytics cause hemorrhage into the false lumen or pericardium, which is nearly universally fatal.",
+      "Pain control with IV opioids is therapeutic, not just palliative -- it reduces catecholamine surge and sympathetic-mediated increases in heart rate and blood pressure.",
+      "A bedside TTE can rapidly assess for pericardial effusion, aortic regurgitation, and proximal flap, but should NOT delay CTA.",
+      "Risk factors include chronic hypertension (most common), connective tissue disorders (Marfan, Ehlers-Danlos), bicuspid aortic valve, prior cardiac surgery, cocaine use, and pregnancy."
+    ]
+  }
+}

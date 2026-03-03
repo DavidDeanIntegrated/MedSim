@@ -1,0 +1,589 @@
+{
+  "case_file_version": "2.0.0",
+  "case_id": "stemi_001",
+  "title": "Inferior STEMI with Right Ventricular Involvement",
+  "difficulty": "moderate",
+  "scenario_type": "acute_stemi",
+  "category": "stemi",
+  "authoring_notes": {
+    "summary": "62-year-old male presenting with crushing substernal chest pain radiating to the jaw, diaphoresis, and nausea. ECG reveals inferior STEMI (II, III, aVF) with right ventricular involvement confirmed on right-sided leads. The patient is hypotensive from RV failure and bradycardic from vagal tone. Management requires rapid cath lab activation, avoidance of preload-reducing agents (nitroglycerin, morphine), and judicious volume resuscitation.",
+    "teaching_focus": [
+      "Recognize inferior STEMI pattern on 12-lead ECG and obtain right-sided leads",
+      "Understand hemodynamic implications of RV infarction and preload dependence",
+      "Activate cath lab early to minimize door-to-balloon time",
+      "Avoid nitroglycerin and morphine in the setting of RV involvement",
+      "Provide volume resuscitation for RV failure-related hypotension",
+      "Administer aspirin and anticoagulation promptly",
+      "Recognize contraindications to fibrinolysis versus primary PCI indications",
+      "Understand dual antiplatelet therapy in the STEMI pathway"
+    ]
+  },
+  "case_metadata": {
+    "case_id": "stemi_001",
+    "title": "Inferior STEMI with Right Ventricular Involvement",
+    "difficulty": "moderate",
+    "scenario_type": "acute_stemi",
+    "time_elapsed_sec": 0,
+    "time_step_sec": 5,
+    "status": "not_started"
+  },
+  "patient_profile": {
+    "name": "James Mitchell",
+    "age_years": 62,
+    "sex": "male",
+    "weight_kg": 92,
+    "height_cm": 178,
+    "bsa_m2": 2.12,
+    "pregnant": false,
+    "gestational_weeks": 0,
+    "chronic_hypertension": true,
+    "baseline_sbp": 142,
+    "baseline_dbp": 88,
+    "baseline_hr": 76,
+    "comorbidities": {
+      "ckd": false,
+      "hfrEF": false,
+      "copd": false,
+      "asthma_or_reactive_airways": false,
+      "cad": false,
+      "diabetes": false,
+      "aortic_aneurysm_history": false,
+      "baseline_beta_blocker_use": false,
+      "baseline_bradycardia": false,
+      "av_conduction_disease": false,
+      "volume_depletion": false,
+      "hypertension": true,
+      "hyperlipidemia": true,
+      "tobacco_use": true,
+      "family_hx_cad": true
+    }
+  },
+  "disease_model": {
+    "primary_pathology": "acute_inferior_stemi_with_rv_involvement",
+    "severity_index": 0.78,
+    "culprit_vessel": "right_coronary_artery_proximal",
+    "territory_at_risk": ["inferior_wall", "right_ventricle", "posterior_wall"],
+    "end_organ_risk": {
+      "brain": 0.15,
+      "heart": 0.92,
+      "kidney": 0.30,
+      "aorta": 0.0,
+      "lungs": 0.10
+    },
+    "rv_failure_index": 0.65,
+    "preload_dependence_index": 0.82,
+    "vagal_tone_index": 0.60,
+    "coronary_occlusion_index": 0.95,
+    "ischemia_duration_sensitivity": true,
+    "reperfusion_benefit_window_min": 120,
+    "myocardium_at_risk_fraction": 0.28
+  },
+  "initial_state": {
+    "hemodynamics": {
+      "svr_index": 1.25,
+      "preload_index": 0.55,
+      "contractility_index": 0.62,
+      "cardiac_output_index": 0.65,
+      "stroke_volume_index": 0.60,
+      "map": 71,
+      "sbp": 88,
+      "dbp": 62,
+      "hr": 58,
+      "rhythm": "sinus_bradycardia",
+      "av_node_conduction_index": 0.75,
+      "coronary_supply_demand_mismatch_index": 0.92
+    },
+    "respiratory": {
+      "rr": 20,
+      "spo2": 96,
+      "fio2": 0.21,
+      "oxygen_device": "room_air",
+      "work_of_breathing_index": 0.15,
+      "crackles_index": 0.0,
+      "bronchospasm_index": 0.0,
+      "pulmonary_edema_index": 0.0
+    },
+    "neurologic": {
+      "gcs": 15,
+      "mental_status": "alert_anxious",
+      "headache_index": 0.0,
+      "vision_change_index": 0.0,
+      "focal_deficit_index": 0.0,
+      "cerebral_hypoperfusion_index": 0.10
+    },
+    "renal": {
+      "urine_output_ml_per_hr": 30,
+      "renal_perfusion_index": 0.68,
+      "aki_risk_index": 0.25
+    },
+    "cardiac": {
+      "chest_pain_index": 0.88,
+      "ischemia_index": 0.90,
+      "troponin_leak_index": 0.45,
+      "acute_heart_failure_index": 0.35,
+      "rv_distension_index": 0.60,
+      "jvd_present": true,
+      "clear_lung_fields": true,
+      "killip_class": 1
+    },
+    "monitor": {
+      "ecg_text": "Sinus bradycardia, rate 58. ST elevation in leads II, III, aVF (2-3 mm). Reciprocal ST depression in leads I and aVL. No ST elevation in precordial leads V1-V6. Right-sided ECG not yet obtained.",
+      "telemetry_quality": "good",
+      "nibp_cycle_sec": 60,
+      "waveform_flags": [
+        "hypotension_alarm",
+        "bradycardia_alarm",
+        "st_segment_change"
+      ]
+    },
+    "labs": {
+      "creatinine_mg_dl": 1.0,
+      "bnp_pg_ml": 180,
+      "troponin_ng_l": 245,
+      "lactate_mmol_l": 2.1,
+      "abg": {
+        "ph": 7.37,
+        "pco2": 36,
+        "po2": 88,
+        "hco3": 22
+      },
+      "cmp": {
+        "na": 140,
+        "k": 4.2,
+        "cl": 103,
+        "co2": 22,
+        "bun": 20,
+        "glucose": 168
+      },
+      "cbc": {
+        "wbc": 11.2,
+        "hgb": 14.8,
+        "plt": 234
+      },
+      "coag": {
+        "pt": 12.8,
+        "inr": 1.0,
+        "ptt": 28
+      },
+      "lipid_panel": {
+        "total_cholesterol": 248,
+        "ldl": 162,
+        "hdl": 38,
+        "triglycerides": 210
+      }
+    },
+    "active_medications": [],
+    "orders": [],
+    "event_log": [],
+    "scoring": {
+      "critical_actions": [],
+      "harm_events": [],
+      "teaching_points": [],
+      "final_score": 0
+    }
+  },
+  "hidden_truth": {
+    "final_diagnosis": "Acute inferior ST-elevation myocardial infarction with right ventricular involvement due to proximal right coronary artery occlusion",
+    "must_not_miss_alternatives": [
+      "Aortic dissection with coronary malperfusion",
+      "Massive pulmonary embolism",
+      "Tension pneumothorax",
+      "Pericarditis with tamponade",
+      "Esophageal rupture (Boerhaave syndrome)"
+    ],
+    "ecg_12_lead_result_if_ordered": "Sinus bradycardia at 58 bpm. ST elevation 2-3 mm in leads II, III, aVF. Reciprocal ST depression 1-2 mm in leads I and aVL. No precordial ST elevation. Normal QTc.",
+    "ecg_right_sided_result_if_ordered": "ST elevation 1.5 mm in lead V4R, consistent with right ventricular infarction.",
+    "ecg_posterior_leads_result_if_ordered": "ST elevation 1 mm in V7-V9, suggestive of posterior wall involvement.",
+    "cxr_if_ordered": "Heart size normal. Lungs are clear bilaterally without infiltrate, effusion, or pulmonary edema. No pneumothorax. No mediastinal widening.",
+    "ct_angiogram_aorta_if_ordered": "No evidence of aortic dissection. Normal aortic contour.",
+    "echo_if_ordered": "RV dilation with reduced RV systolic function. Inferior wall hypokinesis. LV ejection fraction estimated 45%. No pericardial effusion. Moderate tricuspid regurgitation.",
+    "troponin_trend": "Initial 245 ng/L, repeat at 3 hours 1820 ng/L (rising pattern consistent with acute MI)",
+    "cath_lab_findings_if_activated": "100% thrombotic occlusion of proximal right coronary artery. Successful PCI with drug-eluting stent placement. TIMI 3 flow restored.",
+    "ua_if_ordered": "Unremarkable",
+    "pregnancy_test_if_ordered": "Not applicable (male patient)"
+  },
+  "opening_script": {
+    "patient_voice": "Doc, something is really wrong. I got this terrible crushing pain right here in my chest. It started about 45 minutes ago while I was mowing the lawn. It's going up into my jaw. I feel like I'm gonna throw up. I'm drenched in sweat. Am I having a heart attack?",
+    "nurse_handoff": "62-year-old male, James Mitchell, brought in by EMS with acute onset crushing substernal chest pain radiating to the jaw for approximately 45 minutes. He is diaphoretic and nauseated. EMS gave him an aspirin in the field but he vomited it back up. Pressure is 88 over 62, heart rate 58. He has a history of high blood pressure and high cholesterol. He smokes a pack a day. His father had a heart attack at 55.",
+    "appearance": [
+      "Diaphoretic, pale, and anxious",
+      "Clutching his chest with both hands",
+      "Skin is cool and clammy",
+      "Mild jugular venous distension noted",
+      "No respiratory distress, lungs clear to auscultation",
+      "Appears uncomfortable and restless"
+    ]
+  },
+  "critical_actions": [
+    {
+      "id": "obtain_12_lead_ecg",
+      "description": "Obtain 12-lead ECG within 10 minutes of arrival",
+      "target_time_sec": 120,
+      "weight": 14
+    },
+    {
+      "id": "recognize_stemi_pattern",
+      "description": "Recognize STEMI pattern on ECG (ST elevation in II, III, aVF with reciprocal changes in I, aVL)",
+      "target_time_sec": 300,
+      "weight": 12
+    },
+    {
+      "id": "activate_cath_lab",
+      "description": "Activate cardiac catheterization lab and call interventional cardiology for emergent PCI",
+      "target_time_sec": 300,
+      "weight": 16
+    },
+    {
+      "id": "administer_aspirin",
+      "description": "Administer aspirin 325 mg (chewed, or rectal if vomiting)",
+      "target_time_sec": 300,
+      "weight": 8
+    },
+    {
+      "id": "administer_anticoagulation",
+      "description": "Administer unfractionated heparin (60 U/kg bolus, max 4000 U) for anticoagulation",
+      "target_time_sec": 600,
+      "weight": 8
+    },
+    {
+      "id": "avoid_nitro_and_morphine",
+      "description": "Avoid nitroglycerin and morphine due to RV involvement and preload dependence; these agents reduce preload and can cause precipitous hemodynamic collapse",
+      "target_time_sec": 0,
+      "weight": 12
+    },
+    {
+      "id": "volume_resuscitation_rv_failure",
+      "description": "Administer IV normal saline bolus (250-500 mL) for RV failure-related hypotension to optimize preload",
+      "target_time_sec": 600,
+      "weight": 10
+    },
+    {
+      "id": "obtain_right_sided_ecg",
+      "description": "Obtain right-sided ECG (specifically V4R) to confirm RV involvement in the setting of inferior STEMI",
+      "target_time_sec": 600,
+      "weight": 8
+    }
+  ],
+  "harm_events": [
+    {
+      "id": "nitroglycerin_given_rv_mi",
+      "description": "Nitroglycerin administered to patient with RV infarction causing precipitous hypotension from preload reduction; may result in cardiogenic shock or cardiac arrest",
+      "trigger": "nitroglycerin_administered_while_rv_involvement_present",
+      "severity": 9,
+      "consequence": {
+        "hemodynamic_effect": {
+          "sbp_drop_to": 55,
+          "map_drop_to": 42,
+          "hr_response": 45,
+          "rhythm_risk": "high_degree_av_block"
+        },
+        "narrative": "Within 2 minutes of nitroglycerin, BP crashes to 55/30. Patient becomes pale, diaphoretic, and near-syncopal. Immediate IV fluid resuscitation and Trendelenburg positioning required."
+      }
+    },
+    {
+      "id": "delayed_cath_lab_activation",
+      "description": "Cath lab not activated within 30 minutes of arrival; increased myocardial necrosis and mortality risk with every minute of delay",
+      "trigger": "no_cath_lab_activation_by_1800_sec",
+      "severity": 8,
+      "consequence": {
+        "cardiac_effect": {
+          "ischemia_index_increase": 0.15,
+          "troponin_acceleration": true,
+          "ef_reduction_risk": true
+        },
+        "narrative": "Prolonged ischemia time increases infarct size. Door-to-balloon target of 90 minutes at risk."
+      }
+    },
+    {
+      "id": "no_aspirin_given",
+      "description": "Aspirin not administered; failure to provide foundational antiplatelet therapy associated with increased mortality",
+      "trigger": "no_aspirin_by_1200_sec",
+      "severity": 6,
+      "consequence": {
+        "narrative": "Ongoing platelet aggregation at the site of plaque rupture without antiplatelet therapy."
+      }
+    },
+    {
+      "id": "excessive_beta_blocker",
+      "description": "Beta-blocker administered in setting of bradycardia and hypotension, causing hemodynamic deterioration",
+      "trigger": "beta_blocker_given_while_hr_less_than_60_and_sbp_less_than_100",
+      "severity": 7,
+      "consequence": {
+        "hemodynamic_effect": {
+          "hr_drop_to": 38,
+          "sbp_drop_to": 65,
+          "rhythm_risk": "complete_heart_block"
+        },
+        "narrative": "Heart rate drops to the 30s. Patient becomes obtunded. Transcutaneous pacing may be required."
+      }
+    }
+  ],
+  "recommended_management_logic": {
+    "preferred_agents": [
+      "aspirin_325_po_or_pr",
+      "heparin_iv_bolus_and_infusion",
+      "normal_saline_iv_bolus",
+      "p2y12_inhibitor_clopidogrel_or_ticagrelor",
+      "atropine_if_symptomatic_bradycardia"
+    ],
+    "preferred_strategy": "Rapid ECG acquisition and STEMI recognition, immediate cath lab activation for primary PCI, aspirin and anticoagulation, IV fluid resuscitation for RV failure hypotension, avoidance of preload-reducing agents. Target door-to-balloon time under 90 minutes.",
+    "penalized_strategy": [
+      "nitroglycerin_for_chest_pain_without_checking_rv_involvement",
+      "morphine_administration_in_inferior_stemi",
+      "beta_blocker_in_bradycardic_hypotensive_patient",
+      "delay_in_cath_lab_activation_for_extensive_workup",
+      "fibrinolysis_when_pci_available_within_120_minutes",
+      "discharge_or_observation_without_reperfusion"
+    ]
+  },
+  "time_course": {
+    "untreated_progression": [
+      {
+        "time_sec": 300,
+        "effects": {
+          "cardiac": {
+            "chest_pain_index": 0.92,
+            "ischemia_index": 0.93,
+            "rv_distension_index": 0.65
+          },
+          "hemodynamics": {
+            "sbp": 85,
+            "dbp": 58,
+            "hr": 55,
+            "map": 67
+          }
+        },
+        "narrative": "Chest pain persists. Patient is increasingly nauseated. Blood pressure drifting lower."
+      },
+      {
+        "time_sec": 900,
+        "effects": {
+          "cardiac": {
+            "chest_pain_index": 0.95,
+            "ischemia_index": 0.96,
+            "troponin_leak_index": 0.65,
+            "rv_distension_index": 0.72,
+            "acute_heart_failure_index": 0.45
+          },
+          "hemodynamics": {
+            "sbp": 80,
+            "dbp": 54,
+            "hr": 52,
+            "map": 63,
+            "rhythm": "sinus_bradycardia",
+            "av_node_conduction_index": 0.60
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 20,
+            "renal_perfusion_index": 0.55
+          }
+        },
+        "narrative": "The patient is becoming drowsier. JVD more prominent. Urine output declining. Heart rate dropping into low 50s."
+      },
+      {
+        "time_sec": 1800,
+        "effects": {
+          "cardiac": {
+            "ischemia_index": 0.98,
+            "troponin_leak_index": 0.80,
+            "rv_distension_index": 0.82,
+            "acute_heart_failure_index": 0.60
+          },
+          "hemodynamics": {
+            "sbp": 72,
+            "dbp": 48,
+            "hr": 48,
+            "map": 56,
+            "rhythm": "second_degree_av_block_type_1",
+            "av_node_conduction_index": 0.42
+          },
+          "neurologic": {
+            "mental_status": "somnolent",
+            "gcs": 13,
+            "cerebral_hypoperfusion_index": 0.35
+          }
+        },
+        "conditional_event": "if_no_reperfusion_and_no_fluids",
+        "narrative": "The patient is now obtunded. ECG shows Wenckebach. Blood pressure critically low. Signs of cardiogenic shock developing."
+      },
+      {
+        "time_sec": 2700,
+        "effects": {
+          "cardiac": {
+            "ischemia_index": 1.0,
+            "troponin_leak_index": 0.92,
+            "rv_distension_index": 0.90
+          },
+          "hemodynamics": {
+            "sbp": 62,
+            "dbp": 40,
+            "hr": 42,
+            "map": 47,
+            "rhythm": "complete_heart_block",
+            "cardiac_output_index": 0.35
+          },
+          "neurologic": {
+            "mental_status": "obtunded",
+            "gcs": 9,
+            "cerebral_hypoperfusion_index": 0.60
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 5,
+            "aki_risk_index": 0.70
+          }
+        },
+        "conditional_event": "if_no_intervention",
+        "narrative": "Complete heart block has developed. Patient is in overt cardiogenic shock. Transcutaneous pacing and vasopressors urgently needed. Without emergent reperfusion, prognosis is grim."
+      },
+      {
+        "time_sec": 3600,
+        "effects": {
+          "cardiac": {
+            "ischemia_index": 1.0,
+            "troponin_leak_index": 1.0
+          },
+          "hemodynamics": {
+            "sbp": 50,
+            "dbp": 30,
+            "hr": 35,
+            "map": 37,
+            "rhythm": "ventricular_fibrillation_risk_high",
+            "cardiac_output_index": 0.20
+          },
+          "neurologic": {
+            "mental_status": "unresponsive",
+            "gcs": 3
+          }
+        },
+        "conditional_event": "if_still_no_intervention",
+        "narrative": "Patient is in PEA arrest or ventricular fibrillation. ACLS protocol initiated. Massive completed infarction."
+      }
+    ]
+  },
+  "triggered_diagnostics": {
+    "ecg_12_lead_ordered": {
+      "result_delay_sec": 60,
+      "result_text": "Sinus bradycardia at 58 bpm. ST elevation 2-3 mm in leads II, III, aVF. Reciprocal ST depression 1-2 mm in leads I and aVL. No acute precordial ST changes. Normal intervals. QTc 420 ms."
+    },
+    "ecg_right_sided_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "ST elevation 1.5 mm in V4R. Findings consistent with right ventricular infarction."
+    },
+    "ecg_posterior_leads_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "ST elevation 1 mm in V7-V9, suggestive of posterior wall involvement."
+    },
+    "troponin_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "High-sensitivity troponin I: 245 ng/L (reference < 26 ng/L). Markedly elevated, consistent with acute myocardial injury."
+    },
+    "cxr_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "Heart size is normal. Lungs are clear bilaterally. No pulmonary edema, pleural effusion, or pneumothorax. No mediastinal widening."
+    },
+    "cmp_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Na 140, K 4.2, Cl 103, CO2 22, BUN 20, Cr 1.0, Glucose 168. Mildly elevated glucose likely stress response."
+    },
+    "cbc_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "WBC 11.2 (mild leukocytosis, likely stress response), Hgb 14.8, Plt 234. No anemia or thrombocytopenia."
+    },
+    "coag_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "PT 12.8, INR 1.0, PTT 28. Normal coagulation profile."
+    },
+    "bedside_echo_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "RV appears dilated with reduced systolic function. Inferior wall hypokinesis. Estimated LVEF 45%. No pericardial effusion. IVC plethoric with minimal respiratory variation, consistent with elevated right-sided pressures. Moderate tricuspid regurgitation."
+    },
+    "ct_angiogram_aorta_ordered": {
+      "result_delay_sec": 1200,
+      "result_text": "No aortic dissection. Normal aortic contour. Incidental coronary artery calcifications."
+    },
+    "lipid_panel_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "Total cholesterol 248, LDL 162, HDL 38, Triglycerides 210. Dyslipidemia present."
+    },
+    "lactate_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "Lactate 2.1 mmol/L (mildly elevated, consistent with hypoperfusion)."
+    },
+    "bnp_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "BNP 180 pg/mL (mildly elevated, consistent with acute cardiac strain)."
+    }
+  },
+  "success_criteria": {
+    "required": [
+      "obtain_12_lead_ecg",
+      "recognize_stemi_pattern",
+      "activate_cath_lab",
+      "administer_aspirin",
+      "administer_anticoagulation",
+      "avoid_nitro_and_morphine",
+      "volume_resuscitation_rv_failure",
+      "obtain_right_sided_ecg"
+    ],
+    "target_end_state": {
+      "cath_lab_activated": true,
+      "door_to_balloon_target_min": 90,
+      "sbp_range": [90, 130],
+      "map_min": 65,
+      "hr_range": [50, 100],
+      "rhythm": "sinus",
+      "aspirin_given": true,
+      "anticoagulation_given": true,
+      "no_harm_event_ids": [
+        "nitroglycerin_given_rv_mi",
+        "delayed_cath_lab_activation",
+        "excessive_beta_blocker"
+      ]
+    }
+  },
+  "failure_criteria": {
+    "any_of": [
+      "nitroglycerin_given_rv_mi_with_sbp_below_60",
+      "no_cath_lab_activation_by_3600_sec",
+      "complete_heart_block_without_pacing",
+      "cardiac_arrest_without_acls",
+      "map_less_than_40_for_greater_than_300_sec",
+      "disposition_is_discharge"
+    ]
+  },
+  "debrief_template": {
+    "what_went_well": [
+      "Rapidly obtained 12-lead ECG and recognized inferior STEMI pattern",
+      "Activated cath lab early to minimize door-to-balloon time",
+      "Obtained right-sided ECG to confirm RV involvement",
+      "Administered aspirin and anticoagulation promptly",
+      "Avoided nitroglycerin and morphine in the setting of RV infarction",
+      "Provided IV fluid resuscitation for preload-dependent hypotension"
+    ],
+    "what_could_have_gone_better": [
+      "Faster ECG acquisition (under 10 minutes from door)",
+      "Earlier cath lab activation without waiting for troponin results",
+      "More rapid recognition that hypotension was from RV failure, not LV failure",
+      "Checking right-sided leads sooner in all inferior STEMIs",
+      "Avoiding reflex nitroglycerin or morphine orders before full assessment"
+    ],
+    "key_choices_to_highlight": [
+      "Whether nitroglycerin or morphine was considered or given and the reasoning",
+      "How the hypotension was managed: fluids vs. vasopressors vs. preload reduction",
+      "Time from door to ECG and time from ECG to cath lab activation",
+      "Whether right-sided leads were obtained and how that changed management",
+      "Decision to pursue primary PCI versus fibrinolysis"
+    ],
+    "teaching_points": [
+      "Door-to-balloon time of less than 90 minutes is the target for primary PCI in STEMI. Every 30-minute delay increases mortality.",
+      "Inferior STEMI should always prompt right-sided ECG leads. Up to 40% of inferior MIs have RV involvement, which fundamentally changes management.",
+      "RV infarction causes preload-dependent hemodynamics. The failing RV cannot generate adequate output, so any reduction in preload (nitroglycerin, morphine, diuretics) can cause catastrophic hypotension.",
+      "The classic triad of RV infarction is hypotension, clear lung fields, and elevated JVP. This distinguishes it from LV failure which presents with pulmonary edema.",
+      "Nitroglycerin is contraindicated in RV infarction, inferior STEMI with suspected RV involvement, SBP less than 90, recent PDE-5 inhibitor use, and severe aortic stenosis.",
+      "Initial management of RV infarction hypotension is IV fluid resuscitation (normal saline boluses). If unresponsive, consider dobutamine or norepinephrine for inotropic and vasopressor support.",
+      "Aspirin 325 mg (chewed for rapid buccal absorption) and anticoagulation with heparin are foundational. P2Y12 inhibitors (ticagrelor or clopidogrel) should be considered per institutional STEMI protocol.",
+      "If PCI is not available within 120 minutes of first medical contact, fibrinolysis should be administered within 30 minutes (door-to-needle time) provided no contraindications exist.",
+      "Sinus bradycardia and AV block are common in inferior STEMI due to increased vagal tone and AV nodal ischemia (supplied by the RCA in 85% of patients). Atropine is first-line for symptomatic bradycardia; transcutaneous pacing for refractory cases."
+    ]
+  }
+}

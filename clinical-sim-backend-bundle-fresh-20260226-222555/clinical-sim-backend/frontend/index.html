@@ -445,6 +445,15 @@
 </head>
 <body>
 
+<!-- Case Selection Screen -->
+<div id="case-select-screen" style="display:none; position:fixed; inset:0; background:var(--bg); z-index:300; overflow-y:auto; padding:20px;">
+  <div style="max-width:900px; margin:0 auto;">
+    <h1 style="color:var(--cyan); font-size:16px; letter-spacing:3px; text-transform:uppercase; margin-bottom:4px;">MedSim</h1>
+    <p style="color:var(--muted); font-size:12px; margin-bottom:20px;">Select a clinical case to begin your simulation</p>
+    <div id="case-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:12px;"></div>
+  </div>
+</div>
+
 <div id="loading-overlay">
   <div class="spinner"></div>
   <div class="loading-text" id="loading-text">INITIALISING SESSION…</div>
@@ -635,9 +644,92 @@
     el.className = 'status-badge ' + (cls || '');
   }
 
-  // ── Init ──────────────────────────────────────────────────
-  async function init() {
+  // ── SSE connection ─────────────────────────────────────────
+  let eventSource = null;
+  function connectSSE() {
+    if (!sessionId) return;
+    try {
+      eventSource = new EventSource(`${API}/sessions/${sessionId}/stream`);
+      eventSource.addEventListener('vitals', (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          if (data.vitals) updateMonitor(data.vitals);
+          if (data.simTimeSec !== undefined) {
+            simTimeSec = data.simTimeSec;
+            document.getElementById('sim-timer').textContent = fmtTime(simTimeSec);
+          }
+        } catch (_) {}
+      });
+      eventSource.onerror = () => {
+        // Auto-reconnect is built into EventSource
+      };
+    } catch (_) {}
+  }
+
+  // ── Case selection ─────────────────────────────────────────
+  const _CATEGORY_COLORS = {
+    'hypertensive_emergency': '#ff4444',
+    'septic_shock': '#ff9500',
+    'dka': '#ffd700',
+    'stemi': '#ff4444',
+    'eclampsia': '#ff99cc',
+    'massive_pe': '#ff6644',
+    'aortic_dissection': '#ff4444',
+    'anaphylaxis': '#ff9500',
+    'ich': '#ff4444',
+    'copd_exacerbation': '#00cfff',
+    'acute_pulmonary_edema': '#00cfff',
+  };
+  const _DIFFICULTY_COLORS = { easy: '#00ff88', moderate: '#ffd700', hard: '#ff9500', expert: '#ff4444' };
+
+  async function showCaseSelection() {
+    hideLoading();
+    const screen = document.getElementById('case-select-screen');
+    screen.style.display = 'block';
+    const grid = document.getElementById('case-grid');
+    grid.innerHTML = '<div style="color:var(--muted);font-size:12px;">Loading cases…</div>';
+
+    try {
+      const res = await fetch(`${API}/cases`);
+      if (!res.ok) throw new Error('Failed to load cases');
+      const data = await res.json();
+      const cases = data.cases || [];
+
+      if (cases.length === 0) {
+        grid.innerHTML = '<div style="color:var(--muted);">No cases available.</div>';
+        return;
+      }
+
+      grid.innerHTML = cases.map(c => {
+        const catColor = _CATEGORY_COLORS[c.category] || 'var(--cyan)';
+        const diffColor = _DIFFICULTY_COLORS[c.difficulty] || 'var(--yellow)';
+        const cat = (c.category || 'general').replace(/_/g, ' ').toUpperCase();
+        return `
+          <div class="case-card" onclick="selectCase('${c.caseId}')" style="
+            background:var(--panel); border:1px solid var(--border); border-radius:6px;
+            padding:16px; cursor:pointer; transition:all 0.2s;
+            border-left:3px solid ${catColor};
+          " onmouseover="this.style.borderColor='var(--cyan)'" onmouseout="this.style.borderColor='var(--border)';this.style.borderLeftColor='${catColor}'">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-size:9px; letter-spacing:1px; color:${catColor}; text-transform:uppercase;">${cat}</span>
+              <span style="font-size:9px; letter-spacing:1px; color:${diffColor}; border:1px solid ${diffColor}; padding:2px 6px; border-radius:3px;">${(c.difficulty || '').toUpperCase()}</span>
+            </div>
+            <div style="font-size:13px; color:var(--text); font-weight:bold; margin-bottom:6px;">${c.title}</div>
+            <div style="font-size:11px; color:var(--muted); line-height:1.5; margin-bottom:8px;">${c.description || ''}</div>
+            <div style="font-size:10px; color:var(--muted);">Patient: ${c.patientName || 'Unknown'}${c.patientAge ? `, ${c.patientAge} yr` : ''}</div>
+          </div>
+        `;
+      }).join('');
+    } catch (err) {
+      grid.innerHTML = `<div style="color:var(--red);">Error: ${err.message}</div>`;
+    }
+  }
+
+  async function selectCase(caseId) {
+    document.getElementById('case-select-screen').style.display = 'none';
     setLoading('CREATING SESSION…');
+    document.getElementById('loading-overlay').style.display = 'flex';
+
     try {
       // 1. Create session
       const sessionRes = await fetch(`${API}/sessions`, {
@@ -654,50 +746,19 @@
       const caseRes = await fetch(`${API}/sessions/${sessionId}/start-case`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ caseId: 'htn_enceph_001', difficulty: 'moderate' }),
+        body: JSON.stringify({ caseId: caseId, difficulty: 'moderate' }),
       });
       if (!caseRes.ok) throw new Error(`Start case failed: ${caseRes.status}`);
       caseData = await caseRes.json();
 
-      // 3. Populate UI from initial state
-      const initial = caseData.initialState || {};
-      const profile = initial.patient_profile || {};
-      const hemo    = (initial.hemodynamics || initial.initial_state?.hemodynamics) || {};
-      const resp    = (initial.respiratory  || initial.initial_state?.respiratory)  || {};
+      populateUI(caseData);
 
-      document.getElementById('case-title').textContent   = initial.case_metadata?.title || caseData.caseId;
-      document.getElementById('patient-name').textContent = profile.name || '—';
-      document.getElementById('p-name').textContent   = profile.name || '—';
-      document.getElementById('p-age').textContent    = profile.age_years ? `${profile.age_years} yr` : '—';
-      document.getElementById('p-sex').textContent    = profile.sex || '—';
-      document.getElementById('p-weight').textContent = profile.weight_kg ? `${profile.weight_kg} kg` : '—';
-
-      // Use state/summary to get vitals
-      await refreshSummary();
-
-      // 4. Show opening script
-      const script = caseData.openingScript || {};
-      const log = document.getElementById('event-log');
-      log.innerHTML = '';  // clear
-
-      if (script.nurse_handoff) {
-        logEvent({ who: 'NURSE', whoClass: 'nurse', text: script.nurse_handoff, severity: 'opening' });
-      }
-      if (script.patient_voice) {
-        logEvent({ who: 'PATIENT', whoClass: 'patient', text: `"${script.patient_voice}"`, severity: 'opening' });
-      }
-      if (script.appearance && script.appearance.length) {
-        logEvent({
-          who: 'OBSERVATION', whoClass: 'system',
-          text: script.appearance.join(' · '),
-          severity: 'info',
-        });
-      }
+      // 3. Connect SSE for live vitals
+      connectSSE();
 
       setStatus('RUNNING', 'running');
       document.getElementById('order-input').disabled = false;
       document.getElementById('submit-btn').disabled  = false;
-      // Don't auto-focus on mobile — would immediately pop the keyboard
       if (window.innerWidth > 768) document.getElementById('order-input').focus();
 
       hideLoading();
@@ -705,6 +766,46 @@
       document.getElementById('loading-text').textContent = `ERROR: ${err.message}`;
       console.error(err);
     }
+  }
+
+  function populateUI(caseData) {
+    const initial = caseData.initialState || {};
+    const profile = initial.patient_profile || {};
+
+    document.getElementById('case-title').textContent   = initial.case_metadata?.title || caseData.caseId;
+    document.getElementById('patient-name').textContent = profile.name || '—';
+    document.getElementById('p-name').textContent   = profile.name || '—';
+    document.getElementById('p-age').textContent    = profile.age_years ? `${profile.age_years} yr` : '—';
+    document.getElementById('p-sex').textContent    = profile.sex || '—';
+    document.getElementById('p-weight').textContent = profile.weight_kg ? `${profile.weight_kg} kg` : '—';
+
+    // Refresh vitals
+    refreshSummary();
+
+    // Show opening script
+    const script = caseData.openingScript || {};
+    const log = document.getElementById('event-log');
+    log.innerHTML = '';
+
+    if (script.nurse_handoff) {
+      logEvent({ who: 'NURSE', whoClass: 'nurse', text: script.nurse_handoff, severity: 'opening' });
+    }
+    if (script.patient_voice) {
+      logEvent({ who: 'PATIENT', whoClass: 'patient', text: `"${script.patient_voice}"`, severity: 'opening' });
+    }
+    if (script.appearance && script.appearance.length) {
+      logEvent({
+        who: 'OBSERVATION', whoClass: 'system',
+        text: script.appearance.join(' · '),
+        severity: 'info',
+      });
+    }
+  }
+
+  // ── Init ──────────────────────────────────────────────────
+  async function init() {
+    // Show case selection screen
+    showCaseSelection();
   }
 
   async function refreshSummary() {

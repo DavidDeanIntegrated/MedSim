@@ -1,0 +1,622 @@
+{
+  "case_file_version": "2.0.0",
+  "case_id": "massive_pe_001",
+  "title": "Massive Pulmonary Embolism with Hemodynamic Collapse",
+  "difficulty": "hard",
+  "scenario_type": "massive_pulmonary_embolism",
+  "category": "massive_pe",
+  "authoring_notes": {
+    "summary": "45-year-old female, 5 days status post right total knee arthroplasty, presents with acute-onset dyspnea, pleuritic chest pain, and near-syncope. She is hypotensive and hypoxic with clinical and ECG evidence of right ventricular strain consistent with massive pulmonary embolism. The learner must rapidly recognize the diagnosis, initiate anticoagulation, provide hemodynamic support, and escalate to systemic thrombolysis while avoiding harmful interventions such as excessive fluid resuscitation and precipitous intubation.",
+    "teaching_focus": [
+      "Classify PE severity: submassive (RV strain, hemodynamically stable) versus massive (hemodynamic instability requiring thrombolysis)",
+      "Understand RV failure physiology: volume-sensitive, pressure-overloaded right ventricle with interventricular septal bowing",
+      "Recognize indications and contraindications for systemic thrombolysis with alteplase",
+      "Perform and interpret bedside echocardiography for acute right heart strain",
+      "Apply judicious IV fluid resuscitation in RV failure (limit to 500 mL bolus; excessive fluids worsen RV dilation and septal shift)",
+      "Understand the hemodynamic risks of intubation in massive PE: sedation-induced vasodilation plus positive-pressure ventilation reducing preload can precipitate cardiac arrest",
+      "Initiate vasopressor support with norepinephrine as first-line agent for obstructive shock",
+      "Recognize classic ECG findings: S1Q3T3 pattern, right axis deviation, right bundle branch block pattern"
+    ]
+  },
+  "case_metadata": {
+    "case_id": "massive_pe_001",
+    "title": "Massive Pulmonary Embolism with Hemodynamic Collapse",
+    "difficulty": "hard",
+    "scenario_type": "massive_pulmonary_embolism",
+    "time_elapsed_sec": 0,
+    "time_step_sec": 5,
+    "status": "not_started"
+  },
+  "patient_profile": {
+    "name": "Patricia Chen",
+    "age_years": 45,
+    "sex": "female",
+    "weight_kg": 88,
+    "height_cm": 165,
+    "bsa_m2": 1.97,
+    "pregnant": false,
+    "gestational_weeks": 0,
+    "chronic_hypertension": false,
+    "baseline_sbp": 124,
+    "baseline_dbp": 76,
+    "baseline_hr": 72,
+    "comorbidities": {
+      "ckd": false,
+      "hfrEF": false,
+      "copd": false,
+      "asthma_or_reactive_airways": false,
+      "cad": false,
+      "diabetes": false,
+      "aortic_aneurysm_history": false,
+      "baseline_beta_blocker_use": false,
+      "baseline_bradycardia": false,
+      "av_conduction_disease": false,
+      "volume_depletion": false,
+      "obesity": true,
+      "recent_surgery": true,
+      "surgery_type": "right_total_knee_arthroplasty",
+      "surgery_days_ago": 5,
+      "immobilization": true,
+      "ocp_use": true,
+      "prior_vte": false,
+      "active_malignancy": false,
+      "thrombophilia": false
+    }
+  },
+  "disease_model": {
+    "primary_pathology": "massive_pulmonary_embolism",
+    "severity_index": 0.88,
+    "clot_burden": {
+      "location": "bilateral_main_pulmonary_arteries_and_lobar_branches",
+      "estimated_vascular_obstruction_pct": 65,
+      "saddle_embolus": false
+    },
+    "end_organ_risk": {
+      "brain": 0.55,
+      "heart": 0.85,
+      "kidney": 0.50,
+      "aorta": 0.0,
+      "lungs": 0.90
+    },
+    "rv_failure_index": 0.82,
+    "rv_dilation_index": 0.75,
+    "septal_bowing_index": 0.70,
+    "pulmonary_hypertension_index": 0.85,
+    "dead_space_ventilation_index": 0.72,
+    "obstructive_shock_index": 0.78,
+    "catecholamine_excess_index": 0.65,
+    "pulmonary_edema_index": 0.0,
+    "cerebral_edema_index": 0.0
+  },
+  "initial_state": {
+    "hemodynamics": {
+      "svr_index": 1.45,
+      "preload_index": 0.55,
+      "contractility_index": 0.50,
+      "cardiac_output_index": 0.48,
+      "stroke_volume_index": 0.45,
+      "map": 66,
+      "sbp": 82,
+      "dbp": 58,
+      "hr": 128,
+      "rhythm": "sinus_tachycardia",
+      "av_node_conduction_index": 1.0,
+      "coronary_supply_demand_mismatch_index": 0.65,
+      "shock_index": 1.56,
+      "cvp_estimate_mmhg": 18,
+      "rv_pressure_overload": true
+    },
+    "respiratory": {
+      "rr": 32,
+      "spo2": 85,
+      "fio2": 0.21,
+      "oxygen_device": "room_air",
+      "work_of_breathing_index": 0.75,
+      "crackles_index": 0.0,
+      "bronchospasm_index": 0.0,
+      "pulmonary_edema_index": 0.0,
+      "dead_space_fraction": 0.55,
+      "pleuritic_chest_pain_index": 0.80
+    },
+    "neurologic": {
+      "gcs": 14,
+      "mental_status": "anxious_and_diaphoretic",
+      "headache_index": 0.0,
+      "vision_change_index": 0.0,
+      "focal_deficit_index": 0.0,
+      "cerebral_hypoperfusion_index": 0.40,
+      "near_syncope": true,
+      "syncope_on_arrival": false
+    },
+    "renal": {
+      "urine_output_ml_per_hr": 20,
+      "renal_perfusion_index": 0.55,
+      "aki_risk_index": 0.45
+    },
+    "cardiac": {
+      "chest_pain_index": 0.60,
+      "chest_pain_character": "pleuritic_right_sided",
+      "ischemia_index": 0.30,
+      "troponin_leak_index": 0.45,
+      "acute_heart_failure_index": 0.0,
+      "rv_strain_index": 0.82,
+      "rv_dilation_present": true,
+      "tricuspid_regurgitation_index": 0.60,
+      "mcconnell_sign": true,
+      "rv_free_wall_hypokinesis": true,
+      "rv_apical_sparing": true
+    },
+    "monitor": {
+      "ecg_text": "Sinus tachycardia, rate 128. S1Q3T3 pattern present. Right axis deviation. T-wave inversions in leads V1-V4 and III/aVF consistent with RV strain. Incomplete RBBB pattern.",
+      "telemetry_quality": "good",
+      "nibp_cycle_sec": 60,
+      "waveform_flags": [
+        "hypotension_alarm",
+        "tachycardia_alarm",
+        "low_spo2_alarm"
+      ]
+    },
+    "labs": {
+      "creatinine_mg_dl": 1.3,
+      "bnp_pg_ml": 680,
+      "troponin_ng_l": 245,
+      "lactate_mmol_l": 4.2,
+      "d_dimer_ng_ml": 5840,
+      "hemoglobin_g_dl": 12.8,
+      "platelet_count_k": 198,
+      "inr": 1.0,
+      "ptt_sec": 28,
+      "fibrinogen_mg_dl": 310,
+      "abg": {
+        "ph": 7.32,
+        "pco2": 28,
+        "po2": 52,
+        "hco3": 18,
+        "base_excess": -6.5,
+        "aa_gradient": 68
+      },
+      "cmp": {
+        "na": 138,
+        "k": 4.1,
+        "cl": 105,
+        "co2": 18,
+        "bun": 24,
+        "glucose": 168,
+        "creatinine": 1.3,
+        "calcium": 8.8,
+        "ast": 42,
+        "alt": 38
+      }
+    },
+    "active_medications": [],
+    "orders": [],
+    "event_log": [],
+    "scoring": {
+      "critical_actions": [],
+      "harm_events": [],
+      "teaching_points": [],
+      "final_score": 0
+    }
+  },
+  "hidden_truth": {
+    "final_diagnosis": "Massive bilateral pulmonary embolism with acute right ventricular failure and obstructive shock, provoked by recent orthopedic surgery, immobilization, obesity, and OCP use",
+    "must_not_miss_alternatives": [
+      "Acute myocardial infarction (right ventricular infarct)",
+      "Tension pneumothorax",
+      "Cardiac tamponade",
+      "Acute aortic dissection",
+      "Septic shock (postoperative wound infection)",
+      "Anaphylaxis (medication reaction)"
+    ],
+    "cta_chest_result_if_ordered": "Extensive bilateral pulmonary emboli involving the right and left main pulmonary arteries extending into lobar and segmental branches. Estimated vascular obstruction approximately 65%. RV-to-LV diameter ratio 1.6 (normal <1.0). Interventricular septal bowing toward the left ventricle. Contrast reflux into the IVC and hepatic veins indicating elevated right heart pressures. No aortic dissection. Small bilateral pleural effusions.",
+    "bedside_echo_result_if_ordered": "Severely dilated right ventricle with RV:LV ratio >1.0. RV free wall hypokinesis with apical sparing (McConnell sign). Interventricular septal bowing into the left ventricle in diastole (D-sign). Moderate tricuspid regurgitation with estimated RVSP 65 mmHg. Hyperdynamic but underfilled left ventricle. No pericardial effusion. IVC dilated >2.1 cm with <50% inspiratory collapse.",
+    "lower_extremity_duplex_if_ordered": "Acute deep vein thrombosis in the right popliteal and femoral veins with non-compressible segments and absent flow augmentation.",
+    "cxr_if_ordered": "Low lung volumes. Subtle oligemia in the right lung field (Westermark sign). Enlarged right descending pulmonary artery (Palla sign). Small right-sided pleural effusion. No focal consolidation. Normal cardiac silhouette.",
+    "ecg_if_ordered": "Sinus tachycardia at 128 bpm. S1Q3T3 pattern. Right axis deviation. T-wave inversions V1-V4 and leads III, aVF. Incomplete right bundle branch block. No ST elevation.",
+    "troponin_trend_if_repeated": "Rising from 245 to 380 ng/L at 3 hours, consistent with ongoing RV myocardial injury",
+    "head_ct_result_if_ordered": "No acute intracranial abnormality",
+    "ua_if_ordered": "Concentrated, specific gravity 1.030, otherwise unremarkable",
+    "pregnancy_test_if_ordered": "Negative",
+    "blood_cultures_if_ordered": "Pending (ultimately no growth at 5 days)"
+  },
+  "opening_script": {
+    "patient_voice": "I can't breathe... I stood up to walk to the bathroom and suddenly everything went black for a second. My chest hurts when I breathe in. Something is really wrong.",
+    "nurse_handoff": "45-year-old woman, 5 days post right knee replacement, brought in by EMS after near-syncope and acute shortness of breath at her rehab facility. She's hypotensive at 82 over 58, tachy at 128, sating 85% on room air. She looks gray and diaphoretic. Right leg is still in a post-op brace. EMS put her on a non-rebreather but her sats are only coming up to 89%.",
+    "appearance": [
+      "Visibly dyspneic with accessory muscle use and tachypnea",
+      "Diaphoretic and pale with perioral cyanosis",
+      "Anxious, speaking in short fragmented sentences",
+      "Right lower extremity in post-surgical immobilizer with mild calf swelling",
+      "Jugular venous distension visible to the angle of the jaw",
+      "Cool and mottled extremities"
+    ]
+  },
+  "critical_actions": [
+    {
+      "id": "recognize_pe_hemodynamic_instability",
+      "description": "Recognize pulmonary embolism as the likely diagnosis and identify hemodynamic instability (obstructive shock)",
+      "target_time_sec": 300,
+      "weight": 12
+    },
+    {
+      "id": "supplemental_oxygen",
+      "description": "Apply supplemental oxygen via high-flow nasal cannula or non-rebreather mask to target SpO2 >92%",
+      "target_time_sec": 120,
+      "weight": 6
+    },
+    {
+      "id": "iv_fluid_bolus_judicious",
+      "description": "Administer a judicious IV fluid bolus of 500 mL crystalloid (avoid excessive volume resuscitation which worsens RV dilation)",
+      "target_time_sec": 300,
+      "weight": 8
+    },
+    {
+      "id": "anticoagulation_heparin",
+      "description": "Initiate systemic anticoagulation with unfractionated heparin (80 units/kg bolus followed by 18 units/kg/hr infusion)",
+      "target_time_sec": 600,
+      "weight": 12
+    },
+    {
+      "id": "diagnostic_imaging",
+      "description": "Obtain CT pulmonary angiography (or bedside echocardiography if patient too unstable for transport to CT scanner)",
+      "target_time_sec": 600,
+      "weight": 10
+    },
+    {
+      "id": "systemic_thrombolysis",
+      "description": "Administer systemic thrombolysis with alteplase (tPA) 100 mg IV over 2 hours for massive PE with hemodynamic collapse (or 50 mg IV bolus if cardiac arrest imminent)",
+      "target_time_sec": 900,
+      "weight": 18
+    },
+    {
+      "id": "vasopressor_support",
+      "description": "Initiate vasopressor support with norepinephrine (preferred) to maintain MAP >65 mmHg while avoiding excessive afterload increase",
+      "target_time_sec": 600,
+      "weight": 10
+    },
+    {
+      "id": "icu_admission",
+      "description": "Arrange ICU admission for continuous hemodynamic monitoring, ventilator standby, and post-thrombolysis care",
+      "target_time_sec": 1800,
+      "weight": 6
+    }
+  ],
+  "harm_events": [
+    {
+      "id": "no_anticoagulation",
+      "description": "Failure to initiate anticoagulation with heparin allows clot propagation and worsening hemodynamic compromise",
+      "trigger": "no_heparin_or_anticoagulant_by_900_sec",
+      "severity": 8
+    },
+    {
+      "id": "excessive_iv_fluids",
+      "description": "Administration of >2 liters IV fluids worsens RV dilation, increases septal bowing, compresses LV, and further reduces cardiac output",
+      "trigger": "total_iv_fluid_volume_greater_than_2000_ml",
+      "severity": 7
+    },
+    {
+      "id": "delayed_thrombolysis",
+      "description": "Failure to initiate systemic thrombolysis in a hemodynamically unstable patient with massive PE leads to progressive RV failure and cardiac arrest",
+      "trigger": "no_thrombolytic_by_1800_sec_and_sbp_less_than_90",
+      "severity": 9
+    },
+    {
+      "id": "intubation_hemodynamic_collapse",
+      "description": "Intubation with sedation and positive-pressure ventilation in a preload-dependent, RV-failing patient causes further reduction in venous return and may precipitate PEA arrest. Avoid intubation unless absolutely necessary; if required, use hemodynamically stable induction agents and prepare for peri-intubation arrest.",
+      "trigger": "intubation_attempted_while_sbp_less_than_90_without_vasopressors_and_thrombolytics",
+      "severity": 8
+    }
+  ],
+  "recommended_management_logic": {
+    "preferred_agents": [
+      "alteplase_iv_systemic",
+      "heparin_unfractionated_iv",
+      "norepinephrine_iv"
+    ],
+    "preferred_strategy": "Rapid recognition of massive PE with obstructive shock. Immediate high-flow oxygen, judicious 500 mL fluid challenge, early anticoagulation with unfractionated heparin, bedside echo or CTA for confirmation, vasopressor support with norepinephrine, and systemic thrombolysis with alteplase. Avoid intubation if possible; if required, use ketamine for induction with push-dose epinephrine at bedside.",
+    "penalized_strategy": [
+      "excessive_iv_fluid_resuscitation_greater_than_2_liters",
+      "intubation_without_vasopressor_and_thrombolytic_preparation",
+      "use_of_propofol_or_other_vasodilating_induction_agents",
+      "delayed_or_withheld_thrombolysis_despite_hemodynamic_instability",
+      "subcutaneous_enoxaparin_instead_of_iv_heparin_in_shock",
+      "discharge_or_floor_admission",
+      "ordering_lower_extremity_duplex_before_addressing_hemodynamic_instability"
+    ],
+    "thrombolysis_dosing": {
+      "alteplase_standard": "100 mg IV over 2 hours",
+      "alteplase_accelerated": "50 mg IV bolus over 15 minutes if peri-arrest",
+      "alteplase_cardiac_arrest": "50 mg IV bolus, may repeat once in 15 minutes",
+      "heparin_note": "Hold heparin infusion during alteplase administration; resume without bolus when aPTT <80 seconds"
+    },
+    "vasopressor_guidance": {
+      "first_line": "norepinephrine 0.1-0.5 mcg/kg/min titrate to MAP >65",
+      "second_line": "vasopressin 0.03-0.04 units/min as adjunct",
+      "avoid": "phenylephrine (pure alpha agonist increases PVR and worsens RV afterload)",
+      "consider": "dobutamine 2-10 mcg/kg/min if persistent low cardiac output after volume optimization"
+    },
+    "fluid_guidance": {
+      "initial_bolus": "250-500 mL normal saline over 15-30 minutes",
+      "reassess_after_bolus": true,
+      "max_recommended_total": "1000 mL unless clear hypovolemia",
+      "rationale": "The RV is volume-sensitive and already dilated; excess preload worsens septal bowing and LV filling"
+    }
+  },
+  "time_course": {
+    "untreated_progression": [
+      {
+        "time_sec": 300,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 78,
+            "dbp": 52,
+            "map": 61,
+            "hr": 134
+          },
+          "respiratory": {
+            "spo2": 82,
+            "rr": 34,
+            "work_of_breathing_index": 0.82
+          },
+          "neurologic": {
+            "mental_status": "increasingly_anxious_and_confused",
+            "gcs": 14,
+            "cerebral_hypoperfusion_index": 0.48
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 15
+          }
+        },
+        "narrative": "She is becoming more agitated and confused. 'I feel like I'm going to pass out again.' Nurse reports BP trending down."
+      },
+      {
+        "time_sec": 600,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 74,
+            "dbp": 48,
+            "map": 57,
+            "hr": 138
+          },
+          "respiratory": {
+            "spo2": 78,
+            "rr": 36,
+            "work_of_breathing_index": 0.88
+          },
+          "neurologic": {
+            "mental_status": "obtunded",
+            "gcs": 12,
+            "cerebral_hypoperfusion_index": 0.62
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 8
+          },
+          "cardiac": {
+            "rv_strain_index": 0.88,
+            "troponin_leak_index": 0.55
+          }
+        },
+        "narrative": "Patient is becoming obtunded. Skin is cold and mottled to the knees. JVD is worsening. Monitor shows worsening hypotension."
+      },
+      {
+        "time_sec": 1200,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 65,
+            "dbp": 40,
+            "map": 48,
+            "hr": 145,
+            "rhythm": "sinus_tachycardia_with_pvcs"
+          },
+          "respiratory": {
+            "spo2": 72,
+            "rr": 38,
+            "work_of_breathing_index": 0.92
+          },
+          "neurologic": {
+            "mental_status": "unresponsive_to_voice",
+            "gcs": 8,
+            "cerebral_hypoperfusion_index": 0.78
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 0
+          },
+          "cardiac": {
+            "rv_strain_index": 0.94
+          }
+        },
+        "conditional_event": "if_no_vasopressor_and_no_thrombolytic",
+        "narrative": "Patient is now unresponsive to voice. Agonal breathing pattern developing. Frequent PVCs on the monitor. Peripheral pulses thready."
+      },
+      {
+        "time_sec": 1800,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 52,
+            "dbp": 30,
+            "map": 37,
+            "hr": 42,
+            "rhythm": "pea_bradycardia"
+          },
+          "respiratory": {
+            "spo2": 55,
+            "rr": 6,
+            "work_of_breathing_index": 0.20
+          },
+          "neurologic": {
+            "mental_status": "unresponsive",
+            "gcs": 3,
+            "cerebral_hypoperfusion_index": 0.95
+          }
+        },
+        "conditional_event": "if_no_thrombolytic_and_continued_deterioration",
+        "narrative": "Patient has progressed to PEA arrest. Bradycardic rhythm on monitor with no palpable pulses. Begin ACLS and administer thrombolytics per cardiac arrest protocol."
+      },
+      {
+        "time_sec": 2400,
+        "effects": {
+          "hemodynamics": {
+            "rhythm": "asystole",
+            "hr": 0,
+            "sbp": 0,
+            "dbp": 0,
+            "map": 0
+          },
+          "neurologic": {
+            "gcs": 3,
+            "mental_status": "unresponsive"
+          }
+        },
+        "conditional_event": "if_no_cpr_and_no_thrombolytic_during_arrest",
+        "narrative": "Despite resuscitation efforts, the patient remains in asystole. Without thrombolysis during cardiac arrest from massive PE, survival is unlikely."
+      }
+    ]
+  },
+  "triggered_diagnostics": {
+    "cta_chest_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "Extensive bilateral pulmonary emboli involving the right and left main pulmonary arteries with extension into lobar and segmental branches. Estimated vascular obstruction approximately 65%. RV-to-LV diameter ratio 1.6 (elevated, normal <1.0). Interventricular septal bowing toward the left ventricle. Contrast reflux into the IVC and hepatic veins indicating elevated right heart pressures. Small bilateral pleural effusions. No aortic dissection.",
+      "critical_finding": true
+    },
+    "bedside_echo_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "Severely dilated right ventricle with RV:LV ratio >1.0. RV free wall hypokinesis with apical sparing (McConnell sign). Interventricular septal bowing into the left ventricle in diastole (D-sign). Moderate tricuspid regurgitation. Estimated RVSP 65 mmHg. Hyperdynamic but underfilled left ventricle. No pericardial effusion. IVC dilated >2.1 cm with <50% inspiratory collapse.",
+      "critical_finding": true
+    },
+    "ecg_ordered": {
+      "result_delay_sec": 60,
+      "result_text": "Sinus tachycardia at 128 bpm. S wave in lead I, Q wave and T-wave inversion in lead III (S1Q3T3). Right axis deviation. T-wave inversions in leads V1-V4 and III/aVF indicating RV strain. Incomplete right bundle branch block. No ST elevation to suggest STEMI."
+    },
+    "cxr_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Low lung volumes. Subtle oligemia in the right lung field (Westermark sign). Enlarged right descending pulmonary artery (Palla sign). Small right-sided pleural effusion. No focal consolidation or pneumothorax. Normal cardiac silhouette."
+    },
+    "d_dimer_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "D-dimer: 5,840 ng/mL (markedly elevated; reference <500 ng/mL)."
+    },
+    "troponin_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "High-sensitivity troponin I: 245 ng/L (elevated; reference <26 ng/L). Consistent with RV myocardial injury."
+    },
+    "bnp_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "BNP: 680 pg/mL (elevated; reference <100 pg/mL). Consistent with acute RV pressure overload and strain."
+    },
+    "abg_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "pH 7.32, pCO2 28 mmHg, pO2 52 mmHg, HCO3 18 mEq/L, base excess -6.5, lactate 4.2 mmol/L. Interpretation: acute respiratory alkalosis with superimposed metabolic acidosis and severe hypoxemia. Calculated A-a gradient 68 mmHg (markedly elevated)."
+    },
+    "cbc_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "WBC 11.2 K/uL, Hemoglobin 12.8 g/dL, Platelets 198 K/uL. Mild leukocytosis likely stress response."
+    },
+    "coag_panel_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "PT 12.8 sec, INR 1.0, aPTT 28 sec, Fibrinogen 310 mg/dL. Coagulation profile normal; no contraindication to anticoagulation or thrombolysis from baseline coagulopathy."
+    },
+    "cmp_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Na 138, K 4.1, Cl 105, CO2 18, BUN 24, Creatinine 1.3, Glucose 168, Calcium 8.8, AST 42, ALT 38. Mildly elevated creatinine (likely pre-renal from poor cardiac output). Low bicarb consistent with metabolic acidosis."
+    },
+    "lower_extremity_duplex_ordered": {
+      "result_delay_sec": 1200,
+      "result_text": "Acute deep vein thrombosis in the right popliteal vein and right superficial femoral vein with non-compressible segments and absent flow augmentation. Left lower extremity veins are patent and compressible."
+    },
+    "lactate_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "Lactate: 4.2 mmol/L (elevated; reference <2.0 mmol/L). Consistent with tissue hypoperfusion and anaerobic metabolism."
+    },
+    "pregnancy_test_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "Negative."
+    },
+    "head_ct_ordered": {
+      "result_delay_sec": 900,
+      "result_text": "No acute intracranial hemorrhage, mass effect, or midline shift. No contraindication to thrombolysis from intracranial pathology."
+    },
+    "type_and_screen_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Blood type A positive. Antibody screen negative. Sample held for crossmatch."
+    }
+  },
+  "success_criteria": {
+    "required": [
+      "recognize_pe_hemodynamic_instability",
+      "supplemental_oxygen",
+      "iv_fluid_bolus_judicious",
+      "anticoagulation_heparin",
+      "diagnostic_imaging",
+      "systemic_thrombolysis",
+      "vasopressor_support",
+      "icu_admission"
+    ],
+    "target_end_state": {
+      "sbp_min": 90,
+      "map_min": 65,
+      "spo2_min": 92,
+      "hr_range": [80, 120],
+      "mental_status": "alert_and_oriented",
+      "gcs_min": 14,
+      "rv_strain_index_max": 0.50,
+      "thrombolytic_administered": true,
+      "anticoagulation_initiated": true,
+      "vasopressor_running": true,
+      "disposition": "icu",
+      "no_harm_event_ids": [
+        "excessive_iv_fluids",
+        "intubation_hemodynamic_collapse",
+        "delayed_thrombolysis"
+      ]
+    }
+  },
+  "failure_criteria": {
+    "any_of": [
+      "pea_arrest_without_thrombolysis",
+      "asystole",
+      "sbp_zero_for_greater_than_120_sec",
+      "no_thrombolytic_by_2400_sec_and_sbp_less_than_70",
+      "unresponsive_state_persists_more_than_600_sec",
+      "disposition_is_discharge",
+      "disposition_is_floor"
+    ]
+  },
+  "debrief_template": {
+    "what_went_well": [
+      "Rapid recognition of massive PE as the cause of obstructive shock",
+      "Early bedside echocardiography to confirm RV strain and guide management",
+      "Judicious fluid resuscitation without excessive volume loading",
+      "Timely initiation of systemic anticoagulation with unfractionated heparin",
+      "Appropriate escalation to systemic thrombolysis for hemodynamically unstable PE",
+      "Vasopressor initiation with norepinephrine to support MAP",
+      "Avoidance of intubation or preparation for peri-intubation hemodynamic collapse"
+    ],
+    "what_could_have_gone_better": [
+      "Earlier recognition of hemodynamic instability as massive (not submassive) PE",
+      "Faster time to thrombolytic administration",
+      "More cautious fluid resuscitation given RV failure physiology",
+      "Earlier vasopressor initiation rather than relying on fluids alone",
+      "Avoiding intubation or using hemodynamically stable induction if intubation required",
+      "Communicating with interventional radiology or cardiac surgery for catheter-directed therapy or surgical embolectomy as backup"
+    ],
+    "key_choices_to_highlight": [
+      "Whether bedside echo or CTA was chosen for initial imaging and why",
+      "Volume of IV fluid administered and impact on hemodynamics",
+      "Whether thrombolysis was initiated or deferred and the clinical reasoning",
+      "Choice of vasopressor agent and dose titration strategy",
+      "Whether intubation was attempted and its hemodynamic consequences",
+      "Whether anticoagulation dosing was appropriate (weight-based UFH)",
+      "Time from presentation to each critical intervention"
+    ],
+    "teaching_points": [
+      "Massive PE is defined by hemodynamic instability (SBP <90 for >15 minutes, vasopressor requirement, or cardiac arrest), NOT by clot size alone.",
+      "The right ventricle is a thin-walled, compliant chamber that cannot acutely generate pressures above 50-60 mmHg. Acute pressure overload leads to RV dilation, septal bowing, LV compression, and reduced cardiac output.",
+      "Excessive IV fluids (>500-1000 mL) in acute RV failure worsen RV dilation and septal shift, further compromising LV filling and cardiac output. This is the opposite of the typical sepsis fluid resuscitation paradigm.",
+      "Systemic thrombolysis with alteplase is the treatment of choice for massive PE. The absolute mortality benefit outweighs bleeding risk in hemodynamically unstable patients. AHA/ESC guidelines give a Class I recommendation.",
+      "Intubation in massive PE is extremely high risk. Sedation causes vasodilation and reduces preload; positive-pressure ventilation further reduces venous return. If intubation is unavoidable, use ketamine for induction, minimize PEEP, have push-dose epinephrine (10-20 mcg boluses) drawn up, and be prepared for peri-intubation cardiac arrest.",
+      "Norepinephrine is the preferred vasopressor in PE-related obstructive shock. It augments RV coronary perfusion through increased aortic root pressure while providing modest inotropy. Avoid phenylephrine as pure alpha agonism increases pulmonary vascular resistance.",
+      "The S1Q3T3 ECG pattern, while classically taught, has low sensitivity (~20%) for PE. More common ECG findings include sinus tachycardia, right axis deviation, RBBB pattern, and T-wave inversions in the anterior leads (V1-V4).",
+      "Bedside echocardiography showing RV dilation, McConnell sign, and septal bowing can confirm the diagnosis at the bedside in minutes and is preferred over CTA when the patient is too unstable for transport."
+    ]
+  }
+}

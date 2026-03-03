@@ -1,0 +1,654 @@
+{
+  "case_file_version": "2.0.0",
+  "case_id": "septic_shock_001",
+  "title": "Septic Shock Secondary to Urosepsis",
+  "difficulty": "moderate",
+  "scenario_type": "septic_shock_urosepsis",
+  "category": "septic_shock",
+  "authoring_notes": {
+    "summary": "68-year-old male nursing facility resident presenting with fever, altered mental status, and hypotension secondary to urinary tract infection progressing to urosepsis and septic shock. The case emphasizes early recognition, the Surviving Sepsis Campaign Hour-1 bundle, aggressive fluid resuscitation, timely broad-spectrum antibiotics, vasopressor initiation for refractory hypotension, and source identification.",
+    "teaching_focus": [
+      "Recognize septic shock using Sepsis-3 criteria (suspected infection plus vasopressor requirement to maintain MAP ≥65 and lactate >2 despite adequate volume resuscitation)",
+      "Execute the Hour-1 bundle: measure lactate, obtain blood cultures before antibiotics, administer broad-spectrum antibiotics, begin 30 mL/kg crystalloid for hypotension or lactate ≥4, apply vasopressors if hypotensive during or after fluid resuscitation",
+      "Obtain blood cultures before antibiotic administration to maximize diagnostic yield",
+      "Initiate norepinephrine as first-line vasopressor per Surviving Sepsis Campaign guidelines",
+      "Identify urinary source and pursue appropriate source control workup",
+      "Monitor lactate clearance as a marker of resuscitation adequacy",
+      "Recognize the higher mortality risk in elderly patients with comorbid diabetes and chronic kidney disease"
+    ]
+  },
+  "case_metadata": {
+    "case_id": "septic_shock_001",
+    "title": "Septic Shock Secondary to Urosepsis",
+    "difficulty": "moderate",
+    "scenario_type": "septic_shock_urosepsis",
+    "time_elapsed_sec": 0,
+    "time_step_sec": 5,
+    "status": "not_started"
+  },
+  "patient_profile": {
+    "name": "Robert Jenkins",
+    "age_years": 68,
+    "sex": "male",
+    "weight_kg": 78,
+    "height_cm": 175,
+    "bsa_m2": 1.94,
+    "pregnant": false,
+    "gestational_weeks": 0,
+    "chronic_hypertension": false,
+    "baseline_sbp": 132,
+    "baseline_dbp": 78,
+    "baseline_hr": 76,
+    "comorbidities": {
+      "ckd": true,
+      "hfrEF": false,
+      "copd": false,
+      "asthma_or_reactive_airways": false,
+      "cad": false,
+      "diabetes": true,
+      "aortic_aneurysm_history": false,
+      "baseline_beta_blocker_use": false,
+      "baseline_bradycardia": false,
+      "av_conduction_disease": false,
+      "volume_depletion": true,
+      "bph": true,
+      "baseline_creatinine_mg_dl": 1.4,
+      "hba1c_percent": 7.8
+    }
+  },
+  "disease_model": {
+    "primary_pathology": "septic_shock",
+    "severity_index": 0.78,
+    "end_organ_risk": {
+      "brain": 0.55,
+      "heart": 0.35,
+      "kidney": 0.8,
+      "aorta": 0.05,
+      "lungs": 0.45
+    },
+    "vasodilation_index": 0.85,
+    "capillary_leak_index": 0.6,
+    "myocardial_depression_index": 0.3,
+    "microvascular_dysfunction_index": 0.65,
+    "lactate_production_index": 0.72,
+    "infection_burden_index": 0.75,
+    "inflammatory_response_index": 0.8,
+    "coagulopathy_index": 0.25
+  },
+  "initial_state": {
+    "hemodynamics": {
+      "svr_index": 0.45,
+      "preload_index": 0.5,
+      "contractility_index": 0.8,
+      "cardiac_output_index": 1.15,
+      "stroke_volume_index": 0.75,
+      "map": 54,
+      "sbp": 78,
+      "dbp": 42,
+      "hr": 118,
+      "rhythm": "sinus_tachycardia",
+      "av_node_conduction_index": 1.0,
+      "coronary_supply_demand_mismatch_index": 0.4
+    },
+    "respiratory": {
+      "rr": 28,
+      "spo2": 93,
+      "fio2": 0.21,
+      "oxygen_device": "room_air",
+      "work_of_breathing_index": 0.45,
+      "crackles_index": 0.1,
+      "bronchospasm_index": 0.0,
+      "pulmonary_edema_index": 0.1
+    },
+    "neurologic": {
+      "gcs": 13,
+      "mental_status": "confused",
+      "headache_index": 0.15,
+      "vision_change_index": 0.0,
+      "focal_deficit_index": 0.0,
+      "cerebral_hypoperfusion_index": 0.55
+    },
+    "renal": {
+      "urine_output_ml_per_hr": 15,
+      "renal_perfusion_index": 0.45,
+      "aki_risk_index": 0.72
+    },
+    "cardiac": {
+      "chest_pain_index": 0.0,
+      "ischemia_index": 0.15,
+      "troponin_leak_index": 0.1,
+      "acute_heart_failure_index": 0.05
+    },
+    "monitor": {
+      "ecg_text": "Sinus tachycardia, rate 118, no ST segment elevations or depressions, normal axis",
+      "telemetry_quality": "good",
+      "nibp_cycle_sec": 60,
+      "waveform_flags": [
+        "hypotension_alarm",
+        "tachycardia_alarm"
+      ]
+    },
+    "labs": {
+      "creatinine_mg_dl": 2.1,
+      "bnp_pg_ml": 185,
+      "troponin_ng_l": 22,
+      "lactate_mmol_l": 4.8,
+      "cbc": {
+        "wbc_k_per_ul": 22.4,
+        "hgb_g_dl": 11.2,
+        "hct_percent": 33.6,
+        "plt_k_per_ul": 158,
+        "bands_percent": 18,
+        "neutrophils_percent": 72
+      },
+      "cmp": {
+        "na": 136,
+        "k": 4.8,
+        "cl": 100,
+        "co2": 18,
+        "bun": 42,
+        "glucose": 188,
+        "creatinine": 2.1,
+        "calcium": 8.2,
+        "total_protein": 5.8,
+        "albumin": 2.8,
+        "ast": 48,
+        "alt": 35,
+        "alk_phos": 110,
+        "total_bilirubin": 1.4
+      },
+      "abg": {
+        "ph": 7.28,
+        "pco2": 28,
+        "po2": 68,
+        "hco3": 13,
+        "base_excess": -11,
+        "fio2_at_draw": 0.21
+      },
+      "coags": {
+        "pt": 15.8,
+        "inr": 1.3,
+        "ptt": 34
+      },
+      "ua": {
+        "appearance": "cloudy",
+        "color": "dark_amber",
+        "specific_gravity": 1.028,
+        "ph": 6.0,
+        "leukocyte_esterase": "3+",
+        "nitrites": "positive",
+        "wbc_per_hpf": "too_numerous_to_count",
+        "rbc_per_hpf": "5-10",
+        "bacteria": "3+",
+        "casts": "granular_casts_present"
+      },
+      "procalcitonin_ng_ml": 18.5,
+      "crp_mg_l": 245
+    },
+    "active_medications": [],
+    "orders": [],
+    "event_log": [],
+    "scoring": {
+      "critical_actions": [],
+      "harm_events": [],
+      "teaching_points": [],
+      "final_score": 0
+    }
+  },
+  "hidden_truth": {
+    "final_diagnosis": "Septic shock secondary to complicated urinary tract infection (urosepsis) with gram-negative bacteremia",
+    "causative_organism": "Escherichia coli (extended-spectrum beta-lactamase negative)",
+    "must_not_miss_alternatives": [
+      "Meningitis (altered mental status with fever)",
+      "Acute abdomen (peritonitis, cholangitis)",
+      "Pneumonia with sepsis",
+      "Endocarditis",
+      "Necrotizing soft tissue infection",
+      "Adrenal crisis"
+    ],
+    "blood_culture_result_if_ordered": "Preliminary: Gram-negative rods in 2 of 2 bottles at 8 hours. Final (48h): Escherichia coli, pan-sensitive.",
+    "urine_culture_result_if_ordered": "Greater than 100,000 CFU/mL Escherichia coli, pan-sensitive.",
+    "cxr_if_ordered": "No focal consolidation. No pulmonary edema. Mildly low lung volumes. No pleural effusion.",
+    "ct_abdomen_pelvis_if_ordered": "Distended urinary bladder with thickened, enhancing walls consistent with cystitis. Mild bilateral hydroureteronephrosis, left greater than right, consistent with BPH-related obstruction. No perinephric abscess. Prostatic enlargement noted.",
+    "ct_head_if_ordered": "No acute intracranial abnormality. Age-appropriate atrophy and mild chronic microvascular changes.",
+    "echocardiogram_if_ordered": "Left ventricular ejection fraction 50-55%. No valvular vegetations. Mild diastolic dysfunction grade I. No pericardial effusion.",
+    "lumbar_puncture_if_ordered": "Cell count: WBC 2, RBC 0. Glucose 95. Protein 38. Gram stain: No organisms seen. Not consistent with meningitis.",
+    "renal_ultrasound_if_ordered": "Bilateral mild hydronephrosis, left greater than right. Enlarged prostate. Distended bladder with echogenic debris. No renal abscess."
+  },
+  "opening_script": {
+    "patient_voice": "I don't feel right... I'm so cold... where am I? Everything hurts when I try to pee.",
+    "nurse_handoff": "68-year-old male brought in from Sunrise Nursing Facility. Staff says he's been confused since this morning, had a fever to 39.2, and his blood pressure has been running low. They placed a Foley at the facility and the urine looked dark and foul-smelling. Pressure here is 78 over 42, heart rate 118. He's warm to touch and looks dry.",
+    "appearance": [
+      "Elderly male, appears acutely ill and diaphoretic",
+      "Warm and flushed extremities with bounding pulses",
+      "Confused, oriented only to name, intermittently drowsy",
+      "Tachypneic with shallow respirations, no accessory muscle use"
+    ]
+  },
+  "critical_actions": [
+    {
+      "id": "recognize_septic_shock",
+      "description": "Recognize septic shock: suspected infection with hemodynamic compromise (hypotension, tachycardia, elevated lactate, end-organ dysfunction)",
+      "target_time_sec": 300,
+      "weight": 12
+    },
+    {
+      "id": "obtain_blood_cultures",
+      "description": "Obtain at least 2 sets of blood cultures from 2 separate sites before antibiotic administration",
+      "target_time_sec": 300,
+      "weight": 10
+    },
+    {
+      "id": "administer_broad_spectrum_antibiotics",
+      "description": "Administer IV broad-spectrum antibiotics within 1 hour of presentation (e.g., piperacillin-tazobactam, cefepime, or meropenem plus vancomycin if MRSA risk)",
+      "target_time_sec": 600,
+      "weight": 16
+    },
+    {
+      "id": "initiate_fluid_resuscitation",
+      "description": "Initiate aggressive IV crystalloid fluid resuscitation at 30 mL/kg (approximately 2340 mL for 78 kg patient)",
+      "target_time_sec": 600,
+      "weight": 14
+    },
+    {
+      "id": "start_vasopressors",
+      "description": "Start vasopressor therapy (norepinephrine preferred) if MAP remains below 65 mmHg despite adequate fluid resuscitation",
+      "target_time_sec": 1200,
+      "weight": 14
+    },
+    {
+      "id": "obtain_source_control_workup",
+      "description": "Obtain source control workup: urinalysis, urine culture, blood cultures, chest X-ray, and consider CT abdomen/pelvis",
+      "target_time_sec": 600,
+      "weight": 8
+    },
+    {
+      "id": "monitor_lactate_clearance",
+      "description": "Repeat lactate measurement within 2-4 hours to assess clearance and guide resuscitation adequacy",
+      "target_time_sec": 1800,
+      "weight": 8
+    },
+    {
+      "id": "icu_admission",
+      "description": "Arrange ICU admission for ongoing hemodynamic monitoring, vasopressor management, and continued resuscitation",
+      "target_time_sec": 2400,
+      "weight": 6
+    }
+  ],
+  "harm_events": [
+    {
+      "id": "delayed_antibiotics",
+      "description": "Antibiotics not administered within 60 minutes of presentation; each hour of delay in septic shock increases mortality by approximately 7.6%",
+      "trigger": "no_broad_spectrum_antibiotic_by_3600_sec",
+      "severity": 9
+    },
+    {
+      "id": "no_fluid_resuscitation",
+      "description": "No IV crystalloid fluid resuscitation initiated within 30 minutes despite hypotension and elevated lactate",
+      "trigger": "no_iv_fluid_bolus_by_1800_sec",
+      "severity": 8
+    },
+    {
+      "id": "vasopressor_without_adequate_fluids",
+      "description": "Vasopressor initiated before adequate fluid resuscitation (less than 15 mL/kg crystalloid given), risking worsened microvascular perfusion",
+      "trigger": "vasopressor_started_and_total_fluid_less_than_1170_ml",
+      "severity": 6
+    },
+    {
+      "id": "missed_source_identification",
+      "description": "Failed to identify urinary tract as the infection source, risking missed obstruction and inadequate source control",
+      "trigger": "no_ua_and_no_urine_culture_by_3600_sec",
+      "severity": 5
+    },
+    {
+      "id": "excess_fluid_without_reassessment",
+      "description": "Continued large-volume fluid administration (>50 mL/kg) without reassessing volume status, risking pulmonary edema",
+      "trigger": "total_fluid_greater_than_3900_ml_and_no_reassessment",
+      "severity": 5
+    },
+    {
+      "id": "cultures_after_antibiotics",
+      "description": "Blood cultures obtained after antibiotic administration, reducing culture yield and potentially delaying organism identification and targeted therapy",
+      "trigger": "blood_cultures_ordered_after_antibiotic_administration",
+      "severity": 4
+    }
+  ],
+  "recommended_management_logic": {
+    "preferred_agents": [
+      "norepinephrine_iv",
+      "piperacillin_tazobactam_iv",
+      "cefepime_iv",
+      "meropenem_iv",
+      "normal_saline_iv_bolus",
+      "lactated_ringers_iv_bolus"
+    ],
+    "preferred_strategy": "Hour-1 bundle execution: measure lactate, obtain blood cultures, administer broad-spectrum antibiotics, initiate 30 mL/kg crystalloid resuscitation, start norepinephrine if MAP <65 after fluids. Reassess volume status and lactate clearance. Identify and address infection source.",
+    "preferred_vasopressor_sequence": [
+      "norepinephrine_first_line",
+      "vasopressin_adjunct_if_norepinephrine_above_0.25_mcg_kg_min",
+      "epinephrine_if_cardiac_dysfunction"
+    ],
+    "fluid_resuscitation_notes": "30 mL/kg crystalloid (balanced crystalloid preferred). Reassess hemodynamics frequently. Consider dynamic measures of fluid responsiveness (pulse pressure variation, passive leg raise) if uncertain about further fluid benefit.",
+    "antibiotic_notes": "Broad gram-negative coverage essential for urosepsis. Piperacillin-tazobactam 4.5g IV or cefepime 2g IV. Add vancomycin if concern for MRSA or healthcare-associated infection. Adjust for renal dysfunction. De-escalate based on culture results.",
+    "penalized_strategy": [
+      "delayed_antibiotics_beyond_60_minutes",
+      "vasopressin_as_sole_first_line_vasopressor",
+      "dopamine_as_first_line_vasopressor_except_bradycardia",
+      "insufficient_fluid_resuscitation_before_vasopressors",
+      "phenylephrine_as_sole_vasopressor",
+      "discharge_from_ed",
+      "steroids_before_vasopressor_trial"
+    ]
+  },
+  "time_course": {
+    "untreated_progression": [
+      {
+        "time_sec": 300,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 74,
+            "dbp": 38,
+            "map": 50,
+            "hr": 124
+          },
+          "neurologic": {
+            "mental_status": "confused",
+            "gcs": 12,
+            "cerebral_hypoperfusion_index": 0.62
+          },
+          "respiratory": {
+            "rr": 30,
+            "spo2": 92
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 10,
+            "aki_risk_index": 0.78
+          }
+        },
+        "narrative": "Blood pressure continues to drift downward. The patient is more confused and no longer answering questions appropriately."
+      },
+      {
+        "time_sec": 900,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 68,
+            "dbp": 34,
+            "map": 45,
+            "hr": 132
+          },
+          "neurologic": {
+            "mental_status": "somnolent",
+            "gcs": 11,
+            "cerebral_hypoperfusion_index": 0.75
+          },
+          "respiratory": {
+            "rr": 34,
+            "spo2": 90,
+            "work_of_breathing_index": 0.6
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 5,
+            "aki_risk_index": 0.85
+          },
+          "disease_model": {
+            "lactate_production_index": 0.82,
+            "microvascular_dysfunction_index": 0.75
+          }
+        },
+        "narrative": "The patient is now difficult to arouse. His skin is becoming mottled over the knees and elbows. Respiratory rate has increased with Kussmaul-type breathing. Urine output has dropped markedly."
+      },
+      {
+        "time_sec": 1800,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 62,
+            "dbp": 30,
+            "map": 41,
+            "hr": 138
+          },
+          "neurologic": {
+            "mental_status": "obtunded",
+            "gcs": 9,
+            "cerebral_hypoperfusion_index": 0.85
+          },
+          "respiratory": {
+            "rr": 36,
+            "spo2": 87,
+            "work_of_breathing_index": 0.75
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 0,
+            "aki_risk_index": 0.95
+          },
+          "disease_model": {
+            "lactate_production_index": 0.92,
+            "coagulopathy_index": 0.5,
+            "myocardial_depression_index": 0.55
+          },
+          "labs": {
+            "lactate_mmol_l": 7.2
+          }
+        },
+        "conditional_event": "if_no_iv_fluids_and_no_antibiotics",
+        "narrative": "Significant hemodynamic deterioration. The patient is obtunded with diffuse mottling. Extremities are becoming cool. Anuric. Lactate rising sharply. The nurse expresses concern about impending arrest."
+      },
+      {
+        "time_sec": 2400,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 55,
+            "dbp": 28,
+            "map": 37,
+            "hr": 145
+          },
+          "neurologic": {
+            "mental_status": "unresponsive",
+            "gcs": 6
+          },
+          "respiratory": {
+            "rr": 38,
+            "spo2": 83,
+            "work_of_breathing_index": 0.9
+          },
+          "disease_model": {
+            "lactate_production_index": 0.95,
+            "coagulopathy_index": 0.7,
+            "myocardial_depression_index": 0.7
+          },
+          "labs": {
+            "lactate_mmol_l": 9.5
+          }
+        },
+        "conditional_event": "if_no_meaningful_resuscitation",
+        "narrative": "Patient is unresponsive. Profound hypotension with signs of multi-organ failure. Mottling extends to trunk. Agonal breathing pattern developing. Without immediate intervention, cardiac arrest is imminent."
+      },
+      {
+        "time_sec": 3600,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 40,
+            "dbp": 20,
+            "map": 27,
+            "hr": 42,
+            "rhythm": "junctional_bradycardia"
+          },
+          "neurologic": {
+            "mental_status": "unresponsive",
+            "gcs": 3
+          },
+          "respiratory": {
+            "rr": 6,
+            "spo2": 70,
+            "work_of_breathing_index": 0.95
+          }
+        },
+        "conditional_event": "if_no_intervention",
+        "narrative": "Pulseless electrical activity arrest. The patient has progressed to cardiovascular collapse from refractory distributive shock and multi-organ failure."
+      }
+    ]
+  },
+  "triggered_diagnostics": {
+    "cbc_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "WBC 22.4 K/uL (H) with 18% bands (left shift), Hgb 11.2 g/dL, Hct 33.6%, Plt 158 K/uL. Differential: Neutrophils 72%, Bands 18%, Lymphocytes 6%, Monocytes 4%."
+    },
+    "cmp_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "Na 136, K 4.8, Cl 100, CO2 18 (L), BUN 42 (H), Cr 2.1 (H, baseline 1.4), Glucose 188 (H), Ca 8.2 (L), AST 48 (H), ALT 35, Alk Phos 110, T.Bili 1.4, Albumin 2.8 (L)."
+    },
+    "lactate_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "Lactate 4.8 mmol/L (H, critical value). Consistent with tissue hypoperfusion."
+    },
+    "repeat_lactate_ordered": {
+      "result_delay_sec": 120,
+      "result_text_if_treated": "Lactate 3.1 mmol/L (H, improving). Approximately 35% clearance suggests response to resuscitation.",
+      "result_text_if_untreated": "Lactate 7.2 mmol/L (H, critical, worsening). Rising lactate indicates ongoing tissue hypoperfusion and inadequate resuscitation."
+    },
+    "abg_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "pH 7.28 (L), pCO2 28 mmHg (L), pO2 68 mmHg (L), HCO3 13 mEq/L (L), Base Excess -11 (L). Interpretation: Metabolic acidosis with respiratory compensation (anion gap 18). Consistent with lactic acidosis from septic shock."
+    },
+    "blood_cultures_ordered": {
+      "result_delay_sec": 60,
+      "result_text_preliminary": "Blood cultures sent to lab. Gram stain pending.",
+      "result_text_8h": "Preliminary report at 8 hours: Gram-negative rods growing in 2 of 2 aerobic bottles.",
+      "result_text_48h": "Final at 48 hours: Escherichia coli, pan-sensitive. Susceptible to ceftriaxone, cefepime, piperacillin-tazobactam, meropenem, gentamicin, ciprofloxacin, TMP-SMX."
+    },
+    "ua_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "Appearance: Cloudy/turbid. Color: Dark amber. SG 1.028. pH 6.0. Leukocyte esterase: 3+ (H). Nitrites: Positive. WBC: Too numerous to count (H). RBC: 5-10/hpf. Bacteria: 3+. Granular casts present. Strongly consistent with urinary tract infection."
+    },
+    "urine_culture_ordered": {
+      "result_delay_sec": 60,
+      "result_text_preliminary": "Urine culture sent to lab.",
+      "result_text_48h": "Final at 48 hours: >100,000 CFU/mL Escherichia coli, pan-sensitive."
+    },
+    "procalcitonin_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Procalcitonin 18.5 ng/mL (H, critical). Markedly elevated, strongly supportive of bacterial infection."
+    },
+    "crp_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "C-reactive protein 245 mg/L (H). Markedly elevated, consistent with significant systemic inflammatory response."
+    },
+    "coags_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "PT 15.8 sec (H), INR 1.3 (H), PTT 34 sec. Mildly elevated PT/INR may reflect early sepsis-associated coagulopathy."
+    },
+    "ecg_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "Sinus tachycardia at 118 bpm. Normal axis. No ST segment elevations or depressions. No T-wave inversions. QTc 440 ms. No acute ischemic changes."
+    },
+    "cxr_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "No focal consolidation or infiltrate. No pulmonary edema. Heart size normal. No pleural effusion. Mildly low lung volumes. No pneumothorax. No acute cardiopulmonary process identified."
+    },
+    "ct_abdomen_pelvis_ordered": {
+      "result_delay_sec": 2400,
+      "result_text": "Distended urinary bladder with diffusely thickened and enhancing walls consistent with acute cystitis. Mild bilateral hydroureteronephrosis, left greater than right. Enlarged prostate gland (estimated 65 mL). No perinephric abscess or stranding to suggest pyelonephritis complicated by abscess. No free fluid. No bowel obstruction. No appendicitis."
+    },
+    "ct_head_ordered": {
+      "result_delay_sec": 1800,
+      "result_text": "No acute intracranial hemorrhage, mass, or midline shift. Age-appropriate cerebral atrophy. Chronic periventricular white matter hypodensities consistent with small vessel ischemic disease. No acute territorial infarct."
+    },
+    "troponin_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "High-sensitivity troponin 22 ng/L (mildly elevated). In the setting of septic shock, this likely represents demand ischemia (type 2 MI) rather than acute coronary syndrome."
+    },
+    "echocardiogram_ordered": {
+      "result_delay_sec": 3600,
+      "result_text": "Left ventricular ejection fraction 50-55%. No regional wall motion abnormalities. No valvular vegetations identified. Mild diastolic dysfunction grade I. IVC partially collapsible, suggesting volume responsiveness. No pericardial effusion."
+    },
+    "renal_ultrasound_ordered": {
+      "result_delay_sec": 1800,
+      "result_text": "Bilateral mild hydronephrosis, left greater than right. Enlarged prostate. Bladder with echogenic debris consistent with infection. No renal masses or stones identified. No perinephric fluid collections."
+    },
+    "lumbar_puncture_ordered": {
+      "result_delay_sec": 1200,
+      "result_text": "Opening pressure 14 cmH2O. Cell count: WBC 2/uL (normal), RBC 0/uL. Glucose 95 mg/dL (normal). Protein 38 mg/dL (normal). Gram stain: No organisms seen. Not consistent with bacterial meningitis."
+    },
+    "dfa_flu_covid_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "Influenza A/B: Negative. SARS-CoV-2 PCR: Negative."
+    }
+  },
+  "success_criteria": {
+    "required": [
+      "recognize_septic_shock",
+      "obtain_blood_cultures",
+      "administer_broad_spectrum_antibiotics",
+      "initiate_fluid_resuscitation",
+      "start_vasopressors",
+      "obtain_source_control_workup",
+      "monitor_lactate_clearance",
+      "icu_admission"
+    ],
+    "target_end_state": {
+      "map_range": [65, 80],
+      "mental_status": "confused_but_improving",
+      "gcs_min": 13,
+      "lactate_clearance_percent_min": 20,
+      "urine_output_ml_per_hr_min": 20,
+      "vasopressor_initiated": true,
+      "antibiotics_given_within_3600_sec": true,
+      "fluid_volume_ml_min": 2340,
+      "no_harm_event_ids": [
+        "delayed_antibiotics",
+        "no_fluid_resuscitation"
+      ]
+    }
+  },
+  "failure_criteria": {
+    "any_of": [
+      "pea_arrest_from_refractory_shock",
+      "map_less_than_30_for_more_than_300_sec",
+      "unresponsive_state_persists_more_than_600_sec",
+      "disposition_is_discharge",
+      "no_antibiotics_by_7200_sec",
+      "no_iv_fluids_by_3600_sec"
+    ]
+  },
+  "debrief_template": {
+    "what_went_well": [
+      "Early recognition of septic shock based on clinical criteria (infection plus hemodynamic instability plus end-organ dysfunction)",
+      "Timely execution of Hour-1 bundle elements",
+      "Blood cultures obtained before antibiotic administration",
+      "Appropriate broad-spectrum antibiotic selection covering gram-negative urosepsis",
+      "Adequate fluid resuscitation with reassessment of volume status",
+      "Appropriate vasopressor selection (norepinephrine first-line) and timely initiation",
+      "Identification of urinary source and pursuit of source control workup",
+      "Serial lactate monitoring to assess resuscitation adequacy"
+    ],
+    "what_could_have_gone_better": [
+      "Earlier recognition of septic shock versus simple infection",
+      "Faster antibiotic administration (each hour of delay increases mortality)",
+      "More aggressive initial fluid resuscitation",
+      "Earlier vasopressor initiation when MAP remained below 65 despite fluids",
+      "More thorough source control evaluation including imaging",
+      "Better reassessment of fluid responsiveness before additional boluses",
+      "Earlier ICU consultation and disposition planning"
+    ],
+    "key_choices_to_highlight": [
+      "Timing of blood culture collection relative to antibiotic administration",
+      "Antibiotic choice and spectrum of coverage",
+      "Volume and rate of crystalloid fluid resuscitation",
+      "Threshold for vasopressor initiation and agent selected",
+      "Whether source control workup was comprehensive",
+      "Whether lactate was trended to guide resuscitation",
+      "Timing and appropriateness of ICU disposition"
+    ],
+    "teaching_points": [
+      "Sepsis-3 defines septic shock as sepsis with vasopressor requirement to maintain MAP ≥65 mmHg AND serum lactate >2 mmol/L despite adequate volume resuscitation. In-hospital mortality exceeds 40%.",
+      "The Surviving Sepsis Campaign Hour-1 Bundle includes: (1) Measure lactate and remeasure if >2 mmol/L, (2) Obtain blood cultures before antibiotics, (3) Administer broad-spectrum antibiotics, (4) Begin 30 mL/kg crystalloid for hypotension or lactate ≥4 mmol/L, (5) Apply vasopressors if hypotensive during or after fluid resuscitation to maintain MAP ≥65 mmHg.",
+      "Each hour of delay in antibiotic administration in septic shock is associated with an approximately 7.6% increase in mortality (Kumar et al., Crit Care Med 2006). Antibiotics should be given within 1 hour.",
+      "Blood cultures should ALWAYS be obtained before antibiotics when feasible, but antibiotic administration should never be delayed beyond 1 hour to obtain cultures.",
+      "Norepinephrine is the first-line vasopressor for septic shock per SSC guidelines. Vasopressin (up to 0.03 U/min) may be added as an adjunct. Dopamine is associated with more arrhythmias and is no longer recommended as first-line.",
+      "Balanced crystalloids (lactated Ringer's) may be preferred over normal saline for large-volume resuscitation to reduce hyperchloremic metabolic acidosis and AKI risk (SMART trial).",
+      "Lactate clearance of ≥20% over 2 hours is associated with improved outcomes and can be used to guide resuscitation adequacy.",
+      "In urosepsis, source control may include Foley catheter placement for bladder drainage, and urology consultation for obstructive uropathy. CT imaging should be considered if obstruction or abscess is suspected.",
+      "Elderly patients with diabetes and CKD have blunted physiologic reserves and may deteriorate rapidly. Lower baseline creatinine should be used to recognize AKI (this patient's Cr rose from 1.4 to 2.1, representing significant acute injury).",
+      "The qSOFA score (altered mental status, respiratory rate ≥22, systolic BP ≤100) is a bedside screen for patients likely to have poor outcomes from sepsis, but it should not delay treatment when clinical suspicion is high."
+    ]
+  }
+}

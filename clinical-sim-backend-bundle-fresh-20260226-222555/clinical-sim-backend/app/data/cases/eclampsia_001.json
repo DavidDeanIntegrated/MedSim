@@ -1,0 +1,701 @@
+{
+  "case_file_version": "2.0.0",
+  "case_id": "eclampsia_001",
+  "title": "Eclampsia with Seizure in Third Trimester",
+  "difficulty": "hard",
+  "scenario_type": "eclampsia",
+  "category": "eclampsia",
+  "authoring_notes": {
+    "summary": "28-year-old G2P1 female at 34 weeks gestation presents after witnessed generalized tonic-clonic seizure in triage preceded by severe headache and visual changes. Found to be severely hypertensive with thrombocytopenia, transaminitis, and proteinuria consistent with eclampsia superimposed on HELLP syndrome. Learner must stabilize the seizing patient, administer magnesium sulfate as first-line therapy, control blood pressure with pregnancy-safe agents, consult OB for emergent delivery, and avoid contraindicated medications.",
+    "teaching_focus": [
+      "Differentiate eclampsia from other seizure etiologies in pregnancy",
+      "Recognize HELLP syndrome as a severe complication of preeclampsia spectrum",
+      "Administer magnesium sulfate as first-line treatment for eclamptic seizures — NOT phenytoin",
+      "Select pregnancy-safe antihypertensives: labetalol, hydralazine, or nifedipine",
+      "Understand that definitive treatment of eclampsia is delivery of the fetus and placenta",
+      "Monitor for magnesium toxicity: loss of deep tendon reflexes, respiratory depression",
+      "Avoid teratogenic and contraindicated medications: nitroprusside, ACE inhibitors, ARBs",
+      "Coordinate early OB consultation for delivery planning"
+    ]
+  },
+  "case_metadata": {
+    "case_id": "eclampsia_001",
+    "title": "Eclampsia with Seizure in Third Trimester",
+    "difficulty": "hard",
+    "scenario_type": "eclampsia",
+    "time_elapsed_sec": 0,
+    "time_step_sec": 5,
+    "status": "not_started"
+  },
+  "patient_profile": {
+    "name": "Keisha Williams",
+    "age_years": 28,
+    "sex": "female",
+    "weight_kg": 76,
+    "height_cm": 165,
+    "bsa_m2": 1.84,
+    "pregnant": true,
+    "gestational_weeks": 34,
+    "gravida": 2,
+    "para": 1,
+    "prior_obstetric_history": "G1P1 — uncomplicated term vaginal delivery 3 years ago, no prior preeclampsia",
+    "prenatal_care": "Regular prenatal visits, blood pressures previously normal, no proteinuria on prior screens",
+    "chronic_hypertension": false,
+    "baseline_sbp": 118,
+    "baseline_dbp": 72,
+    "baseline_hr": 78,
+    "comorbidities": {
+      "ckd": false,
+      "hfrEF": false,
+      "copd": false,
+      "asthma_or_reactive_airways": false,
+      "cad": false,
+      "diabetes": false,
+      "aortic_aneurysm_history": false,
+      "baseline_beta_blocker_use": false,
+      "baseline_bradycardia": false,
+      "av_conduction_disease": false,
+      "volume_depletion": false,
+      "prior_preeclampsia": false,
+      "chronic_kidney_disease": false,
+      "autoimmune_disease": false,
+      "thrombophilia": false
+    }
+  },
+  "disease_model": {
+    "primary_pathology": "eclampsia_with_hellp_syndrome",
+    "severity_index": 0.88,
+    "end_organ_risk": {
+      "brain": 0.95,
+      "heart": 0.20,
+      "kidney": 0.55,
+      "liver": 0.70,
+      "lungs": 0.25,
+      "placenta": 0.85,
+      "hematologic": 0.72
+    },
+    "autoregulation_shift_index": 0.85,
+    "catecholamine_excess_index": 0.35,
+    "pulmonary_edema_index": 0.10,
+    "cerebral_edema_index": 0.75,
+    "endothelial_dysfunction_index": 0.88,
+    "platelet_consumption_index": 0.72,
+    "hepatic_injury_index": 0.65,
+    "placental_insufficiency_index": 0.78,
+    "seizure_threshold_index": 0.15
+  },
+  "initial_state": {
+    "hemodynamics": {
+      "svr_index": 1.85,
+      "preload_index": 0.85,
+      "contractility_index": 1.05,
+      "cardiac_output_index": 1.10,
+      "stroke_volume_index": 1.0,
+      "map": 133,
+      "sbp": 182,
+      "dbp": 108,
+      "hr": 110,
+      "rhythm": "sinus_tachycardia",
+      "av_node_conduction_index": 1.0,
+      "coronary_supply_demand_mismatch_index": 0.15
+    },
+    "respiratory": {
+      "rr": 22,
+      "spo2": 94,
+      "fio2": 0.21,
+      "oxygen_device": "room_air",
+      "work_of_breathing_index": 0.30,
+      "crackles_index": 0.05,
+      "bronchospasm_index": 0.0,
+      "pulmonary_edema_index": 0.10
+    },
+    "neurologic": {
+      "gcs": 10,
+      "gcs_breakdown": {
+        "eye": 3,
+        "verbal": 3,
+        "motor": 4
+      },
+      "mental_status": "post_ictal",
+      "headache_index": 0.95,
+      "vision_change_index": 0.85,
+      "focal_deficit_index": 0.0,
+      "cerebral_hypoperfusion_index": 0.0,
+      "seizure_active": false,
+      "seizure_history": "witnessed_gtc_in_triage_approx_2_min_duration_self_terminated",
+      "deep_tendon_reflexes": "hyperreflexic_3_plus_with_clonus",
+      "pupil_response": "bilateral_equal_reactive_4mm"
+    },
+    "renal": {
+      "urine_output_ml_per_hr": 25,
+      "renal_perfusion_index": 0.65,
+      "aki_risk_index": 0.45,
+      "proteinuria": "3_plus"
+    },
+    "cardiac": {
+      "chest_pain_index": 0.0,
+      "ischemia_index": 0.05,
+      "troponin_leak_index": 0.0,
+      "acute_heart_failure_index": 0.05
+    },
+    "monitor": {
+      "ecg_text": "Sinus tachycardia, rate 110, normal axis, no STEMI, no ST-T changes",
+      "telemetry_quality": "good",
+      "nibp_cycle_sec": 60,
+      "waveform_flags": [
+        "hypertension_alarm",
+        "tachycardia_alarm",
+        "spo2_low_alarm"
+      ],
+      "fetal_heart_rate": {
+        "baseline_bpm": 155,
+        "variability": "moderate",
+        "decelerations": "occasional_variable",
+        "category": "category_II"
+      }
+    },
+    "labs": {
+      "creatinine_mg_dl": 1.2,
+      "bnp_pg_ml": 95,
+      "troponin_ng_l": 8,
+      "lactate_mmol_l": 2.1,
+      "abg": {
+        "ph": 7.34,
+        "pco2": 30,
+        "po2": 78,
+        "hco3": 20
+      },
+      "cbc": {
+        "wbc": 12.4,
+        "hemoglobin": 11.2,
+        "hematocrit": 34.1,
+        "platelets": 89
+      },
+      "cmp": {
+        "na": 137,
+        "k": 4.2,
+        "cl": 102,
+        "co2": 20,
+        "bun": 22,
+        "glucose": 98,
+        "creatinine": 1.2,
+        "calcium": 8.9,
+        "ast": 245,
+        "alt": 198,
+        "alkaline_phosphatase": 142,
+        "total_bilirubin": 1.8,
+        "albumin": 2.8
+      },
+      "coagulation": {
+        "pt": 12.8,
+        "inr": 1.1,
+        "ptt": 32,
+        "fibrinogen": 285,
+        "d_dimer": 2.4
+      },
+      "uric_acid_mg_dl": 8.2,
+      "ldh_u_l": 680,
+      "haptoglobin_mg_dl": 18,
+      "peripheral_smear": "schistocytes_present_consistent_with_microangiopathic_hemolytic_anemia",
+      "urinalysis": {
+        "protein": "3_plus",
+        "blood": "trace",
+        "leukocyte_esterase": "negative",
+        "nitrites": "negative",
+        "wbc": "0_to_2",
+        "rbc": "5_to_10"
+      },
+      "urine_protein_creatinine_ratio": 4.8,
+      "magnesium_level_meq_l": 1.8,
+      "type_and_screen": "O_positive_antibody_negative"
+    },
+    "active_medications": [],
+    "orders": [],
+    "event_log": [],
+    "scoring": {
+      "critical_actions": [],
+      "harm_events": [],
+      "teaching_points": [],
+      "final_score": 0
+    }
+  },
+  "hidden_truth": {
+    "final_diagnosis": "Eclampsia with HELLP syndrome at 34 weeks gestation",
+    "must_not_miss_alternatives": [
+      "Intracranial hemorrhage (stroke)",
+      "Cerebral venous sinus thrombosis",
+      "Posterior reversible encephalopathy syndrome (PRES)",
+      "Epilepsy with breakthrough seizure",
+      "Thrombotic thrombocytopenic purpura (TTP)",
+      "Acute fatty liver of pregnancy"
+    ],
+    "hellp_criteria_met": {
+      "hemolysis": true,
+      "hemolysis_evidence": "LDH 680, haptoglobin 18, schistocytes on smear",
+      "elevated_liver_enzymes": true,
+      "liver_evidence": "AST 245, ALT 198",
+      "low_platelets": true,
+      "platelet_count": 89
+    },
+    "head_ct_result_if_ordered": "No acute intracranial hemorrhage. No mass effect. No midline shift. Study limited by motion artifact.",
+    "mri_brain_result_if_ordered": "Bilateral posterior subcortical and cortical T2/FLAIR hyperintensities consistent with PRES. No restricted diffusion to suggest infarction. No hemorrhage.",
+    "fundoscopic_exam_if_requested": "Arteriolar narrowing, cotton-wool spots bilateral, no papilledema, no retinal detachment.",
+    "ua_if_ordered": "Protein 3+, trace blood, otherwise unremarkable. No evidence of UTI.",
+    "cxr_if_ordered": "Mild pulmonary vascular congestion. No focal consolidation. No pleural effusion. Heart size normal.",
+    "ultrasound_if_ordered": {
+      "obstetric": "Singleton viable intrauterine pregnancy at 34 weeks. Estimated fetal weight 2100g (25th percentile). Amniotic fluid index 8 cm (low normal). Placenta posterior, grade II. No abruption seen.",
+      "right_upper_quadrant": "Liver parenchyma appears heterogeneous. No subcapsular hematoma. Gallbladder normal. No biliary dilation."
+    },
+    "fetal_status": "Category II fetal heart tracing with moderate variability and occasional variable decelerations. Not immediately reassuring but not ominous.",
+    "seizure_will_recur_if_no_magnesium_by_sec": 900,
+    "placental_abruption_risk_if_untreated": 0.25
+  },
+  "opening_script": {
+    "patient_voice": "(Post-ictal, groaning, eyes fluttering) ...my head...where am I...the baby...",
+    "nurse_handoff": "28-year-old female, 34 weeks pregnant, G2P1. She came in complaining of a bad headache and seeing spots. While we were triaging her, she had a full-body seizure lasting about 2 minutes — it stopped on its own. She's post-ictal now. Blood pressure is 182 over 108, heart rate 110, pulse ox 94 on room air. She bit her tongue. I put her on her left side. The OB chart shows her pressures were normal at her last visit two weeks ago.",
+    "appearance": [
+      "Gravid abdomen consistent with third-trimester pregnancy",
+      "Post-ictal: eyes closed, moaning, slow to respond to stimulation",
+      "Tongue bite with blood-tinged saliva",
+      "Left lateral decubitus position per triage nurse",
+      "Facial and hand edema noted",
+      "3+ patellar reflexes with sustained ankle clonus bilaterally",
+      "No signs of trauma or vaginal bleeding",
+      "Diaphoretic"
+    ]
+  },
+  "critical_actions": [
+    {
+      "id": "abcs_and_positioning",
+      "description": "Assess airway, breathing, circulation and ensure left lateral decubitus positioning to prevent aortocaval compression and aspiration",
+      "target_time_sec": 60,
+      "weight": 10,
+      "details": "Suction oral cavity if needed, place patient in left lateral tilt, apply supplemental oxygen, establish IV access with two large-bore IVs. Left lateral positioning displaces the gravid uterus off the IVC to optimize venous return."
+    },
+    {
+      "id": "magnesium_sulfate_bolus_and_infusion",
+      "description": "Administer magnesium sulfate 4-6g IV bolus over 15-20 minutes followed by 1-2g/hr continuous infusion",
+      "target_time_sec": 300,
+      "weight": 18,
+      "details": "Magnesium sulfate is the drug of choice for eclamptic seizures and seizure prophylaxis in severe preeclampsia. Load 4-6g IV over 15-20 minutes, then infuse at 1-2g/hr. Therapeutic range 4-7 mEq/L. It acts by NMDA receptor antagonism, cerebral vasodilation, and reduction of endothelial dysfunction."
+    },
+    {
+      "id": "seizure_control_with_magnesium",
+      "description": "Control and prevent recurrent seizures using magnesium sulfate as first-line — NOT phenytoin, NOT benzodiazepines as primary therapy",
+      "target_time_sec": 300,
+      "weight": 12,
+      "details": "The Eclampsia Trial Collaborative Group (Magpie trial) demonstrated magnesium sulfate superiority over phenytoin and diazepam for eclamptic seizure prevention and recurrence. Benzodiazepines may be used as rescue for active seizure refractory to magnesium but are not first-line. If seizure recurs, give additional 2g IV magnesium bolus."
+    },
+    {
+      "id": "blood_pressure_control",
+      "description": "Control severe hypertension with IV labetalol or IV hydralazine (alternatives: oral nifedipine)",
+      "target_time_sec": 600,
+      "weight": 12,
+      "details": "Target SBP <160 and DBP <110 to prevent hemorrhagic stroke. Labetalol: 20mg IV then escalate 40-80mg q10min (max 300mg). Hydralazine: 5-10mg IV q20min. Nifedipine: 10-20mg PO q20-30min. Avoid nitroprusside (cyanide toxicity to fetus), ACE inhibitors, and ARBs (teratogenic)."
+    },
+    {
+      "id": "fetal_monitoring_and_ob_consult",
+      "description": "Initiate continuous fetal monitoring and obtain emergent OB consultation",
+      "target_time_sec": 600,
+      "weight": 10,
+      "details": "Place continuous external fetal heart rate monitor and tocodynamometer. Eclamptic seizures cause transient fetal bradycardia and decelerations that typically recover within 3-10 minutes. Emergent OB consultation is essential as delivery is the definitive treatment. Do not rush to cesarean during an active seizure — stabilize the mother first."
+    },
+    {
+      "id": "evaluate_hellp_syndrome",
+      "description": "Evaluate for HELLP syndrome with complete labs: CBC, LFTs, LDH, haptoglobin, peripheral smear, coagulation studies",
+      "target_time_sec": 600,
+      "weight": 8,
+      "details": "HELLP = Hemolysis (LDH >600, low haptoglobin, schistocytes), Elevated Liver enzymes (AST/ALT >70), Low Platelets (<100k). Present in 10-20% of severe preeclampsia/eclampsia cases. Increases risk of DIC, placental abruption, hepatic rupture, and maternal mortality."
+    },
+    {
+      "id": "plan_for_delivery",
+      "description": "Coordinate with OB for plan for delivery as definitive treatment of eclampsia",
+      "target_time_sec": 1800,
+      "weight": 10,
+      "details": "Delivery of the fetus and placenta is the only definitive treatment for eclampsia. At 34 weeks, the fetus is viable. Maternal stabilization takes priority but delivery should not be delayed significantly. Betamethasone for fetal lung maturity if time permits (requires 24-48 hours for full effect). Route of delivery depends on maternal and fetal status — cesarean section often indicated for eclampsia with HELLP."
+    },
+    {
+      "id": "monitor_magnesium_toxicity",
+      "description": "Monitor for magnesium toxicity: assess deep tendon reflexes, respiratory rate, and urine output serially",
+      "target_time_sec": 1200,
+      "weight": 6,
+      "details": "Magnesium toxicity progression: loss of DTRs at 7-10 mEq/L, respiratory depression at 10-13 mEq/L, cardiac arrest at >15 mEq/L. Check DTRs every 1-2 hours, monitor RR (hold if <12), urine output (>25 mL/hr to ensure renal excretion). Renal impairment (Cr 1.2 in this patient) increases toxicity risk. Antidote: calcium gluconate 1g IV."
+    }
+  ],
+  "harm_events": [
+    {
+      "id": "phenytoin_given_for_eclamptic_seizure",
+      "description": "Phenytoin administered instead of magnesium sulfate as first-line treatment for eclamptic seizures",
+      "trigger": "phenytoin_ordered_before_magnesium_sulfate",
+      "severity": 8,
+      "rationale": "The Magpie trial and Collaborative Eclampsia Trial definitively showed magnesium sulfate superiority over phenytoin for eclampsia. Phenytoin is associated with higher seizure recurrence rates and does not address the underlying endothelial pathophysiology."
+    },
+    {
+      "id": "no_magnesium_given",
+      "description": "Magnesium sulfate not administered within a reasonable time frame despite eclamptic presentation",
+      "trigger": "no_magnesium_sulfate_by_600_sec",
+      "severity": 9,
+      "rationale": "Failure to give magnesium in eclampsia leads to 30-50% seizure recurrence. Magnesium is the single most important intervention and withholding it represents a critical management failure."
+    },
+    {
+      "id": "nitroprusside_given",
+      "description": "Sodium nitroprusside administered — contraindicated in pregnancy due to cyanide toxicity to the fetus",
+      "trigger": "nitroprusside_ordered",
+      "severity": 10,
+      "rationale": "Nitroprusside metabolizes to cyanide and thiocyanate, which cross the placenta and are toxic to the fetus. This is an absolute contraindication in pregnancy."
+    },
+    {
+      "id": "ace_inhibitor_given",
+      "description": "ACE inhibitor or ARB administered — contraindicated in pregnancy (teratogenic, fetotoxic)",
+      "trigger": "ace_inhibitor_or_arb_ordered",
+      "severity": 10,
+      "rationale": "ACE inhibitors and ARBs are category X in pregnancy. They cause fetal renal agenesis, oligohydramnios, pulmonary hypoplasia, and neonatal renal failure. They are absolutely contraindicated at any gestational age."
+    },
+    {
+      "id": "delayed_ob_consultation",
+      "description": "OB consultation not obtained in a timely manner despite eclampsia requiring delivery planning",
+      "trigger": "no_ob_consult_by_1200_sec",
+      "severity": 6,
+      "rationale": "Delayed OB involvement in eclampsia delays the definitive treatment (delivery) and increases risk of recurrent seizures, placental abruption, HELLP progression, and maternal/fetal mortality."
+    },
+    {
+      "id": "magnesium_toxicity_from_dosing_error",
+      "description": "Magnesium toxicity resulting from incorrect dosing (e.g., bolus too rapid, infusion rate too high) causing respiratory depression",
+      "trigger": "magnesium_bolus_rate_exceeds_1g_per_min_or_infusion_exceeds_3g_per_hr",
+      "severity": 8,
+      "rationale": "Magnesium given too rapidly can cause hypotension, respiratory depression, and cardiac arrest. The bolus must be given over 15-20 minutes (not IV push). Renal impairment in this patient (Cr 1.2) reduces magnesium clearance and increases toxicity risk."
+    }
+  ],
+  "recommended_management_logic": {
+    "preferred_agents": [
+      "magnesium_sulfate_iv",
+      "labetalol_iv",
+      "hydralazine_iv",
+      "nifedipine_po"
+    ],
+    "preferred_strategy": "Immediate left lateral positioning, airway protection, and magnesium sulfate loading followed by controlled blood pressure reduction with labetalol or hydralazine, continuous fetal monitoring, HELLP lab evaluation, and emergent OB consultation for delivery planning",
+    "antihypertensive_targets": {
+      "sbp_target_below": 160,
+      "dbp_target_below": 110,
+      "avoid_sbp_below": 120,
+      "avoid_map_below": 80,
+      "rationale": "Goal is to prevent hypertensive cerebrovascular complications (hemorrhagic stroke) while maintaining uteroplacental perfusion. Do not normalize blood pressure — mild controlled hypertension is acceptable and maintains placental blood flow."
+    },
+    "magnesium_protocol": {
+      "loading_dose": "4-6g IV over 15-20 minutes",
+      "maintenance_dose": "1-2g/hr IV continuous infusion",
+      "therapeutic_level": "4-7 mEq/L",
+      "monitoring": "DTRs q1-2h, respiratory rate, urine output >25 mL/hr",
+      "toxicity_antidote": "Calcium gluconate 1g IV over 3 minutes",
+      "renal_dose_adjustment": "Consider reducing to 1g/hr given Cr 1.2; check magnesium levels q4-6h"
+    },
+    "penalized_strategy": [
+      "phenytoin_as_first_line_for_seizure",
+      "nitroprusside_for_blood_pressure",
+      "ace_inhibitor_or_arb_for_blood_pressure",
+      "benzodiazepine_as_sole_anticonvulsant",
+      "normalizing_blood_pressure_completely",
+      "discharging_patient",
+      "delaying_delivery_planning_beyond_stabilization"
+    ]
+  },
+  "time_course": {
+    "untreated_progression": [
+      {
+        "time_sec": 120,
+        "effects": {
+          "neurologic": {
+            "mental_status": "post_ictal_slowly_improving",
+            "gcs": 11
+          },
+          "hemodynamics": {
+            "sbp": 186,
+            "dbp": 112,
+            "hr": 112
+          },
+          "monitor": {
+            "fetal_heart_rate_bpm": 140,
+            "fetal_variability": "moderate"
+          }
+        },
+        "narrative": "The patient is starting to moan and open her eyes. Blood pressure remains severely elevated. Fetal heart tracing shows recovery from seizure-related decelerations."
+      },
+      {
+        "time_sec": 300,
+        "effects": {
+          "neurologic": {
+            "mental_status": "confused_agitated",
+            "gcs": 12,
+            "headache_index": 0.95
+          },
+          "hemodynamics": {
+            "sbp": 190,
+            "dbp": 115,
+            "hr": 115
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 20
+          }
+        },
+        "narrative": "She is becoming more alert but confused and agitated. She complains of severe headache and says she cannot see clearly. Blood pressure is climbing. Reflexes remain brisk with clonus."
+      },
+      {
+        "time_sec": 600,
+        "effects": {
+          "neurologic": {
+            "mental_status": "agitated_with_visual_disturbance",
+            "gcs": 13,
+            "vision_change_index": 0.90
+          },
+          "hemodynamics": {
+            "sbp": 196,
+            "dbp": 118,
+            "map": 144,
+            "hr": 118
+          },
+          "disease_model": {
+            "seizure_threshold_index": 0.10,
+            "cerebral_edema_index": 0.80
+          }
+        },
+        "narrative": "She grabs her head and says the light hurts. She is restless and combative when examined. Blood pressure continues to rise without treatment. The nurse notes new facial twitching."
+      },
+      {
+        "time_sec": 900,
+        "conditional_event": "if_no_magnesium_sulfate",
+        "effects": {
+          "neurologic": {
+            "mental_status": "seizing",
+            "gcs": 3,
+            "seizure_active": true
+          },
+          "hemodynamics": {
+            "sbp": 205,
+            "dbp": 125,
+            "hr": 130
+          },
+          "respiratory": {
+            "spo2": 88,
+            "rr": 6
+          },
+          "monitor": {
+            "fetal_heart_rate_bpm": 90,
+            "fetal_variability": "absent",
+            "fetal_category": "category_III"
+          }
+        },
+        "narrative": "RECURRENT SEIZURE: The patient has another generalized tonic-clonic seizure. SpO2 drops rapidly. Fetal heart rate drops to 90 with absent variability. This is now a dual emergency."
+      },
+      {
+        "time_sec": 1200,
+        "conditional_event": "if_no_treatment",
+        "effects": {
+          "neurologic": {
+            "mental_status": "obtunded_post_repeated_seizures",
+            "gcs": 6
+          },
+          "hemodynamics": {
+            "sbp": 210,
+            "dbp": 128,
+            "hr": 135
+          },
+          "respiratory": {
+            "spo2": 85,
+            "rr": 8,
+            "work_of_breathing_index": 0.60
+          },
+          "labs": {
+            "platelets_trending": 72,
+            "ast_trending": 340,
+            "ldh_trending": 850
+          }
+        },
+        "narrative": "The patient is obtunded after repeated seizures. HELLP is worsening — platelets are falling. SpO2 remains low. There is concern for aspiration. The fetal tracing is non-reassuring. Without intervention, risk of maternal intracranial hemorrhage, placental abruption, and fetal demise is climbing."
+      },
+      {
+        "time_sec": 1800,
+        "conditional_event": "if_no_treatment_and_no_delivery_plan",
+        "effects": {
+          "neurologic": {
+            "mental_status": "unresponsive",
+            "gcs": 4
+          },
+          "hemodynamics": {
+            "sbp": 220,
+            "dbp": 132,
+            "hr": 140
+          },
+          "disease_model": {
+            "placental_abruption_occurring": true
+          },
+          "monitor": {
+            "fetal_heart_rate_bpm": 70,
+            "fetal_category": "category_III",
+            "vaginal_bleeding_noted": true
+          }
+        },
+        "narrative": "CRITICAL: The patient is unresponsive. The nurse reports vaginal bleeding — concern for placental abruption. Fetal heart rate is 70 bpm. This is now a maternal and fetal life-threatening emergency. Without immediate magnesium, blood pressure control, and emergent delivery, the prognosis for both mother and fetus is dire."
+      }
+    ]
+  },
+  "triggered_diagnostics": {
+    "head_ct_ordered": {
+      "result_delay_sec": 900,
+      "result_text": "No acute intracranial hemorrhage. No mass effect or midline shift. No hydrocephalus. Limited study due to patient movement."
+    },
+    "mri_brain_ordered": {
+      "result_delay_sec": 2700,
+      "result_text": "Bilateral symmetric posterior subcortical and cortical T2/FLAIR hyperintensities involving parieto-occipital regions consistent with posterior reversible encephalopathy syndrome (PRES). No restricted diffusion. No hemorrhage."
+    },
+    "ecg_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "Sinus tachycardia at 110 bpm. Normal axis. No ST-segment elevation or depression. No T-wave inversions. Normal QTc."
+    },
+    "cbc_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "WBC 12.4, Hgb 11.2, Hct 34.1, Platelets 89,000 (LOW). RDW 15.2."
+    },
+    "cmp_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Na 137, K 4.2, Cl 102, CO2 20, BUN 22, Cr 1.2, Glucose 98, Ca 8.9, AST 245 (HIGH), ALT 198 (HIGH), Alk Phos 142, Total Bilirubin 1.8 (HIGH), Albumin 2.8 (LOW)."
+    },
+    "ldh_ordered": {
+      "result_delay_sec": 360,
+      "result_text": "LDH 680 U/L (HIGH — consistent with hemolysis)."
+    },
+    "haptoglobin_ordered": {
+      "result_delay_sec": 420,
+      "result_text": "Haptoglobin 18 mg/dL (LOW — consistent with hemolysis)."
+    },
+    "peripheral_smear_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "Schistocytes present. Findings consistent with microangiopathic hemolytic anemia."
+    },
+    "coagulation_panel_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "PT 12.8, INR 1.1, aPTT 32, Fibrinogen 285 mg/dL, D-dimer 2.4 mg/L FEU (elevated)."
+    },
+    "uric_acid_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Uric acid 8.2 mg/dL (HIGH — consistent with preeclampsia/eclampsia)."
+    },
+    "urinalysis_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "Protein 3+ (HIGH), blood trace, LE negative, nitrites negative. No bacteria. RBC 5-10/hpf."
+    },
+    "urine_protein_creatinine_ratio_ordered": {
+      "result_delay_sec": 360,
+      "result_text": "Urine protein/creatinine ratio 4.8 (HIGH — significant proteinuria, >0.3 is abnormal in pregnancy)."
+    },
+    "troponin_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Troponin I 8 ng/L (normal range, no acute cardiac injury)."
+    },
+    "magnesium_level_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Magnesium 1.8 mEq/L (normal baseline). Repeat after loading dose to assess therapeutic level."
+    },
+    "type_and_screen_ordered": {
+      "result_delay_sec": 480,
+      "result_text": "Blood type O positive. Antibody screen negative. Ready for crossmatch if needed."
+    },
+    "obstetric_ultrasound_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "Singleton viable intrauterine pregnancy. Vertex presentation. EFW 2100g (25th percentile). AFI 8 cm (low-normal). Placenta posterior, grade II maturity. No evidence of placental abruption at this time. Fetal heart activity present."
+    },
+    "rup_ultrasound_ordered": {
+      "result_delay_sec": 480,
+      "result_text": "Liver parenchyma mildly heterogeneous. No subcapsular hematoma. No free fluid. Gallbladder normal. No biliary dilation."
+    },
+    "cxr_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "Mild pulmonary vascular congestion. No focal consolidation. No pleural effusion. Heart size upper limits of normal (consistent with pregnancy)."
+    },
+    "fundoscopic_exam_requested": {
+      "result_delay_sec": 180,
+      "result_text": "Arteriolar narrowing and cotton-wool spots bilaterally. No papilledema. No retinal detachment. Findings consistent with hypertensive retinopathy."
+    }
+  },
+  "success_criteria": {
+    "required": [
+      "abcs_and_positioning",
+      "magnesium_sulfate_bolus_and_infusion",
+      "seizure_control_with_magnesium",
+      "blood_pressure_control",
+      "fetal_monitoring_and_ob_consult",
+      "evaluate_hellp_syndrome",
+      "plan_for_delivery",
+      "monitor_magnesium_toxicity"
+    ],
+    "target_end_state": {
+      "sbp_below": 160,
+      "dbp_below": 110,
+      "map_range": [80, 120],
+      "mental_status": "alert_and_oriented",
+      "gcs_min": 14,
+      "seizure_recurrence": false,
+      "magnesium_infusing": true,
+      "magnesium_level_range_meq_l": [4, 7],
+      "ob_consulted": true,
+      "delivery_plan_in_place": true,
+      "fetal_heart_rate_category": "category_I_or_II",
+      "no_harm_event_ids": [
+        "phenytoin_given_for_eclamptic_seizure",
+        "no_magnesium_given",
+        "nitroprusside_given",
+        "ace_inhibitor_given",
+        "magnesium_toxicity_from_dosing_error"
+      ]
+    }
+  },
+  "failure_criteria": {
+    "any_of": [
+      "recurrent_seizure_due_to_no_magnesium",
+      "maternal_intracranial_hemorrhage",
+      "maternal_cardiac_arrest",
+      "fetal_demise",
+      "placental_abruption_with_hemorrhagic_shock",
+      "magnesium_toxicity_with_respiratory_arrest",
+      "patient_discharged",
+      "no_ob_consultation_by_3600_sec",
+      "map_less_than_50"
+    ]
+  },
+  "debrief_template": {
+    "what_went_well": [
+      "Recognized eclampsia in a pregnant patient with seizures and severe hypertension",
+      "Administered magnesium sulfate promptly as first-line agent",
+      "Chose pregnancy-safe antihypertensives and avoided contraindicated agents",
+      "Initiated fetal monitoring and involved OB early",
+      "Identified HELLP syndrome on laboratory workup",
+      "Monitored for magnesium toxicity appropriately"
+    ],
+    "what_could_have_gone_better": [
+      "Earlier administration of magnesium sulfate bolus",
+      "More aggressive blood pressure management to target SBP <160",
+      "Earlier OB consultation for delivery planning",
+      "More frequent reassessment of neurologic status and reflexes",
+      "Consideration of betamethasone for fetal lung maturity",
+      "Serial labs to track HELLP progression"
+    ],
+    "key_choices_to_highlight": [
+      "Choice of magnesium sulfate over phenytoin or benzodiazepines for seizure management",
+      "Selection of labetalol vs hydralazine vs nifedipine for blood pressure control",
+      "Whether contraindicated medications were avoided",
+      "Timing and urgency of OB consultation",
+      "Whether magnesium toxicity monitoring was implemented",
+      "Decision-making around delivery timing and route"
+    ],
+    "teaching_points": [
+      "Eclampsia is defined as new-onset seizures in a patient with preeclampsia features, not explained by other causes. It can occur antepartum, intrapartum, or postpartum (up to 4 weeks after delivery).",
+      "Preeclampsia is hypertension (SBP >=140 or DBP >=90) after 20 weeks gestation with proteinuria or end-organ dysfunction. Severe features include SBP >=160, DBP >=110, platelets <100k, liver transaminases >2x normal, renal insufficiency, pulmonary edema, or cerebral/visual symptoms.",
+      "HELLP syndrome (Hemolysis, Elevated Liver enzymes, Low Platelets) occurs in 10-20% of severe preeclampsia/eclampsia and carries significant maternal mortality risk (1-3%). Complications include DIC, placental abruption, hepatic rupture, and renal failure.",
+      "Magnesium sulfate is the gold-standard treatment for eclamptic seizures and seizure prophylaxis. The Magpie trial (2002, n=10,141) showed a 58% reduction in eclampsia risk with magnesium. It is superior to phenytoin (Eclampsia Trial, Lancet 1995) and diazepam.",
+      "Magnesium acts via NMDA receptor antagonism, calcium channel blockade, and cerebral vasodilation. Therapeutic range is 4-7 mEq/L. Toxicity presents as: loss of DTRs (7-10 mEq/L), respiratory depression (10-13 mEq/L), cardiac arrest (>15 mEq/L). Antidote: calcium gluconate 1g IV.",
+      "Safe antihypertensives in pregnancy: IV labetalol (alpha and beta blocker), IV hydralazine (direct arteriolar vasodilator), and PO nifedipine (calcium channel blocker). Target SBP <160 and DBP <110 to prevent hemorrhagic stroke while maintaining uteroplacental perfusion.",
+      "Contraindicated antihypertensives in pregnancy: Nitroprusside (cyanide toxicity to fetus), ACE inhibitors (fetal renal agenesis, oligohydramnios), ARBs (same mechanism of fetal harm as ACEi), and atenolol (IUGR with chronic use).",
+      "The definitive treatment for eclampsia is delivery of the fetus and placenta. The placenta is the source of anti-angiogenic factors (sFlt-1, sEng) that drive endothelial dysfunction. At 34 weeks, the fetus is viable and delivery should not be delayed significantly after maternal stabilization.",
+      "Fetal heart rate decelerations during an eclamptic seizure are expected and usually recover within 3-10 minutes of seizure cessation. Stabilize the mother before rushing to emergent cesarean — the best fetal resuscitation is maternal resuscitation."
+    ]
+  }
+}
