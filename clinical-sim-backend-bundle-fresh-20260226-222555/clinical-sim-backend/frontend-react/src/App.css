@@ -1,12 +1,12 @@
-/* ═══════════════════════════════════════════════
-   App Layout — Material Design 3
-   ═══════════════════════════════════════════════ */
-
+/* ══════════════════════════════════════════
+   Simulation layout — fixed viewport, no overlap
+   ══════════════════════════════════════════ */
 .sim-layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background: var(--surface-container-low);
+  height: 100vh;
+  height: 100dvh; /* mobile: accounts for virtual keyboard */
+  overflow: hidden;
 }
 
 /* ── Header ── */
@@ -14,116 +14,138 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 24px;
-  background: var(--surface-container-lowest);
+  padding: 10px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--outline-variant);
   box-shadow: var(--elevation-1);
+  flex-shrink: 0;
   z-index: 10;
 }
-.sh-left { display: flex; align-items: center; gap: 16px; }
-.sh-title { font: 500 1.25rem/1.5 var(--font-family); color: var(--on-surface); }
+.sh-left { display: flex; align-items: center; gap: 12px; }
+.sh-title { font-size: 0.95rem; font-weight: 500; color: var(--on-surface); }
 .sh-status {
-  font: 500 0.6875rem/1 var(--font-family);
-  padding: 4px 12px;
+  font-size: 0.65rem;
+  padding: 2px 10px;
   border-radius: var(--radius-full);
-  background: var(--success-container);
-  color: var(--success);
+  background: #e6f4ea;
+  color: var(--green);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: 600;
+  letter-spacing: 0.03em;
 }
-.sh-right { display: flex; gap: 12px; }
+.sh-right { display: flex; gap: 8px; }
 .sh-btn {
-  background: var(--surface-container-high);
-  border: none;
+  background: var(--surface-container);
+  border: 1px solid var(--outline-variant);
   border-radius: var(--radius-full);
-  padding: 10px 20px;
+  padding: 6px 16px;
   color: var(--on-surface);
-  font: 500 0.875rem/1.25 var(--font-family);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: background 0.15s;
 }
-.sh-btn:hover { background: var(--surface-container-highest); box-shadow: var(--elevation-1); }
+.sh-btn:hover { background: var(--surface-container-high); }
 .sh-btn.debrief-btn {
   background: var(--primary);
   color: var(--on-primary);
+  border-color: var(--primary);
+  font-weight: 600;
 }
-.sh-btn.debrief-btn:hover { box-shadow: var(--elevation-2); filter: brightness(1.1); }
-.sh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.sh-btn.debrief-btn:hover { opacity: 0.92; }
 
 /* ── Body: sidebar + main ── */
 .sim-body {
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: 340px 1fr;
   flex: 1;
+  min-height: 0; /* CRITICAL: allows grid to shrink within flex parent */
   overflow: hidden;
 }
 
+/* ── Sidebar: VitalMonitor + InfoPanel ── */
 .sim-sidebar {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 16px;
+  padding: 12px;
   overflow-y: auto;
   background: var(--surface-container-low);
-  max-height: calc(100vh - 60px);
+  border-right: 1px solid var(--outline-variant);
+  /* No max-height — grid handles height naturally */
 }
 
+/* ── Main: EventLog + OrderBar ── */
 .sim-main {
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 12px;
   gap: 12px;
+  min-height: 0; /* CRITICAL: allows children to shrink */
   overflow: hidden;
-  max-height: calc(100vh - 60px);
-}
-.sim-main > .event-log {
-  flex: 1;
-  overflow: hidden;
-}
-.sim-main > .event-log .el-scroll {
-  max-height: none;
-  flex: 1;
 }
 
-/* ── Error Toast (M3 snackbar) ── */
+/* EventLog fills remaining space */
+.sim-main > .event-log {
+  flex: 1;
+  min-height: 0; /* CRITICAL: allows EventLog to shrink */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Inner scroll area fills EventLog and scrolls */
+.sim-main > .event-log .el-scroll {
+  flex: 1;
+  overflow-y: auto;
+  max-height: none; /* override component default */
+}
+
+/* OrderBar stays at bottom */
+.sim-main > .order-bar {
+  flex-shrink: 0;
+}
+
+/* ── Error toast (snackbar) ── */
 .error-toast {
   position: fixed;
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--inverse-surface);
-  color: var(--inverse-on-surface);
-  padding: 14px 24px;
+  background: #323232;
+  color: #fff;
+  padding: 12px 24px;
   border-radius: var(--radius-sm);
-  font: 400 0.875rem/1.25 var(--font-family);
-  z-index: 1000;
+  font-size: 0.85rem;
   box-shadow: var(--elevation-3);
-  animation: toast-in 0.3s ease-out, toast-out 0.4s ease-in 4.5s forwards;
+  z-index: 1000;
+  animation: toast-in 0.3s ease-out, toast-out 0.5s ease-in 4.5s forwards;
 }
 @keyframes toast-in { from { opacity: 0; transform: translateX(-50%) translateY(20px); } }
 @keyframes toast-out { to { opacity: 0; transform: translateX(-50%) translateY(20px); } }
 
-/* ── Mobile ── */
+/* ── Responsive ── */
 @media (max-width: 768px) {
   .sim-body {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
   }
   .sim-sidebar {
-    max-height: none;
-    overflow: visible;
+    border-right: none;
+    border-bottom: 1px solid var(--outline-variant);
+    overflow-y: visible;
+    overflow-x: auto;
     flex-direction: row;
     flex-wrap: nowrap;
-    overflow-x: auto;
     padding: 8px;
     gap: 8px;
   }
-  .sim-sidebar > * { min-width: 300px; }
-  .sim-main { max-height: none; }
-  .sh-title { font: 500 1rem/1.4 var(--font-family); }
-  .sim-header { padding: 10px 16px; }
+  .sim-sidebar > * { min-width: 300px; flex-shrink: 0; }
+  .sh-title { font-size: 0.8rem; }
 }
 
 @media (max-width: 480px) {
   .sim-header { padding: 8px 12px; }
-  .sh-btn { padding: 8px 14px; font: 500 0.75rem/1 var(--font-family); }
+  .sh-title { font-size: 0.75rem; }
+  .sh-btn { font-size: 0.7rem; padding: 5px 12px; }
 }

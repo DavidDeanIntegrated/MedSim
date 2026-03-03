@@ -1,48 +1,37 @@
-/* ═══════════════════════════════════════════════
-   Info Panel — Material Design 3
-   ═══════════════════════════════════════════════ */
-
+/* ── Info Panel ── */
 .info-panel {
-  background: var(--surface-container-lowest);
+  background: var(--surface);
+  border: 1px solid var(--outline-variant);
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--elevation-1);
 }
-
 .ip-section { border-bottom: 1px solid var(--outline-variant); }
 .ip-section:last-child { border-bottom: none; }
-
 .ip-header {
-  padding: 12px 20px;
-  font: 500 0.8125rem/1 var(--font-family);
+  padding: 8px 16px;
+  font-size: 0.7rem;
+  font-weight: 600;
   color: var(--on-surface-variant);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   background: var(--surface-container);
 }
-
 .ip-list { list-style: none; }
-.ip-item {
-  padding: 10px 20px;
-  font: 400 0.875rem/1.4 var(--font-family);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--on-surface);
-}
-.ip-item:not(:last-child) { border-bottom: 1px solid var(--surface-variant); }
-.ip-empty { padding: 14px 20px; font: 400 0.875rem/1.4 var(--font-family); color: var(--on-surface-variant); font-style: italic; }
+.ip-item { padding: 6px 16px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; color: var(--on-surface); }
+.ip-item:not(:last-child) { border-bottom: 1px solid var(--outline-variant); }
+.ip-empty { padding: 10px 16px; font-size: 0.75rem; color: var(--on-surface-variant); font-style: italic; }
 
 /* Infusion items */
-.ip-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); flex-shrink: 0; animation: pulse 2s infinite; }
+.ip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; animation: pulse 2s infinite; }
 @keyframes pulse { 50% { opacity: 0.4; } }
 .ip-med { flex: 1; text-transform: capitalize; }
-.ip-rate { color: var(--primary); font: 500 0.8125rem/1 var(--font-family); }
+.ip-rate { color: var(--primary); font-weight: 600; font-size: 0.75rem; }
 
 /* Lab items */
-.ip-item.lab { flex-direction: column; align-items: flex-start; gap: 4px; }
-.ip-lab-id { font: 500 0.75rem/1 var(--font-family); color: var(--primary); text-transform: uppercase; letter-spacing: 0.03em; }
-.ip-lab-val { font: 400 0.875rem/1.4 var(--font-family); }
+.ip-item.lab { flex-direction: column; align-items: flex-start; gap: 2px; }
+.ip-lab-id { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; }
+.ip-lab-val { font-size: 0.75rem; }
 
 /* Imaging items */
 .ip-item.imaging { flex-direction: column; align-items: flex-start; gap: 4px; }
