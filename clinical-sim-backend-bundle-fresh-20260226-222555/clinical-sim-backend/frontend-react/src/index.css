@@ -1,86 +1,72 @@
-/* ═══════════════════════════════════════════════
-   Material Design 3 — Design Tokens
-   ═══════════════════════════════════════════════ */
-
+/* ── M3 Design Tokens ── */
 :root {
-  /* ── Color Roles ── */
-  --primary:              #0b57d0;
-  --on-primary:           #ffffff;
-  --primary-container:    #d3e3fd;
-  --on-primary-container: #041e49;
+  /* Primary */
+  --primary: #1a73e8;
+  --on-primary: #ffffff;
+  --primary-container: #d2e3fc;
+  --on-primary-container: #062e6f;
 
-  --secondary:              #00639b;
-  --on-secondary:           #ffffff;
-  --secondary-container:    #cde5ff;
-  --on-secondary-container: #001d32;
+  /* Secondary */
+  --secondary: #5f6368;
+  --on-secondary: #ffffff;
 
-  --tertiary:              #6750a4;
-  --on-tertiary:           #ffffff;
-  --tertiary-container:    #eaddff;
-  --on-tertiary-container: #21005d;
+  /* Error / Success / Warning */
+  --error: #d93025;
+  --on-error: #ffffff;
+  --error-container: #fce8e6;
+  --green: #1e8e3e;
+  --yellow: #f9ab00;
+  --orange: #e8710a;
+  --red: #d93025;
+  --purple: #9334e6;
 
-  /* ── Surface Roles ── */
-  --surface:              #f8f9fa;
-  --surface-dim:          #d9dbdf;
-  --surface-bright:       #f8f9fa;
-  --surface-container-lowest:  #ffffff;
-  --surface-container-low:     #f1f3f5;
-  --surface-container:         #eceef1;
-  --surface-container-high:    #e6e8eb;
-  --surface-container-highest: #e1e3e6;
-  --surface-variant:      #dde3ea;
-  --on-surface:           #1a1c1e;
-  --on-surface-variant:   #44474e;
-  --inverse-surface:      #2e3133;
-  --inverse-on-surface:   #f0f0f4;
+  /* Surface hierarchy (light) */
+  --surface: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f8f9fa;
+  --surface-container: #f1f3f4;
+  --surface-container-high: #e8eaed;
+  --surface-container-highest: #dadce0;
 
-  /* ── Outline ── */
-  --outline:              #74777f;
-  --outline-variant:      #c4c6d0;
+  /* Content on surface */
+  --on-surface: #202124;
+  --on-surface-variant: #5f6368;
+  --outline: #80868b;
+  --outline-variant: #dadce0;
 
-  /* ── Semantic ── */
-  --error:                #ba1a1a;
-  --on-error:             #ffffff;
-  --error-container:      #ffdad6;
-  --on-error-container:   #410002;
-  --success:              #146c2e;
-  --on-success:           #ffffff;
-  --success-container:    #c4eed0;
-  --warning:              #8c5000;
-  --on-warning:           #ffffff;
-  --warning-container:    #ffdcc2;
+  /* Legacy aliases (used in components) */
+  --bg: #f8f9fa;
+  --surface-2: #f1f3f4;
+  --border: #dadce0;
+  --text: #202124;
+  --text-muted: #5f6368;
+  --accent: #1a73e8;
 
-  /* ── Shape (M3 Corner Radii) ── */
-  --radius-xs:   4px;
-  --radius-sm:   8px;
-  --radius-md:  12px;
-  --radius-lg:  16px;
-  --radius-xl:  28px;
-  --radius-full: 100px;
+  /* Monitor (stays dark for clinical accuracy) */
+  --monitor-bg: #0a0e14;
 
-  /* ── Elevation ── */
-  --elevation-0: none;
-  --elevation-1: 0 1px 3px 0 rgba(0,0,0,0.08), 0 1px 2px -1px rgba(0,0,0,0.06);
-  --elevation-2: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
-  --elevation-3: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+  /* Shape scale */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
 
-  /* ── Typography ── */
-  --font-family:  'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  --font-mono:    'Roboto Mono', 'SF Mono', 'Fira Code', monospace;
+  /* Elevation (Google Material shadows) */
+  --elevation-1: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+  --elevation-2: 0 1px 2px 0 rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+  --elevation-3: 0 4px 8px 3px rgba(60,64,67,0.15), 0 1px 3px rgba(60,64,67,0.3);
 
-  /* ── Monitor (dark surface for waveforms only) ── */
-  --monitor-bg:      #111318;
-  --monitor-surface:  #1a1d24;
-  --monitor-border:   #30353d;
-  --monitor-text:     #e6edf3;
-  --monitor-text-dim: #8b949e;
+  /* Typography */
+  --font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Roboto Mono', 'SF Mono', 'Fira Code', monospace;
 
-  /* ── Apply base ── */
   font-family: var(--font-family);
   line-height: 1.5;
   font-weight: 400;
   color: var(--on-surface);
-  background-color: var(--surface);
+  background-color: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -89,11 +75,21 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body { min-height: 100vh; min-width: 320px; }
-#root { min-height: 100vh; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 8px; height: 8px; }
+body {
+  min-width: 320px;
+}
+
+#root {
+  height: 100%;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--outline); }
