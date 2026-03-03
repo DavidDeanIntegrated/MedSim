@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.api.routes.admin_inputs import router as admin_inputs_router
 from app.api.routes.analytics import router as analytics_router
 from app.api.routes.cases import router as cases_router
 from app.api.routes.health import router as health_router
@@ -24,7 +25,7 @@ settings = get_settings()
 
 FRONTEND_DIR = Path(__file__).parent.parent / "frontend"
 
-app = FastAPI(title=settings.app_name, version="0.3.1")
+app = FastAPI(title=settings.app_name, version="0.4.0")
 
 # CORS — allow Vite dev server (port 5173) during local development
 if settings.app_env != "production":
@@ -59,6 +60,14 @@ def educator_dashboard() -> FileResponse | RedirectResponse:
     return RedirectResponse(url="/docs", status_code=307)
 
 
+@app.get("/admin/dashboard", include_in_schema=False, response_model=None)
+def admin_dashboard() -> FileResponse | RedirectResponse:
+    page = FRONTEND_DIR / "admin_inputs.html"
+    if page.exists():
+        return FileResponse(page)
+    return RedirectResponse(url="/docs", status_code=307)
+
+
 # Auth
 app.include_router(auth_router)
 
@@ -72,3 +81,4 @@ app.include_router(turns_router)
 app.include_router(reports_router)
 app.include_router(analytics_router)
 app.include_router(lti_router)
+app.include_router(admin_inputs_router)
