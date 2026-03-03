@@ -1,11 +1,16 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.deps import (
     get_engine_service,
+    get_llm_parser_service,
     get_parser_service,
     get_session_service,
     get_voice_service,
 )
+from app.api.routes.stream import notify_session_update
+from app.core.config import get_settings
 from app.models.engine import ExecuteTurnRequest
 from app.models.parser import ParseTurnRequest
 from app.models.voice import BuildVoicePlanRequest
@@ -14,7 +19,19 @@ from app.services.parser_service import ParserService
 from app.services.session_service import SessionService
 from app.services.voice_service import VoiceService
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/sessions/{session_id}", tags=["turns"])
+
+
+def _try_llm_parse(parse_request: ParseTurnRequest):
+    """Attempt LLM parsing; returns None on failure."""
+    try:
+        llm_parser = get_llm_parser_service()
+        return llm_parser.parse_turn(parse_request)
+    except (ValueError, Exception) as e:
+        logger.warning("LLM parser failed, falling back to rule-based: %s", e)
+        return None
 
 
 @router.post("/parse-turn")
@@ -28,6 +45,12 @@ def parse_turn(
         session_service.get_session(session_id)
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    if request.parser_mode == "llm" or (request.parser_mode != "rule" and get_settings().llm_parser_enabled):
+        result = _try_llm_parse(request)
+        if result is not None:
+            return result
+
     return parser_service.parse_turn(request)
 
 
@@ -59,6 +82,10 @@ def execute_turn(
         new_events=[event.model_dump(mode="json", by_alias=True) for event in result.new_events],
         transcript_entry=transcript_entry,
     )
+
+    if result.updated_patient_state:
+        notify_session_update(session_id, result.updated_patient_state)
+
     return result
 
 
@@ -90,16 +117,24 @@ def process_turn(
     except FileNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
+    parser_mode = request.get("parserMode", "rule")
+
     parse_request = ParseTurnRequest(
         turnId=request["turnId"],
         timestampSimSec=request["timestampSimSec"],
         inputText=request["inputText"],
-        parserMode=request["parserMode"],
+        parserMode=parser_mode,
         speaker=request.get("speaker", "resident"),
         activeInfusions=request.get("activeInfusions", []),
         contextHints=request.get("contextHints", {}),
     )
-    parsed = parser_service.parse_turn(parse_request)
+
+    parsed = None
+    if parser_mode == "llm" or (parser_mode != "rule" and get_settings().llm_parser_enabled):
+        parsed = _try_llm_parse(parse_request)
+
+    if parsed is None:
+        parsed = parser_service.parse_turn(parse_request)
 
     patient_state = session.get("patientState")
     if not patient_state:
@@ -122,6 +157,9 @@ def process_turn(
             "parsedTurn": parsed.model_dump(mode="json", by_alias=True),
         },
     )
+
+    if engine_result.updated_patient_state:
+        notify_session_update(session_id, engine_result.updated_patient_state)
 
     voice_request = BuildVoicePlanRequest(
         engineResult=engine_result,

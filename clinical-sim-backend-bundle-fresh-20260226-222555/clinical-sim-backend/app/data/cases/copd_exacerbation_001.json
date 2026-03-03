@@ -1,0 +1,719 @@
+{
+  "case_file_version": "2.0.0",
+  "case_id": "copd_exacerbation_001",
+  "title": "Severe COPD Exacerbation with Acute-on-Chronic Respiratory Failure",
+  "difficulty": "moderate",
+  "scenario_type": "copd_acute_exacerbation",
+  "category": "respiratory_emergency",
+  "authoring_notes": {
+    "summary": "66-year-old female with GOLD Stage III COPD on home oxygen presents with 3-day upper respiratory infection progressing to severe exacerbation with purulent sputum, respiratory distress, and acute-on-chronic hypercapnic respiratory failure. Requires recognition of severity, bronchodilator therapy, systemic steroids, targeted oxygen titration (88-92%), NIPPV consideration, antibiotics per Anthonisen criteria, and preparation for intubation if decompensation occurs. Key pitfall is over-oxygenation leading to CO2 narcosis.",
+    "teaching_focus": [
+      "GOLD guidelines for management of acute COPD exacerbation",
+      "Oxygen titration in COPD: target SpO2 88-92%, not 100% — understanding the Haldane effect and V/Q mismatch worsening with high-flow O2 (the 'hypoxic drive' oversimplification vs actual pathophysiology of CO2 retention)",
+      "NIPPV (BiPAP) reduces intubation rates and mortality in acute hypercapnic COPD exacerbation (NNT ~5 per Cochrane data)",
+      "Permissive hypercapnia: tolerate elevated pCO2 if pH is improving and patient is clinically stable",
+      "Auto-PEEP (intrinsic PEEP) management: recognize air trapping, use low respiratory rate, prolonged I:E ratio (1:4 to 1:5), and avoid breath-stacking",
+      "Ventilator settings for obstructive lung disease: low tidal volumes (6-8 mL/kg IBW), low RR (10-12), long expiratory time, monitor plateau pressures",
+      "Anthonisen criteria for antibiotic use in COPD exacerbation: increased dyspnea + increased sputum volume + increased sputum purulence (Type I — all three criteria = strongest indication for antibiotics)",
+      "Systemic corticosteroids reduce treatment failure and improve FEV1 recovery — oral prednisone 40mg x 5 days is equivalent to IV in non-vomiting patients (REDUCE trial)",
+      "Avoid premature intubation: NIPPV is first-line for acute hypercapnic respiratory failure in COPD and should be trialed before intubation unless contraindicated"
+    ]
+  },
+  "case_metadata": {
+    "case_id": "copd_exacerbation_001",
+    "title": "Severe COPD Exacerbation with Acute-on-Chronic Respiratory Failure",
+    "difficulty": "moderate",
+    "scenario_type": "copd_acute_exacerbation",
+    "time_elapsed_sec": 0,
+    "time_step_sec": 5,
+    "status": "not_started"
+  },
+  "patient_profile": {
+    "name": "Dorothy Miller",
+    "age_years": 66,
+    "sex": "female",
+    "weight_kg": 62,
+    "height_cm": 160,
+    "bsa_m2": 1.65,
+    "pregnant": false,
+    "gestational_weeks": 0,
+    "chronic_hypertension": false,
+    "baseline_sbp": 132,
+    "baseline_dbp": 78,
+    "baseline_hr": 82,
+    "comorbidities": {
+      "copd": true,
+      "copd_gold_stage": "III",
+      "copd_pack_years": 40,
+      "home_oxygen": true,
+      "home_oxygen_rate_lpm": 2,
+      "baseline_pco2_estimated": 48,
+      "baseline_hco3_estimated": 30,
+      "ckd": false,
+      "hfrEF": false,
+      "asthma_or_reactive_airways": false,
+      "cad": false,
+      "diabetes": false,
+      "aortic_aneurysm_history": false,
+      "baseline_beta_blocker_use": false,
+      "baseline_bradycardia": false,
+      "av_conduction_disease": false,
+      "volume_depletion": false
+    }
+  },
+  "disease_model": {
+    "primary_pathology": "copd_acute_exacerbation",
+    "severity_index": 0.78,
+    "trigger": "viral_uri_with_bacterial_superinfection",
+    "end_organ_risk": {
+      "brain": 0.35,
+      "heart": 0.40,
+      "kidney": 0.15,
+      "aorta": 0.0,
+      "lungs": 0.95
+    },
+    "bronchospasm_index": 0.75,
+    "mucus_plugging_index": 0.65,
+    "airway_inflammation_index": 0.80,
+    "air_trapping_index": 0.70,
+    "auto_peep_index": 0.55,
+    "respiratory_muscle_fatigue_index": 0.60,
+    "hypercapnia_severity_index": 0.65,
+    "hypoxemia_severity_index": 0.72,
+    "infection_index": 0.55,
+    "cor_pulmonale_risk_index": 0.25
+  },
+  "initial_state": {
+    "hemodynamics": {
+      "svr_index": 1.15,
+      "preload_index": 0.90,
+      "contractility_index": 0.95,
+      "cardiac_output_index": 1.10,
+      "stroke_volume_index": 0.95,
+      "map": 108,
+      "sbp": 148,
+      "dbp": 88,
+      "hr": 108,
+      "rhythm": "sinus_tachycardia",
+      "av_node_conduction_index": 1.0,
+      "coronary_supply_demand_mismatch_index": 0.30
+    },
+    "respiratory": {
+      "rr": 32,
+      "spo2": 82,
+      "fio2": 0.28,
+      "oxygen_device": "nasal_cannula_2L",
+      "work_of_breathing_index": 0.85,
+      "accessory_muscle_use": true,
+      "tripoding": true,
+      "speech_pattern": "2-3 word sentences",
+      "crackles_index": 0.15,
+      "bronchospasm_index": 0.75,
+      "wheezing": "bilateral_diffuse",
+      "rhonchi": true,
+      "air_movement": "poor",
+      "pulmonary_edema_index": 0.05,
+      "air_trapping_index": 0.70,
+      "auto_peep_cmh2o_estimated": 8,
+      "pco2": 62,
+      "ph": 7.28,
+      "ventilatory_failure_risk_index": 0.65
+    },
+    "neurologic": {
+      "gcs": 14,
+      "mental_status": "anxious_and_distressed",
+      "headache_index": 0.30,
+      "vision_change_index": 0.0,
+      "focal_deficit_index": 0.0,
+      "cerebral_hypoperfusion_index": 0.0,
+      "co2_narcosis_index": 0.20,
+      "asterixis": false
+    },
+    "renal": {
+      "urine_output_ml_per_hr": 40,
+      "renal_perfusion_index": 0.85,
+      "aki_risk_index": 0.12
+    },
+    "cardiac": {
+      "chest_pain_index": 0.05,
+      "ischemia_index": 0.10,
+      "troponin_leak_index": 0.05,
+      "acute_heart_failure_index": 0.05,
+      "right_heart_strain_index": 0.30
+    },
+    "monitor": {
+      "ecg_text": "Sinus tachycardia, rate 108, right axis deviation, low voltage in limb leads, P-pulmonale pattern in lead II, no acute ST changes, no STEMI criteria",
+      "telemetry_quality": "good",
+      "nibp_cycle_sec": 60,
+      "waveform_flags": [
+        "tachycardia_alarm",
+        "low_spo2_alarm",
+        "high_rr_alarm"
+      ]
+    },
+    "labs": {
+      "creatinine_mg_dl": 0.9,
+      "bnp_pg_ml": 180,
+      "troponin_ng_l": 18,
+      "lactate_mmol_l": 2.1,
+      "wbc_k_per_ul": 14.2,
+      "hemoglobin_g_dl": 15.8,
+      "hematocrit_pct": 47.5,
+      "platelet_k_per_ul": 238,
+      "procalcitonin_ng_ml": 0.35,
+      "abg": {
+        "ph": 7.28,
+        "pco2": 62,
+        "po2": 52,
+        "hco3": 28,
+        "base_excess": 1.5,
+        "sao2": 81,
+        "interpretation": "Acute-on-chronic respiratory acidosis. Elevated baseline HCO3 (28) indicates chronic CO2 retention with incomplete acute compensation. Expected HCO3 for chronic hypercapnia with baseline pCO2 ~48 would be ~27-29; the pH depression to 7.28 confirms an acute worsening superimposed on chronic respiratory acidosis."
+      },
+      "cmp": {
+        "na": 138,
+        "k": 4.2,
+        "cl": 97,
+        "co2": 29,
+        "bun": 22,
+        "glucose": 148,
+        "creatinine": 0.9,
+        "calcium": 9.1
+      },
+      "cbc": {
+        "wbc": 14.2,
+        "hemoglobin": 15.8,
+        "hematocrit": 47.5,
+        "platelets": 238,
+        "neutrophil_pct": 82,
+        "lymphocyte_pct": 12,
+        "bands_pct": 4
+      }
+    },
+    "active_medications": [],
+    "orders": [],
+    "event_log": [],
+    "scoring": {
+      "critical_actions": [],
+      "harm_events": [],
+      "teaching_points": [],
+      "final_score": 0
+    }
+  },
+  "hidden_truth": {
+    "final_diagnosis": "Severe acute exacerbation of COPD (GOLD Stage III) with acute-on-chronic hypercapnic respiratory failure, triggered by viral URI with probable bacterial superinfection (Anthonisen Type I exacerbation)",
+    "must_not_miss_alternatives": [
+      "Pneumonia with COPD overlap",
+      "Pneumothorax (especially tension PTX in COPD patients)",
+      "Acute pulmonary embolism",
+      "Acute decompensated heart failure / flash pulmonary edema",
+      "Acute coronary syndrome with secondary respiratory distress"
+    ],
+    "cxr_if_ordered": "Hyperinflated lung fields with flattened hemidiaphragms bilaterally. No focal consolidation, pneumothorax, or pleural effusion. Increased AP diameter. Peribronchial thickening consistent with chronic airway disease. No acute infiltrate to suggest pneumonia. Heart size normal.",
+    "ct_chest_if_ordered": "Severe centrilobular and paraseptal emphysema bilaterally with air trapping on expiratory images. Bronchial wall thickening with mucus plugging in bilateral lower lobes. No pulmonary embolism. No focal consolidation. No pneumothorax.",
+    "ecg_if_ordered": "Sinus tachycardia at 108 bpm. Right axis deviation. P-pulmonale (peaked P waves in lead II, >2.5mm). Low voltage in limb leads. No acute ST elevation or depression. No T-wave inversions in right precordial leads to suggest acute RV strain.",
+    "abg_result": "pH 7.28, pCO2 62 mmHg, pO2 52 mmHg, HCO3 28 mEq/L, SaO2 81%. Interpretation: Acute-on-chronic respiratory acidosis.",
+    "vbg_result_if_ordered": "pH 7.24, pCO2 68 mmHg. VBG pH correlates ~0.03-0.04 lower than ABG pH; pCO2 runs ~4-6 higher. Consistent with ABG findings.",
+    "sputum_culture_if_ordered": "Gram stain shows many WBCs, moderate gram-negative rods. Culture pending (would grow Haemophilus influenzae at 48h).",
+    "blood_cultures_if_ordered": "Pending at time of disposition. No growth at 24h.",
+    "ua_if_ordered": "Concentrated urine, no infection. Specific gravity 1.025.",
+    "respiratory_viral_panel_if_ordered": "Rhinovirus detected. Influenza A/B negative. SARS-CoV-2 negative. RSV negative.",
+    "peak_flow_if_attempted": "Patient unable to perform reliable effort due to dyspnea. Estimated peak flow <150 L/min (severely reduced from predicted ~320 L/min for age/height/sex).",
+    "bedside_ultrasound_if_performed": "Bilateral A-lines consistent with air. No B-lines to suggest pulmonary edema. No pleural effusion. Lung sliding present bilaterally (rules out pneumothorax at probe sites). IVC mildly dilated at 2.3cm with <50% inspiratory collapse suggesting elevated right-sided pressures. Grossly normal LV function. Mildly dilated RV."
+  },
+  "opening_script": {
+    "patient_voice": "I... can't... breathe. Worse... three days. Coughing... green stuff.",
+    "nurse_handoff": "66-year-old woman, Dorothy Miller, brought in by EMS. Known COPD on home 2 liters oxygen. She's been sick for three days with a cold that got worse. EMS found her tripoding on the edge of her bed, barely able to talk. Sat is 82 on her home 2 liters. She's working really hard to breathe — accessory muscles, can only get out a couple words at a time. Lungs are tight with diffuse wheezing bilaterally, very poor air movement. Temp is 38.1. She's got a productive cough with thick green sputum. She's a 40 pack-year smoker. Husband says she normally gets around okay at home with her oxygen but has been getting worse every day with this cold. He's very worried.",
+    "appearance": [
+      "Sitting bolt upright, tripoding with arms braced on stretcher rails",
+      "Obvious accessory muscle use: sternocleidomastoid, intercostal retractions",
+      "Speaking in 2-3 word fragments between labored breaths",
+      "Pursed lip breathing",
+      "Barrel chest, thin habitus",
+      "Diaphoretic with mild cyanosis of the lips",
+      "Nasal cannula at 2L in place",
+      "Audible expiratory wheezing without stethoscope",
+      "Appears fatigued but alert and anxious"
+    ]
+  },
+  "critical_actions": [
+    {
+      "id": "recognize_severe_copd_exacerbation",
+      "description": "Recognize severe COPD exacerbation with impending respiratory failure based on clinical presentation: accessory muscle use, inability to speak full sentences, SpO2 82%, tachypnea, and known COPD history",
+      "target_time_sec": 120,
+      "weight": 8
+    },
+    {
+      "id": "nebulized_bronchodilators",
+      "description": "Administer nebulized bronchodilators: albuterol 2.5mg + ipratropium 0.5mg via nebulizer (combination therapy; may repeat albuterol q20min x3 or use continuous nebulization)",
+      "target_time_sec": 300,
+      "weight": 14
+    },
+    {
+      "id": "systemic_corticosteroids",
+      "description": "Administer systemic corticosteroids: methylprednisolone 125mg IV, or prednisone 40-60mg PO if patient can swallow (IV preferred given severity and difficulty speaking/swallowing). Reduces treatment failure, improves FEV1 and oxygenation.",
+      "target_time_sec": 300,
+      "weight": 12
+    },
+    {
+      "id": "titrate_oxygen_88_92",
+      "description": "Titrate supplemental oxygen to target SpO2 88-92% — NOT 100%. In COPD, excessive oxygen worsens V/Q mismatch (Haldane effect releases CO2 from hemoglobin, loss of hypoxic pulmonary vasoconstriction increases dead-space ventilation) and can precipitate CO2 narcosis. Use Venturi mask for precise FiO2 delivery (28-35%) or titrate NC to 1-4L.",
+      "target_time_sec": 300,
+      "weight": 12
+    },
+    {
+      "id": "nippv_bipap",
+      "description": "Initiate BiPAP/NIPPV if patient not improving after initial bronchodilator therapy. Settings: IPAP 10-14 cmH2O, EPAP 4-6 cmH2O. NIPPV in acute hypercapnic COPD exacerbation reduces intubation rates (NNT ~5), ICU length of stay, and mortality.",
+      "target_time_sec": 600,
+      "weight": 14
+    },
+    {
+      "id": "antibiotics_purulent_sputum",
+      "description": "Administer antibiotics for Anthonisen Type I exacerbation (all three criteria met: increased dyspnea, increased sputum volume, purulent sputum). Appropriate choices: azithromycin 500mg IV/PO, levofloxacin 750mg IV, amoxicillin-clavulanate, or doxycycline. Cover typical and atypical organisms.",
+      "target_time_sec": 900,
+      "weight": 8
+    },
+    {
+      "id": "obtain_abg_vbg",
+      "description": "Obtain arterial blood gas (or venous blood gas as screening) to quantify degree of hypercapnia and acidosis, and to establish baseline for monitoring response to therapy. ABG is essential in severe exacerbation to guide decision for NIPPV vs intubation.",
+      "target_time_sec": 300,
+      "weight": 6
+    },
+    {
+      "id": "intubation_preparation",
+      "description": "Prepare for intubation if patient continues to deteriorate despite NIPPV: assemble RSI medications (ketamine preferred induction agent — maintains respiratory drive and bronchodilation; avoid propofol-only or high-dose opioids), have video laryngoscope ready, anticipate difficult airway (barrel chest, short neck). Plan ventilator settings for obstructive physiology before intubation.",
+      "target_time_sec": 1800,
+      "weight": 8
+    }
+  ],
+  "harm_events": [
+    {
+      "id": "high_flow_o2_co2_narcosis",
+      "description": "High-flow oxygen administered targeting SpO2 of 100% causes worsening hypercapnia via Haldane effect and V/Q mismatch redistribution. pCO2 rises from 62 to >80, pH drops below 7.20, patient becomes somnolent then obtunded as CO2 narcosis develops.",
+      "trigger": "fio2_greater_than_0.50_or_spo2_target_greater_than_96_sustained_300_sec",
+      "severity": 8,
+      "physiologic_consequence": {
+        "pco2_increase": 20,
+        "ph_decrease": 0.10,
+        "gcs_decrease_to": 10,
+        "co2_narcosis_index": 0.85,
+        "mental_status": "obtunded"
+      }
+    },
+    {
+      "id": "no_bronchodilators",
+      "description": "Failure to administer nebulized bronchodilators (albuterol and ipratropium) within a reasonable timeframe. Bronchospasm persists, work of breathing continues to increase, and respiratory muscle fatigue progresses toward ventilatory failure.",
+      "trigger": "no_bronchodilator_by_600_sec",
+      "severity": 7,
+      "physiologic_consequence": {
+        "bronchospasm_index_increase": 0.15,
+        "work_of_breathing_index_increase": 0.15,
+        "respiratory_muscle_fatigue_index_increase": 0.20
+      }
+    },
+    {
+      "id": "no_systemic_steroids",
+      "description": "Failure to administer systemic corticosteroids. Airway inflammation persists, bronchospasm is more resistant to bronchodilators alone, and recovery is significantly delayed. Treatment failure rate increases substantially without steroids.",
+      "trigger": "no_corticosteroid_by_900_sec",
+      "severity": 6,
+      "physiologic_consequence": {
+        "airway_inflammation_index_increase": 0.10,
+        "treatment_failure_risk_increase": 0.30
+      }
+    },
+    {
+      "id": "premature_intubation_no_nippv_trial",
+      "description": "Patient intubated without first attempting NIPPV/BiPAP. Evidence strongly supports NIPPV trial in hypercapnic COPD exacerbation unless contraindicated (obtunded/unable to protect airway, hemodynamic instability, facial trauma, copious secretions, recent upper GI surgery). Premature intubation exposes patient to risks of mechanical ventilation, auto-PEEP, and prolonged ICU stay.",
+      "trigger": "intubation_ordered_without_prior_nippv_trial",
+      "severity": 5,
+      "physiologic_consequence": {
+        "icu_stay_increase_days": 3,
+        "vap_risk_index": 0.15,
+        "auto_peep_risk_if_settings_incorrect": 0.70
+      }
+    },
+    {
+      "id": "intubation_excessive_tidal_volumes",
+      "description": "If intubation occurs, use of excessive tidal volumes (>8 mL/kg IBW) or high respiratory rates (>14) causes severe auto-PEEP and air trapping. Dynamic hyperinflation leads to hemodynamic compromise (decreased venous return, hypotension) and risk of barotrauma (pneumothorax). In a COPD patient, ventilator settings must account for prolonged expiratory time constant.",
+      "trigger": "mechanical_ventilation_with_tv_greater_than_500ml_or_rr_greater_than_14",
+      "severity": 8,
+      "physiologic_consequence": {
+        "auto_peep_cmh2o_increase_to": 18,
+        "plateau_pressure_cmh2o": 38,
+        "sbp_decrease_to": 75,
+        "map_decrease_to": 52,
+        "pneumothorax_risk_index": 0.40,
+        "cardiac_output_decrease_pct": 35
+      }
+    }
+  ],
+  "recommended_management_logic": {
+    "preferred_agents": [
+      "albuterol_nebulized_2.5mg_q20min_or_continuous",
+      "ipratropium_nebulized_0.5mg_q4_6h",
+      "methylprednisolone_125mg_iv",
+      "azithromycin_500mg_iv_or_po",
+      "bipap_ipap_12_epap_5"
+    ],
+    "acceptable_alternatives": [
+      "prednisone_40mg_po_if_tolerating",
+      "dexamethasone_10mg_iv",
+      "levofloxacin_750mg_iv",
+      "amoxicillin_clavulanate_875_125_po",
+      "doxycycline_100mg_po",
+      "levalbuterol_nebulized",
+      "magnesium_sulfate_2g_iv_over_20min_if_severe"
+    ],
+    "preferred_strategy": "Immediate nebulized bronchodilators, systemic steroids, and oxygen titration to 88-92%. ABG to quantify severity. If no improvement in 30-60 minutes or continued respiratory distress, initiate NIPPV. Antibiotics for purulent sputum exacerbation. Prepare for intubation as backup only. If intubation required: ketamine induction, low TV (6-8 mL/kg IBW), low RR (10-12), I:E ratio 1:4 or 1:5, monitor auto-PEEP, permissive hypercapnia acceptable if pH >7.20.",
+    "penalized_strategy": [
+      "high_flow_oxygen_to_normalize_spo2_to_100",
+      "intubation_without_nippv_trial",
+      "ventilator_settings_inappropriate_for_obstruction",
+      "failure_to_give_bronchodilators",
+      "failure_to_give_systemic_steroids",
+      "oral_steroids_in_patient_who_cannot_swallow_safely",
+      "delayed_recognition_of_respiratory_failure"
+    ],
+    "ventilator_settings_if_intubated": {
+      "mode": "assist_control_volume",
+      "tidal_volume_ml": "370-500 (6-8 mL/kg IBW; IBW for 160cm female = ~52kg)",
+      "respiratory_rate": "10-12",
+      "ie_ratio": "1:4 to 1:5",
+      "peep_cmh2o": "0-5 (use extrinsic PEEP at ~80% of auto-PEEP to facilitate triggering if needed)",
+      "fio2": "titrate to SpO2 88-92%",
+      "plateau_pressure_target": "<30 cmH2O",
+      "permissive_hypercapnia": "acceptable if pH >7.20"
+    }
+  },
+  "time_course": {
+    "untreated_progression": [
+      {
+        "time_sec": 300,
+        "effects": {
+          "respiratory": {
+            "rr": 34,
+            "spo2": 79,
+            "work_of_breathing_index": 0.88,
+            "bronchospasm_index": 0.78
+          },
+          "hemodynamics": {
+            "hr": 114,
+            "sbp": 152,
+            "dbp": 90
+          },
+          "neurologic": {
+            "mental_status": "anxious_and_distressed",
+            "gcs": 14
+          }
+        },
+        "narrative": "Dorothy is visibly tiring. Her wheezing is slightly louder as she becomes more tachypneic. She mouths 'help me' between breaths."
+      },
+      {
+        "time_sec": 600,
+        "effects": {
+          "respiratory": {
+            "rr": 36,
+            "spo2": 76,
+            "work_of_breathing_index": 0.92,
+            "pco2": 68,
+            "ph": 7.24,
+            "bronchospasm_index": 0.80
+          },
+          "hemodynamics": {
+            "hr": 122,
+            "sbp": 158,
+            "dbp": 94
+          },
+          "neurologic": {
+            "mental_status": "fatiguing",
+            "gcs": 14,
+            "co2_narcosis_index": 0.30
+          }
+        },
+        "narrative": "Her respiratory rate is climbing but tidal volume is dropping. Air movement is becoming increasingly poor. She is diaphoretic and starting to look exhausted. The nurse calls out that the sat is 76."
+      },
+      {
+        "time_sec": 1200,
+        "effects": {
+          "respiratory": {
+            "rr": 28,
+            "spo2": 72,
+            "work_of_breathing_index": 0.95,
+            "pco2": 78,
+            "ph": 7.18,
+            "air_movement": "very_poor"
+          },
+          "hemodynamics": {
+            "hr": 128,
+            "sbp": 165,
+            "dbp": 98
+          },
+          "neurologic": {
+            "mental_status": "somnolent",
+            "gcs": 11,
+            "co2_narcosis_index": 0.65,
+            "asterixis": true
+          }
+        },
+        "conditional_event": "if_no_bronchodilators_and_no_nippv",
+        "narrative": "CRITICAL: Respiratory rate is actually DECREASING — this is an ominous sign of respiratory muscle fatigue, not improvement. She is becoming drowsy with a falling GCS. You notice a flapping tremor when she extends her wrists. CO2 is climbing dangerously."
+      },
+      {
+        "time_sec": 1800,
+        "effects": {
+          "respiratory": {
+            "rr": 18,
+            "spo2": 65,
+            "pco2": 95,
+            "ph": 7.10,
+            "work_of_breathing_index": 0.50,
+            "air_movement": "minimal"
+          },
+          "hemodynamics": {
+            "hr": 135,
+            "sbp": 90,
+            "dbp": 55,
+            "rhythm": "sinus_tachycardia_with_pvcs"
+          },
+          "neurologic": {
+            "mental_status": "obtunded",
+            "gcs": 7,
+            "co2_narcosis_index": 0.90
+          }
+        },
+        "conditional_event": "if_no_treatment",
+        "narrative": "IMPENDING RESPIRATORY ARREST: Dorothy is barely breathing. Her respiratory rate has dropped to 18 — paradoxically 'normalizing' — this represents exhaustion and impending arrest, NOT improvement. She is obtunded and no longer responding to voice. PVCs are appearing on the monitor. Immediate intubation is now required."
+      },
+      {
+        "time_sec": 2400,
+        "conditional_event": "if_no_treatment_and_no_intubation",
+        "effects": {
+          "respiratory": {
+            "rr": 6,
+            "spo2": 45,
+            "pco2": 120,
+            "ph": 6.95
+          },
+          "hemodynamics": {
+            "hr": 45,
+            "sbp": 60,
+            "dbp": 30,
+            "rhythm": "bradycardia_progressing_to_pea"
+          },
+          "neurologic": {
+            "mental_status": "unresponsive",
+            "gcs": 3
+          }
+        },
+        "narrative": "Respiratory arrest. Bradycardia progressing to PEA. Code blue."
+      }
+    ],
+    "treated_improvement": [
+      {
+        "time_sec": 300,
+        "condition": "bronchodilators_given_and_o2_titrated",
+        "effects": {
+          "respiratory": {
+            "rr": 28,
+            "spo2": 87,
+            "bronchospasm_index": 0.60,
+            "work_of_breathing_index": 0.72
+          },
+          "hemodynamics": {
+            "hr": 112
+          }
+        },
+        "narrative": "After nebulizer treatment and oxygen adjustment, Dorothy's wheezing is slightly improved. She can say a few more words between breaths. Sat is 87 on Venturi mask at 28%."
+      },
+      {
+        "time_sec": 600,
+        "condition": "bronchodilators_plus_steroids_plus_nippv",
+        "effects": {
+          "respiratory": {
+            "rr": 24,
+            "spo2": 90,
+            "bronchospasm_index": 0.45,
+            "work_of_breathing_index": 0.55,
+            "pco2": 55,
+            "ph": 7.32
+          },
+          "hemodynamics": {
+            "hr": 104,
+            "sbp": 138,
+            "dbp": 82
+          },
+          "neurologic": {
+            "mental_status": "improved_still_dyspneic",
+            "gcs": 15
+          }
+        },
+        "narrative": "On BiPAP with ongoing nebulizers and IV steroids, Dorothy is improving. She's speaking in short sentences now. Air movement is better bilaterally with less wheezing. She nods when you ask if the breathing machine is helping."
+      },
+      {
+        "time_sec": 1800,
+        "condition": "full_treatment_regimen",
+        "effects": {
+          "respiratory": {
+            "rr": 20,
+            "spo2": 91,
+            "bronchospasm_index": 0.30,
+            "work_of_breathing_index": 0.35,
+            "pco2": 50,
+            "ph": 7.36
+          },
+          "hemodynamics": {
+            "hr": 92,
+            "sbp": 134,
+            "dbp": 78
+          },
+          "neurologic": {
+            "mental_status": "alert_and_cooperative",
+            "gcs": 15
+          }
+        },
+        "narrative": "Significant improvement. Dorothy is speaking in full sentences on BiPAP. Wheezing has markedly diminished. She asks for water and to call her husband. Repeat ABG shows improving pH and decreasing pCO2. She is out of immediate danger but will need ICU admission for continued NIPPV and monitoring."
+      }
+    ]
+  },
+  "triggered_diagnostics": {
+    "abg_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "pH 7.28, pCO2 62 mmHg, pO2 52 mmHg, HCO3 28 mEq/L, SaO2 81%, Base Excess +1.5. Interpretation: Acute-on-chronic respiratory acidosis. Chronically elevated HCO3 indicates renal compensation for baseline hypercapnia. Acute component reflected by pH depression below expected for chronic compensation."
+    },
+    "vbg_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "pH 7.24, pCO2 68 mmHg. Consistent with significant hypercapnia. VBG correlates with ABG within expected offset (pH ~0.03-0.04 lower, pCO2 ~4-6 higher on venous sample)."
+    },
+    "cxr_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "PA and lateral chest: Hyperinflated lung fields with flattened hemidiaphragms bilaterally. Increased anteroposterior diameter. No focal consolidation or pneumonia. No pneumothorax. No pleural effusion. Peribronchial wall thickening. Heart size normal. No pulmonary edema. Findings consistent with known COPD without acute superimposed process."
+    },
+    "ct_chest_ordered": {
+      "result_delay_sec": 2400,
+      "result_text": "Severe centrilobular and paraseptal emphysema bilaterally with extensive air trapping on expiratory phase. Bronchial wall thickening with mucus impaction in bilateral lower lobes. No pulmonary embolism on contrast-enhanced study. No focal consolidation. No pneumothorax. No mediastinal lymphadenopathy."
+    },
+    "ecg_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "Sinus tachycardia at 108 bpm. Right axis deviation. P-pulmonale (peaked P waves >2.5mm in lead II). Low voltage in limb leads consistent with hyperinflation. No acute ST changes. No STEMI criteria. Poor R-wave progression (may reflect hyperinflation vs old process). No T-wave inversions to suggest acute RV strain pattern."
+    },
+    "cmp_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Na 138, K 4.2, Cl 97, CO2 29, BUN 22, Creatinine 0.9, Glucose 148, Calcium 9.1. Notable: Elevated serum CO2 (bicarbonate) at 29 reflects chronic metabolic compensation for baseline respiratory acidosis. Glucose mildly elevated likely stress response."
+    },
+    "cbc_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "WBC 14.2 (elevated, neutrophil predominant at 82% with 4% bands — left shift), Hemoglobin 15.8 (polycythemia secondary to chronic hypoxia), Hematocrit 47.5%, Platelets 238."
+    },
+    "troponin_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Troponin I: 18 ng/L (mildly elevated; likely Type 2 demand ischemia in setting of tachycardia and hypoxia rather than acute coronary syndrome. Trend recommended)."
+    },
+    "procalcitonin_ordered": {
+      "result_delay_sec": 360,
+      "result_text": "Procalcitonin: 0.35 ng/mL (low-intermediate; does not reliably exclude bacterial infection in COPD exacerbation but suggests viral trigger with possible bacterial component. Clinical decision for antibiotics should be based on Anthonisen criteria and clinical picture rather than procalcitonin alone)."
+    },
+    "lactate_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "Lactate: 2.1 mmol/L (mildly elevated, likely secondary to increased work of breathing and sympathetic activation rather than sepsis)."
+    },
+    "sputum_culture_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Specimen sent. Gram stain: Many WBCs, few epithelial cells (adequate sample), moderate gram-negative rods. Preliminary culture pending. (Final culture at 48h: Haemophilus influenzae, susceptible to azithromycin, amoxicillin-clavulanate, fluoroquinolones)."
+    },
+    "blood_cultures_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Two sets of blood cultures obtained and sent to microbiology. Pending. (Final at 5 days: No growth)."
+    },
+    "respiratory_viral_panel_ordered": {
+      "result_delay_sec": 1200,
+      "result_text": "Rhinovirus DETECTED. Influenza A: Not detected. Influenza B: Not detected. SARS-CoV-2: Not detected. RSV: Not detected. Parainfluenza: Not detected. hMPV: Not detected."
+    },
+    "bnp_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "BNP: 180 pg/mL (mildly elevated; can be elevated in cor pulmonale / right heart strain from COPD exacerbation. Not in range typically seen with acute decompensated left heart failure. Clinical correlation recommended)."
+    },
+    "bedside_ultrasound_performed": {
+      "result_delay_sec": 60,
+      "result_text": "Lung: Bilateral A-lines (normal aeration / hyperinflation). No B-lines (no pulmonary edema). Lung sliding present bilaterally (no pneumothorax). Cardiac: Grossly normal LV function. Mildly dilated RV with septal flattening in diastole (D-sign) consistent with RV pressure overload. IVC: 2.3cm with <50% inspiratory collapse suggesting elevated right atrial pressure. No pericardial effusion."
+    }
+  },
+  "success_criteria": {
+    "required": [
+      "recognize_severe_copd_exacerbation",
+      "nebulized_bronchodilators",
+      "systemic_corticosteroids",
+      "titrate_oxygen_88_92",
+      "nippv_bipap",
+      "antibiotics_purulent_sputum",
+      "obtain_abg_vbg"
+    ],
+    "target_end_state": {
+      "spo2_range": [88, 92],
+      "rr_max": 24,
+      "pco2_improving_toward": 50,
+      "ph_above": 7.30,
+      "mental_status": "alert_and_cooperative",
+      "gcs_min": 14,
+      "bronchospasm_index_max": 0.40,
+      "work_of_breathing_index_max": 0.45,
+      "patient_on_nippv": true,
+      "no_harm_event_ids": [
+        "high_flow_o2_co2_narcosis",
+        "intubation_excessive_tidal_volumes"
+      ],
+      "disposition": "icu_admission"
+    }
+  },
+  "failure_criteria": {
+    "any_of": [
+      "respiratory_arrest",
+      "cardiac_arrest_pea_from_respiratory_failure",
+      "gcs_less_than_6_sustained_more_than_300_sec",
+      "spo2_less_than_50_sustained_more_than_120_sec",
+      "death_from_untreated_respiratory_failure",
+      "co2_narcosis_from_excessive_oxygen_leading_to_arrest",
+      "tension_pneumothorax_from_auto_peep_barotrauma",
+      "disposition_is_discharge"
+    ]
+  },
+  "debrief_template": {
+    "what_went_well": [
+      "Recognized severe COPD exacerbation with impending respiratory failure",
+      "Initiated bronchodilator therapy promptly with combined albuterol and ipratropium",
+      "Administered systemic corticosteroids early",
+      "Titrated oxygen appropriately to SpO2 88-92% rather than overcorrecting to 100%",
+      "Trialed NIPPV/BiPAP before considering intubation",
+      "Addressed infectious trigger with antibiotics per Anthonisen criteria",
+      "Obtained ABG to guide management decisions",
+      "Anticipated need for intubation and prepared appropriately"
+    ],
+    "what_could_have_gone_better": [
+      "Faster recognition of severity and initiation of bronchodilators",
+      "Earlier consideration of NIPPV when initial therapy insufficient",
+      "More precise oxygen titration — avoiding both hypoxemia and hyperoxia",
+      "Earlier ABG to quantify degree of hypercapnia and acidosis",
+      "If intubated: ventilator settings optimized for obstructive physiology",
+      "Earlier antibiotic administration given purulent sputum (Anthonisen Type I)"
+    ],
+    "key_choices_to_highlight": [
+      "Oxygen target: Was SpO2 kept at 88-92% or was high-flow oxygen applied reflexively?",
+      "Was NIPPV attempted before intubation, or was the patient intubated prematurely?",
+      "If intubated, were vent settings appropriate (low rate, long I:E ratio, low TV)?",
+      "Were both albuterol AND ipratropium given, or only one agent?",
+      "Was the decreasing respiratory rate in an untreated patient recognized as ominous fatigue rather than improvement?",
+      "Were systemic steroids given IV or PO — and was the route appropriate for the patient's ability to swallow?"
+    ],
+    "teaching_points": [
+      "GOLD guidelines recommend short-acting inhaled beta-2 agonists (SABA) with or without short-acting anticholinergics (SAMA) as initial bronchodilator therapy for acute COPD exacerbation.",
+      "Oxygen in COPD: Target SpO2 88-92%. The traditional 'hypoxic drive' explanation is an oversimplification. The actual mechanisms of CO2 retention with high-flow O2 include: (1) Haldane effect — oxygenated hemoglobin releases CO2 more readily, raising dissolved pCO2; (2) Release of hypoxic pulmonary vasoconstriction — perfusion redistributes to poorly ventilated areas, increasing V/Q mismatch and dead space; (3) Minor reduction in hypoxic ventilatory drive (the smallest contributor despite being the most commonly cited).",
+      "NIPPV (BiPAP) is first-line for acute hypercapnic respiratory failure in COPD. Cochrane meta-analysis shows NNT of ~5 to prevent one intubation. It reduces mortality, ICU length of stay, and complication rates. Contraindications: inability to protect airway, hemodynamic instability, copious secretions, facial trauma, recent esophageal/gastric surgery, obtunded (relative — may still trial in experienced centers).",
+      "Permissive hypercapnia: It is acceptable to tolerate elevated pCO2 as long as pH is improving (>7.20-7.25) and the patient is clinically stable. Do not chase a 'normal' pCO2 of 40 in a patient with chronic hypercapnia — their baseline is elevated.",
+      "Auto-PEEP (intrinsic PEEP): In obstructive lung disease, incomplete exhalation leads to air trapping and positive end-expiratory pressure not measured by the ventilator. Management: reduce respiratory rate, increase expiratory time (I:E ratio 1:4 to 1:5), reduce tidal volume, minimize minute ventilation. Disconnect from ventilator briefly to allow full exhalation if hemodynamically unstable from auto-PEEP.",
+      "Ventilator settings for obstructive disease: TV 6-8 mL/kg IBW, RR 10-12, I:E ratio 1:4 to 1:5, PEEP 0-5 cmH2O (or set extrinsic PEEP at ~80% of measured auto-PEEP to reduce work of triggering), plateau pressure goal <30 cmH2O. Accept permissive hypercapnia.",
+      "Anthonisen criteria for antibiotics in COPD exacerbation: Type I (all 3: increased dyspnea + increased sputum volume + increased sputum purulence) — strongest indication for antibiotics. Type II (2 of 3 criteria) — antibiotics likely beneficial. Type III (1 of 3) — antibiotics generally not indicated unless the one criterion is purulence.",
+      "A falling respiratory rate in a patient with severe respiratory distress is an OMINOUS sign of respiratory muscle fatigue and impending respiratory arrest — it should NEVER be interpreted as clinical improvement in the absence of treatment response.",
+      "Ketamine is the preferred induction agent if intubation is required in status asthmaticus or severe COPD exacerbation — it provides bronchodilation via catecholamine release and direct smooth muscle relaxation, and maintains respiratory drive during dissociation.",
+      "The REDUCE trial (JAMA 2013) demonstrated that a 5-day course of prednisone 40mg PO daily is non-inferior to a 14-day course for COPD exacerbation. Shorter courses are now standard of care."
+    ]
+  }
+}

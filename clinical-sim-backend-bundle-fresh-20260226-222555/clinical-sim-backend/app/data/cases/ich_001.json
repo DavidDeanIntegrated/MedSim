@@ -1,0 +1,682 @@
+{
+  "case_file_version": "2.0.0",
+  "case_id": "ich_001",
+  "title": "Warfarin-Associated Intracerebral Hemorrhage with Intraventricular Extension",
+  "difficulty": "hard",
+  "scenario_type": "intracerebral_hemorrhage",
+  "category": "hemorrhagic_stroke",
+  "authoring_notes": {
+    "summary": "71-year-old male on warfarin for atrial fibrillation presents after being found down with right-sided weakness and global aphasia. INR is supratherapeutic at 3.2. CT head reveals a large left basal ganglia hemorrhage with intraventricular extension and midline shift. The case requires urgent anticoagulation reversal with 4-factor PCC and IV vitamin K, aggressive blood pressure management targeting SBP <140, neurosurgical consultation, and avoidance of catastrophic errors such as administering tPA without imaging.",
+    "teaching_focus": [
+      "Recognize intracerebral hemorrhage and differentiate from ischemic stroke — CT before any treatment",
+      "Emergent reversal of warfarin anticoagulation with 4-factor PCC plus IV vitamin K per AHA/ASA guidelines",
+      "Blood pressure management targeting SBP <140 mmHg per INTERACT2 and ATACH-2 trial evidence",
+      "Calculate and interpret the ICH Score for prognostication",
+      "Serial GCS assessment and recognition of herniation signs (Cushing reflex, unilateral pupil dilation)",
+      "Indications for neurosurgical intervention including external ventricular drain (EVD) for hydrocephalus",
+      "Avoid tPA, antiplatelets, and other agents that worsen hemorrhage",
+      "Seizure prophylaxis considerations in supratentorial ICH",
+      "4-factor PCC advantages over FFP: faster INR correction, lower volume, no blood type matching needed"
+    ]
+  },
+  "case_metadata": {
+    "case_id": "ich_001",
+    "title": "Warfarin-Associated Intracerebral Hemorrhage with Intraventricular Extension",
+    "difficulty": "hard",
+    "scenario_type": "intracerebral_hemorrhage",
+    "time_elapsed_sec": 0,
+    "time_step_sec": 5,
+    "status": "not_started"
+  },
+  "patient_profile": {
+    "name": "Harold Brown",
+    "age_years": 71,
+    "sex": "male",
+    "weight_kg": 88,
+    "height_cm": 178,
+    "bsa_m2": 2.07,
+    "pregnant": false,
+    "gestational_weeks": 0,
+    "chronic_hypertension": true,
+    "baseline_sbp": 145,
+    "baseline_dbp": 88,
+    "baseline_hr": 78,
+    "comorbidities": {
+      "atrial_fibrillation": true,
+      "warfarin_use": true,
+      "ckd": false,
+      "hfrEF": false,
+      "copd": false,
+      "asthma_or_reactive_airways": false,
+      "cad": true,
+      "diabetes": true,
+      "aortic_aneurysm_history": false,
+      "baseline_beta_blocker_use": false,
+      "baseline_bradycardia": false,
+      "av_conduction_disease": false,
+      "volume_depletion": false,
+      "prior_stroke_or_tia": false,
+      "hyperlipidemia": true
+    }
+  },
+  "disease_model": {
+    "primary_pathology": "intracerebral_hemorrhage",
+    "etiology": "warfarin_associated_hypertensive_ich",
+    "location": "left_basal_ganglia",
+    "intraventricular_extension": true,
+    "midline_shift_mm": 7,
+    "estimated_hematoma_volume_ml": 45,
+    "severity_index": 0.88,
+    "ich_score": {
+      "gcs_component": 1,
+      "age_component": 1,
+      "location_component": 0,
+      "volume_component": 1,
+      "ivh_component": 1,
+      "total": 4,
+      "thirty_day_mortality_estimate": "approximately 97%"
+    },
+    "end_organ_risk": {
+      "brain": 0.95,
+      "heart": 0.20,
+      "kidney": 0.15,
+      "aorta": 0.05,
+      "lungs": 0.15
+    },
+    "autoregulation_shift_index": 0.85,
+    "catecholamine_excess_index": 0.45,
+    "pulmonary_edema_index": 0.05,
+    "aortic_shear_index": 0.05,
+    "cerebral_edema_index": 0.72,
+    "hematoma_expansion_risk_index": 0.82,
+    "herniation_risk_index": 0.65,
+    "coagulopathy_index": 0.90
+  },
+  "initial_state": {
+    "hemodynamics": {
+      "svr_index": 1.85,
+      "preload_index": 0.95,
+      "contractility_index": 0.95,
+      "cardiac_output_index": 0.90,
+      "stroke_volume_index": 0.90,
+      "map": 148,
+      "sbp": 208,
+      "dbp": 118,
+      "hr": 82,
+      "rhythm": "atrial_fibrillation",
+      "av_node_conduction_index": 0.85,
+      "coronary_supply_demand_mismatch_index": 0.18
+    },
+    "respiratory": {
+      "rr": 18,
+      "spo2": 96,
+      "fio2": 0.21,
+      "oxygen_device": "room_air",
+      "work_of_breathing_index": 0.15,
+      "crackles_index": 0.0,
+      "bronchospasm_index": 0.0,
+      "pulmonary_edema_index": 0.05,
+      "airway_protective_reflexes_index": 0.60
+    },
+    "neurologic": {
+      "gcs": 10,
+      "gcs_components": {
+        "eye": 3,
+        "verbal": 2,
+        "motor": 5
+      },
+      "mental_status": "obtunded",
+      "headache_index": 0.0,
+      "vision_change_index": 0.0,
+      "focal_deficit_index": 0.95,
+      "focal_deficits": [
+        "right_hemiplegia",
+        "global_aphasia",
+        "right_facial_droop",
+        "right_homonymous_hemianopia",
+        "forced_left_gaze_deviation"
+      ],
+      "cerebral_hypoperfusion_index": 0.10,
+      "pupil_left_mm": 4,
+      "pupil_right_mm": 3,
+      "pupil_left_reactive": true,
+      "pupil_right_reactive": true,
+      "herniation_signs_present": false,
+      "seizure_activity": false,
+      "nihss_estimated": 22
+    },
+    "renal": {
+      "urine_output_ml_per_hr": 40,
+      "renal_perfusion_index": 0.80,
+      "aki_risk_index": 0.12
+    },
+    "cardiac": {
+      "chest_pain_index": 0.0,
+      "ischemia_index": 0.05,
+      "troponin_leak_index": 0.0,
+      "acute_heart_failure_index": 0.0
+    },
+    "monitor": {
+      "ecg_text": "Atrial fibrillation with controlled ventricular response, rate 82, no acute ST changes, no STEMI criteria",
+      "telemetry_quality": "good",
+      "nibp_cycle_sec": 60,
+      "waveform_flags": [
+        "hypertension_alarm",
+        "irregular_rhythm"
+      ]
+    },
+    "labs": {
+      "creatinine_mg_dl": 1.2,
+      "bnp_pg_ml": 145,
+      "troponin_ng_l": 8,
+      "lactate_mmol_l": 1.6,
+      "inr": 3.2,
+      "pt_sec": 38.4,
+      "ptt_sec": 42,
+      "fibrinogen_mg_dl": 285,
+      "platelet_count_k": 178,
+      "hemoglobin_g_dl": 13.1,
+      "hematocrit_pct": 39.3,
+      "wbc_k": 9.8,
+      "abg": {
+        "ph": 7.42,
+        "pco2": 36,
+        "po2": 85,
+        "hco3": 23
+      },
+      "cmp": {
+        "na": 141,
+        "k": 4.1,
+        "cl": 103,
+        "co2": 24,
+        "bun": 22,
+        "glucose": 168,
+        "calcium": 9.1,
+        "magnesium": 1.9
+      }
+    },
+    "active_medications": [],
+    "orders": [],
+    "event_log": [],
+    "scoring": {
+      "critical_actions": [],
+      "harm_events": [],
+      "teaching_points": [],
+      "final_score": 0
+    }
+  },
+  "hidden_truth": {
+    "final_diagnosis": "Warfarin-associated left basal ganglia intracerebral hemorrhage with intraventricular extension and midline shift, in the setting of supratherapeutic anticoagulation (INR 3.2) and uncontrolled hypertension",
+    "must_not_miss_alternatives": [
+      "Ischemic stroke with hemorrhagic transformation",
+      "Subdural hematoma",
+      "Ruptured arteriovenous malformation",
+      "Brain tumor with hemorrhage",
+      "Cerebral venous sinus thrombosis",
+      "Subarachnoid hemorrhage"
+    ],
+    "head_ct_result_if_ordered": "Large left basal ganglia hyperdense lesion measuring approximately 4.5 x 3.2 x 3.0 cm (estimated volume ~45 mL by ABC/2 method). Intraventricular extension of hemorrhage into the left lateral ventricle with early hydrocephalus. Midline shift of 7 mm to the right. Surrounding vasogenic edema. No underlying mass lesion identified. No subarachnoid hemorrhage.",
+    "cta_head_result_if_ordered": "No contrast extravasation (spot sign negative). No underlying vascular malformation or aneurysm identified. Atherosclerotic changes in the intracranial vasculature.",
+    "mri_brain_result_if_ordered": "Large left basal ganglia hemorrhage with intraventricular extension, consistent with hypertensive hemorrhage. No underlying mass or vascular malformation. Chronic small vessel ischemic changes.",
+    "cxr_if_ordered": "Mild cardiomegaly. No acute pulmonary process. No pulmonary edema.",
+    "ecg_if_ordered": "Atrial fibrillation with controlled ventricular response at 82 bpm. Left ventricular hypertrophy by voltage criteria. No acute ST-T wave changes.",
+    "repeat_inr_after_pcc_if_ordered": "INR 1.3 (drawn 30 minutes after 4-factor PCC administration)",
+    "repeat_inr_after_ffp_if_ordered": "INR 1.9 (drawn 60 minutes after completion of FFP infusion — correction incomplete and delayed)",
+    "ua_if_ordered": "Trace protein, trace glucose, otherwise unremarkable",
+    "blood_type_if_ordered": "O positive",
+    "neurosurgery_consult_response": "Neurosurgery aware. Given ICH score of 4, large hematoma volume with IVH, and midline shift, recommend EVD placement for IVH/hydrocephalus management. Will evaluate for possible surgical evacuation depending on clinical trajectory. Continue aggressive medical management including anticoagulation reversal and BP control. Repeat CT in 6 hours or sooner if clinical deterioration."
+  },
+  "opening_script": {
+    "patient_voice": "",
+    "family_voice": "I found him on the floor next to the bed about 20 minutes ago. He was fine when I went to the kitchen — that was maybe 45 minutes ago. He can't talk and he can't move his right side. He takes warfarin for his heart rhythm. Please help him.",
+    "nurse_handoff": "71-year-old male brought in by EMS after being found down by his wife with right-sided weakness and inability to speak. Last known well approximately 45 minutes ago. History of atrial fibrillation on warfarin, hypertension, diabetes, and coronary artery disease. Vitals: BP 208/118, HR 82 and irregular, RR 18, SpO2 96% on room air. GCS is 10 — eyes open to voice, incomprehensible sounds, localizes to pain on the left but no movement on the right. Right-sided facial droop, dense right hemiplegia, gaze deviation to the left. He is not following commands.",
+    "appearance": [
+      "Elderly male lying on stretcher, not moving right side",
+      "Eyes open to voice, gaze deviated to the left",
+      "Incomprehensible sounds only — no intelligible speech",
+      "Right arm and leg flaccid, no withdrawal to pain on right",
+      "Localizes pain with left arm",
+      "Right lower facial droop",
+      "Irregular pulse palpated",
+      "No signs of trauma or external bleeding",
+      "Mild urinary incontinence noted"
+    ]
+  },
+  "critical_actions": [
+    {
+      "id": "abcs_and_gcs_assessment",
+      "description": "Perform primary survey with ABCs, assess GCS, and evaluate airway protective reflexes",
+      "target_time_sec": 120,
+      "weight": 8
+    },
+    {
+      "id": "stat_ct_head",
+      "description": "Order emergent non-contrast CT head to differentiate hemorrhagic from ischemic stroke before any treatment",
+      "target_time_sec": 600,
+      "weight": 14
+    },
+    {
+      "id": "reverse_anticoagulation",
+      "description": "Reverse warfarin anticoagulation with IV vitamin K 10 mg AND 4-factor PCC (dose based on INR and weight) — do not use tPA",
+      "target_time_sec": 600,
+      "weight": 16
+    },
+    {
+      "id": "blood_pressure_management",
+      "description": "Initiate IV antihypertensive (nicardipine infusion or labetalol) targeting SBP <140 mmHg per AHA/ASA ICH guidelines",
+      "target_time_sec": 900,
+      "weight": 14
+    },
+    {
+      "id": "coagulation_studies",
+      "description": "Order stat coagulation studies including INR, PT, PTT, fibrinogen, CBC with platelets",
+      "target_time_sec": 300,
+      "weight": 8
+    },
+    {
+      "id": "neurosurgery_consultation",
+      "description": "Consult neurosurgery for evaluation of possible surgical evacuation and/or EVD placement given IVH and hydrocephalus",
+      "target_time_sec": 900,
+      "weight": 10
+    },
+    {
+      "id": "seizure_prophylaxis_consideration",
+      "description": "Consider seizure prophylaxis (levetiracetam) for supratentorial ICH — assess risk vs benefit",
+      "target_time_sec": 1200,
+      "weight": 4
+    },
+    {
+      "id": "icu_admission",
+      "description": "Arrange ICU admission for continuous monitoring, titrated BP management, and serial neurologic assessments",
+      "target_time_sec": 1800,
+      "weight": 6
+    }
+  ],
+  "harm_events": [
+    {
+      "id": "tpa_administered",
+      "description": "tPA (alteplase) given — catastrophic error; patient has intracerebral hemorrhage and tPA will massively expand the hematoma, likely resulting in herniation and death",
+      "trigger": "tpa_or_alteplase_or_tenecteplase_ordered",
+      "severity": 10,
+      "consequence": "Massive hematoma expansion, uncal herniation, and likely death. This is the single most dangerous error in acute stroke management — CT must precede any thrombolytic.",
+      "teaching_point": "Never administer thrombolytics without first obtaining a non-contrast CT head. ICH is an absolute contraindication to tPA. The mantra is: CT before tPA, always."
+    },
+    {
+      "id": "no_anticoagulation_reversal",
+      "description": "Failure to reverse warfarin anticoagulation — ongoing coagulopathy leads to progressive hematoma expansion",
+      "trigger": "no_pcc_and_no_ffp_and_no_vitamin_k_by_1200_sec",
+      "severity": 9,
+      "consequence": "Continued hematoma expansion due to uncorrected coagulopathy. Hematoma volume increases by 30-40%, worsening midline shift and neurologic decline.",
+      "teaching_point": "AHA/ASA guidelines recommend emergent reversal of anticoagulation in warfarin-associated ICH. 4-factor PCC corrects INR within minutes vs hours for FFP, and requires much less volume."
+    },
+    {
+      "id": "antiplatelet_administered",
+      "description": "Antiplatelet agent (aspirin, clopidogrel, etc.) given — worsens hemorrhage by impairing platelet aggregation",
+      "trigger": "aspirin_or_clopidogrel_or_antiplatelet_ordered",
+      "severity": 7,
+      "consequence": "Further impairment of hemostasis, contributing to hematoma expansion.",
+      "teaching_point": "Antiplatelet agents are contraindicated in acute ICH. Even in patients with coronary artery disease, antiplatelets must be held during active intracranial hemorrhage."
+    },
+    {
+      "id": "no_bp_control",
+      "description": "Failure to lower blood pressure — sustained severe hypertension promotes ongoing hemorrhage and hematoma expansion",
+      "trigger": "no_iv_antihypertensive_by_1200_sec_or_sbp_greater_than_180_at_1800_sec",
+      "severity": 7,
+      "consequence": "Sustained hypertension drives continued bleeding and hematoma expansion, increasing midline shift and herniation risk.",
+      "teaching_point": "INTERACT2 trial showed that intensive BP lowering to SBP <140 improved functional outcomes. IV nicardipine or labetalol are first-line agents for BP management in ICH."
+    },
+    {
+      "id": "aggressive_bp_lowering",
+      "description": "SBP dropped aggressively below 100 mmHg — cerebral hypoperfusion in the setting of impaired autoregulation and mass effect",
+      "trigger": "sbp_less_than_100_sustained_or_map_less_than_60",
+      "severity": 7,
+      "consequence": "Cerebral hypoperfusion leads to secondary ischemic injury in penumbral tissue surrounding the hematoma. Worsening neurologic status.",
+      "teaching_point": "While SBP <140 is the target, overly aggressive lowering is harmful. Cerebral autoregulation is impaired in ICH, and perfusion pressure must be maintained. ATACH-2 showed that targeting SBP 110-139 vs 140-179 did not improve outcomes and increased renal adverse events."
+    }
+  ],
+  "recommended_management_logic": {
+    "preferred_agents": [
+      "nicardipine_iv_infusion",
+      "labetalol_iv",
+      "four_factor_pcc_iv",
+      "vitamin_k_iv",
+      "levetiracetam_iv"
+    ],
+    "preferred_strategy": "Immediate ABCs and GCS, emergent non-contrast CT head, simultaneous coagulation reversal with 4-factor PCC (25-50 units/kg based on INR) plus IV vitamin K 10 mg, aggressive but controlled BP reduction targeting SBP <140 with nicardipine infusion, neurosurgery consultation, serial neuro exams, and ICU admission",
+    "anticoagulation_reversal_protocol": {
+      "four_factor_pcc_dose": "For INR 2-4: 25 units/kg (actual body weight). For Harold Brown at 88 kg with INR 3.2: approximately 2200 units IV infused over 10-15 minutes",
+      "vitamin_k_dose": "10 mg IV infused over 10-20 minutes (slow infusion to reduce anaphylactoid risk)",
+      "monitoring": "Recheck INR 15-30 minutes after PCC administration. Target INR <1.4. If INR remains elevated, consider additional PCC dose.",
+      "ffp_alternative": "If PCC unavailable: FFP 10-15 mL/kg (approximately 4 units). Note: FFP is inferior due to large volume, longer preparation/infusion time, need for blood type matching, and risk of TACO/TRALI."
+    },
+    "bp_management_protocol": {
+      "target": "SBP <140 mmHg but not below 110 mmHg",
+      "nicardipine": "Start at 5 mg/hr IV infusion, titrate by 2.5 mg/hr every 5-15 minutes, max 15 mg/hr",
+      "labetalol_alternative": "10-20 mg IV push over 2 minutes, may repeat every 10-20 minutes, max 300 mg total. Consider infusion at 2-8 mg/min.",
+      "avoid": "Sublingual nifedipine, oral agents only, sodium nitroprusside (raises ICP)"
+    },
+    "penalized_strategy": [
+      "tpa_or_thrombolytic_administration",
+      "antiplatelet_administration",
+      "failure_to_image_before_treatment",
+      "failure_to_reverse_anticoagulation",
+      "excessive_bp_lowering_below_sbp_100",
+      "discharge_from_ed",
+      "ffp_only_without_considering_pcc",
+      "sodium_nitroprusside_use"
+    ]
+  },
+  "time_course": {
+    "untreated_progression": [
+      {
+        "time_sec": 300,
+        "effects": {
+          "neurologic": {
+            "gcs": 9,
+            "mental_status": "obtunded",
+            "pupil_left_mm": 4.5,
+            "focal_deficit_index": 0.96
+          },
+          "hemodynamics": {
+            "sbp": 215,
+            "dbp": 122,
+            "hr": 78,
+            "map": 153
+          },
+          "disease_model": {
+            "hematoma_expansion_risk_index": 0.85,
+            "cerebral_edema_index": 0.75
+          }
+        },
+        "narrative": "The patient becomes less responsive. He no longer opens his eyes to voice — only to pain. His right side remains completely flaccid. The nurse notes the blood pressure has climbed to 215/122."
+      },
+      {
+        "time_sec": 900,
+        "effects": {
+          "neurologic": {
+            "gcs": 7,
+            "gcs_components": {
+              "eye": 2,
+              "verbal": 1,
+              "motor": 4
+            },
+            "mental_status": "stuporous",
+            "pupil_left_mm": 5,
+            "pupil_left_reactive": "sluggish"
+          },
+          "hemodynamics": {
+            "sbp": 222,
+            "dbp": 126,
+            "hr": 68,
+            "map": 158
+          },
+          "disease_model": {
+            "hematoma_expansion_risk_index": 0.90,
+            "cerebral_edema_index": 0.82,
+            "herniation_risk_index": 0.75
+          }
+        },
+        "narrative": "GCS has dropped to 7. He has no verbal output and only withdraws to pain. The left pupil appears slightly larger and sluggishly reactive. Heart rate is trending down — early Cushing response may be developing. The coagulopathy is uncorrected and the hematoma is expanding."
+      },
+      {
+        "time_sec": 1500,
+        "effects": {
+          "neurologic": {
+            "gcs": 5,
+            "gcs_components": {
+              "eye": 1,
+              "verbal": 1,
+              "motor": 3
+            },
+            "mental_status": "comatose",
+            "pupil_left_mm": 6,
+            "pupil_left_reactive": false,
+            "pupil_right_mm": 3,
+            "pupil_right_reactive": true,
+            "herniation_signs_present": true
+          },
+          "hemodynamics": {
+            "sbp": 235,
+            "dbp": 130,
+            "hr": 55,
+            "map": 165
+          },
+          "respiratory": {
+            "rr": 10,
+            "spo2": 92,
+            "airway_protective_reflexes_index": 0.25
+          },
+          "disease_model": {
+            "hematoma_expansion_risk_index": 0.95,
+            "cerebral_edema_index": 0.92,
+            "herniation_risk_index": 0.90
+          }
+        },
+        "conditional_event": "if_no_anticoagulation_reversal_and_no_bp_management",
+        "narrative": "The patient is now comatose. The left pupil is fixed and dilated at 6 mm — uncal herniation is occurring. Cushing triad is developing: hypertension 235/130, bradycardia at 55, and irregular respirations at 10/min. SpO2 has dropped to 92%. Airway protective reflexes are failing. This patient needs immediate intubation and emergent neurosurgical intervention."
+      },
+      {
+        "time_sec": 2400,
+        "conditional_event": "if_no_intervention",
+        "effects": {
+          "neurologic": {
+            "gcs": 3,
+            "mental_status": "comatose",
+            "pupil_left_mm": 7,
+            "pupil_left_reactive": false,
+            "pupil_right_mm": 6,
+            "pupil_right_reactive": false,
+            "herniation_signs_present": true
+          },
+          "hemodynamics": {
+            "sbp": 70,
+            "dbp": 40,
+            "hr": 42,
+            "map": 50
+          },
+          "respiratory": {
+            "rr": 6,
+            "spo2": 78,
+            "airway_protective_reflexes_index": 0.0
+          }
+        },
+        "narrative": "Bilateral fixed and dilated pupils. GCS 3. The patient has herniated. Agonal respirations. Hemodynamic collapse. Without aggressive intervention at this point, the outcome is fatal."
+      }
+    ],
+    "treated_progression": [
+      {
+        "time_sec": 600,
+        "condition": "pcc_administered_and_bp_management_initiated",
+        "effects": {
+          "neurologic": {
+            "gcs": 10,
+            "pupil_left_mm": 4,
+            "pupil_left_reactive": true
+          },
+          "hemodynamics": {
+            "sbp": 165,
+            "dbp": 95,
+            "hr": 80,
+            "map": 118
+          },
+          "labs": {
+            "inr": 1.3
+          },
+          "disease_model": {
+            "hematoma_expansion_risk_index": 0.35,
+            "coagulopathy_index": 0.15
+          }
+        },
+        "narrative": "After 4-factor PCC and nicardipine infusion, the INR has corrected to 1.3. Blood pressure is trending down to 165/95. GCS remains stable at 10. The risk of hematoma expansion is markedly reduced."
+      },
+      {
+        "time_sec": 1200,
+        "condition": "continued_optimal_management",
+        "effects": {
+          "neurologic": {
+            "gcs": 10,
+            "pupil_left_mm": 3.5,
+            "pupil_left_reactive": true
+          },
+          "hemodynamics": {
+            "sbp": 138,
+            "dbp": 82,
+            "hr": 78,
+            "map": 101
+          },
+          "disease_model": {
+            "hematoma_expansion_risk_index": 0.20,
+            "cerebral_edema_index": 0.70,
+            "herniation_risk_index": 0.55
+          }
+        },
+        "narrative": "Blood pressure is at target with SBP 138. Neurologic exam is stable. Neurosurgery has been consulted and is evaluating for EVD placement. The patient is being prepared for ICU transfer."
+      }
+    ]
+  },
+  "triggered_diagnostics": {
+    "head_ct_ordered": {
+      "result_delay_sec": 480,
+      "result_text": "Large left basal ganglia hyperdense lesion measuring approximately 4.5 x 3.2 x 3.0 cm (estimated volume ~45 mL by ABC/2 method). Intraventricular extension of hemorrhage into the left lateral ventricle and third ventricle with early obstructive hydrocephalus. Midline shift of 7 mm to the right. Surrounding vasogenic edema with effacement of the left lateral ventricle. No subarachnoid hemorrhage. No skull fracture.",
+      "critical_finding": true
+    },
+    "cta_head_neck_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "No spot sign (contrast extravasation) identified. No underlying aneurysm or vascular malformation. Moderate intracranial atherosclerotic disease. Patent carotid and vertebral arteries bilaterally."
+    },
+    "inr_stat_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "INR 3.2, PT 38.4 seconds (reference 11.0-13.5). PTT 42 seconds (reference 25-35). Supratherapeutic anticoagulation."
+    },
+    "repeat_inr_post_pcc_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "INR 1.3. Adequate reversal achieved with 4-factor PCC."
+    },
+    "cbc_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "WBC 9.8 K/uL, Hemoglobin 13.1 g/dL, Hematocrit 39.3%, Platelets 178 K/uL. No thrombocytopenia."
+    },
+    "cmp_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Na 141, K 4.1, Cl 103, CO2 24, BUN 22, Creatinine 1.2, Glucose 168, Calcium 9.1. Mild hyperglycemia. Renal function near baseline."
+    },
+    "troponin_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Troponin I 8 ng/L (reference <26 ng/L). Normal, no evidence of acute myocardial injury."
+    },
+    "ecg_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "Atrial fibrillation with controlled ventricular response, rate 82 bpm. Left ventricular hypertrophy by voltage criteria. No acute ST-T wave changes. No STEMI."
+    },
+    "cxr_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "Mild cardiomegaly. Clear lung fields. No pulmonary edema, infiltrate, or effusion. Endotracheal tube in satisfactory position if intubated."
+    },
+    "blood_type_and_screen_ordered": {
+      "result_delay_sec": 900,
+      "result_text": "Blood type O positive. Antibody screen negative."
+    },
+    "fibrinogen_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Fibrinogen 285 mg/dL (reference 200-400). Normal."
+    },
+    "abg_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "pH 7.42, pCO2 36 mmHg, pO2 85 mmHg, HCO3 23 mEq/L, BE -1. No acid-base disturbance. Mild hypoxia on room air."
+    },
+    "ua_ordered": {
+      "result_delay_sec": 360,
+      "result_text": "Trace protein, trace glucose, otherwise unremarkable. No hematuria."
+    },
+    "lactate_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "Lactate 1.6 mmol/L (reference <2.0). Normal."
+    },
+    "repeat_ct_head_ordered": {
+      "result_delay_sec": 480,
+      "conditional_on_timing": "varies based on treatment status",
+      "result_text_if_treated": "Left basal ganglia hemorrhage appears stable in size compared to prior. Midline shift unchanged at 7 mm. IVH stable. No new hemorrhage.",
+      "result_text_if_untreated": "Left basal ganglia hemorrhage has expanded significantly, now measuring approximately 6.0 x 4.5 x 4.0 cm (estimated volume ~72 mL). Increased midline shift now 12 mm. Increased IVH with blood layering in all ventricles. Worsening hydrocephalus. Evolving uncal herniation."
+    }
+  },
+  "success_criteria": {
+    "required": [
+      "abcs_and_gcs_assessment",
+      "stat_ct_head",
+      "reverse_anticoagulation",
+      "blood_pressure_management",
+      "coagulation_studies",
+      "neurosurgery_consultation",
+      "icu_admission"
+    ],
+    "target_end_state": {
+      "sbp_range": [110, 140],
+      "map_range": [75, 110],
+      "inr_max": 1.5,
+      "gcs_min": 9,
+      "hematoma_expansion_risk_index_max": 0.40,
+      "herniation_signs_present": false,
+      "no_harm_event_ids": [
+        "tpa_administered",
+        "no_anticoagulation_reversal",
+        "antiplatelet_administered"
+      ],
+      "disposition": "icu_admission"
+    }
+  },
+  "failure_criteria": {
+    "any_of": [
+      "tpa_administered",
+      "gcs_equals_3_for_more_than_300_sec",
+      "bilateral_fixed_dilated_pupils",
+      "herniation_with_no_intervention",
+      "sbp_less_than_70_sustained",
+      "disposition_is_discharge",
+      "no_ct_head_by_1800_sec"
+    ]
+  },
+  "debrief_template": {
+    "what_went_well": [
+      "Rapidly assessed ABCs and GCS on arrival",
+      "Obtained emergent CT head before initiating any stroke-specific therapy",
+      "Correctly identified intracerebral hemorrhage and withheld tPA",
+      "Reversed anticoagulation promptly with 4-factor PCC and IV vitamin K",
+      "Achieved target SBP <140 with titratable IV antihypertensive",
+      "Obtained coagulation studies and monitored INR correction",
+      "Consulted neurosurgery early for surgical evaluation",
+      "Performed serial neurologic assessments and monitored for herniation",
+      "Arranged appropriate ICU disposition"
+    ],
+    "what_could_have_gone_better": [
+      "Faster time to CT head — goal is door-to-CT <25 minutes",
+      "Earlier anticoagulation reversal — 4-factor PCC should be ordered as soon as warfarin-associated ICH is suspected",
+      "More frequent blood pressure monitoring and faster titration to target",
+      "Earlier neurosurgery notification even before CT confirmation if high clinical suspicion",
+      "Consideration of airway protection given GCS ≤8 risk and declining mental status",
+      "Glucose management — hyperglycemia worsens outcomes in ICH",
+      "Blood glucose check and tight glucose control targeting 140-180 mg/dL"
+    ],
+    "key_choices_to_highlight": [
+      "Was CT obtained before any stroke-specific therapy? This is the most critical decision point.",
+      "Was 4-factor PCC chosen over FFP, and was vitamin K given concurrently?",
+      "What BP target was chosen and how quickly was it achieved?",
+      "Was the antihypertensive agent titratable (nicardipine infusion vs repeated boluses)?",
+      "Were serial neurologic exams performed to monitor for deterioration?",
+      "Was neurosurgery consulted, and was EVD placement considered for IVH/hydrocephalus?",
+      "Was seizure prophylaxis considered for this supratentorial hemorrhage?",
+      "Was the airway reassessed as GCS potentially declined?"
+    ],
+    "teaching_points": [
+      "CT head before any treatment is the cardinal rule of acute stroke management — hemorrhagic and ischemic strokes are clinically indistinguishable, and tPA in ICH is catastrophic.",
+      "AHA/ASA guidelines recommend 4-factor PCC over FFP for warfarin reversal in ICH: PCC corrects INR in minutes (vs hours for FFP), requires minimal volume (~100 mL vs 1000+ mL for FFP), does not require blood type matching, and has lower risk of TACO/TRALI.",
+      "IV vitamin K (10 mg slow infusion) should always accompany PCC because PCC factors have a shorter half-life than warfarin — without vitamin K, the INR will re-elevate in 12-24 hours.",
+      "INTERACT2 trial demonstrated that intensive BP lowering to SBP <140 within 1 hour improved functional outcomes. ATACH-2 showed that targeting SBP 110-139 vs 140-179 did not add benefit and increased renal adverse events — avoid going below SBP 110.",
+      "The ICH Score (0-6) uses GCS, age, ICH volume, IVH presence, and infratentorial origin to estimate 30-day mortality. This patient's ICH Score of 4 carries an estimated 97% 30-day mortality — goals of care discussion is essential.",
+      "Hematoma expansion occurs in ~30% of ICH patients within the first few hours and is the most important modifiable predictor of poor outcome. Anticoagulation reversal and BP control are the two key interventions to prevent expansion.",
+      "Signs of herniation (Cushing triad: hypertension, bradycardia, irregular respirations; unilateral fixed dilated pupil; decerebrate posturing) require immediate intervention: HOB elevation, osmotic therapy (mannitol or hypertonic saline), hyperventilation as a bridge, and emergent neurosurgical decompression.",
+      "EVD (external ventricular drain) is indicated for ICH with IVH causing hydrocephalus, particularly when GCS is declining. It allows CSF drainage and ICP monitoring.",
+      "Sodium nitroprusside should be avoided in ICH because its metabolite (cyanide) can raise intracranial pressure.",
+      "The 'stroke mimic' concept works both ways: not all focal deficits are ischemic strokes, and treatment decisions must be guided by imaging, not clinical impression alone."
+    ]
+  }
+}

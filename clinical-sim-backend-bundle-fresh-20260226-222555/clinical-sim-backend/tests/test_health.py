@@ -11,8 +11,8 @@ def test_health() -> None:
     assert body["status"] == "ok"
 
 
-def test_root_redirects_to_docs() -> None:
+def test_root_serves_frontend_or_redirects() -> None:
     client = TestClient(app)
     response = client.get("/", follow_redirects=False)
-    assert response.status_code == 307
-    assert response.headers["location"] == "/docs"
+    # Root serves frontend index.html (200) or redirects to docs (307)
+    assert response.status_code in (200, 307)

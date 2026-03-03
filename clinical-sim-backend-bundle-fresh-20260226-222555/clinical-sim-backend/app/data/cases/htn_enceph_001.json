@@ -4,6 +4,7 @@
   "title": "Hypertensive Encephalopathy with Visual Symptoms",
   "difficulty": "moderate",
   "scenario_type": "hypertensive_encephalopathy_or_pres",
+  "category": "hypertensive_emergency",
   "authoring_notes": {
     "summary": "Adult with severe hypertension, headache, confusion, blurred vision, and evolving encephalopathy. Goal is recognition of hypertensive emergency, controlled BP reduction, appropriate monitoring, and avoidance of precipitous overcorrection.",
     "teaching_focus": [

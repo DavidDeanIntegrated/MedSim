@@ -1,0 +1,574 @@
+{
+  "case_file_version": "2.0.0",
+  "case_id": "dka_001",
+  "title": "Diabetic Ketoacidosis with Hypokalemia",
+  "difficulty": "moderate",
+  "scenario_type": "diabetic_ketoacidosis",
+  "category": "dka",
+  "authoring_notes": {
+    "summary": "A 24-year-old woman with type 1 diabetes presents with nausea, vomiting, abdominal pain, and Kussmaul respirations after missing insulin for two days. She has severe DKA with a pH of 7.12, anion gap of 28, and a serum potassium of 5.8 that masks profound total-body potassium depletion. The case emphasizes the classic pitfall of starting insulin before confirming adequate potassium, aggressive fluid resuscitation, and systematic monitoring during DKA resolution.",
+    "teaching_focus": [
+      "Recognize DKA by the triad of hyperglycemia, anion gap metabolic acidosis, and ketonemia",
+      "Understand that serum K+ is falsely elevated in DKA due to acidosis-driven transcellular shift and that total body potassium is depleted",
+      "Do not start insulin until K+ is confirmed >= 3.3 mEq/L to avoid fatal hypokalemic arrhythmia",
+      "Initiate aggressive isotonic fluid resuscitation as the first intervention",
+      "Use regular insulin drip at 0.1 units/kg/hr per ADA guidelines",
+      "Monitor glucose hourly and BMP every 2 hours to track anion gap closure",
+      "Transition to subcutaneous insulin only when anion gap closes, pH normalizes, and patient tolerates oral intake",
+      "Avoid overly rapid glucose correction to prevent cerebral edema",
+      "Understand indications for bicarbonate administration (pH < 6.9 per ADA)",
+      "Identify and treat the precipitating cause of DKA"
+    ]
+  },
+  "case_metadata": {
+    "case_id": "dka_001",
+    "title": "Diabetic Ketoacidosis with Hypokalemia",
+    "difficulty": "moderate",
+    "scenario_type": "diabetic_ketoacidosis",
+    "time_elapsed_sec": 0,
+    "time_step_sec": 5,
+    "status": "not_started"
+  },
+  "patient_profile": {
+    "name": "Maria Santos",
+    "age_years": 24,
+    "sex": "female",
+    "weight_kg": 58,
+    "height_cm": 163,
+    "bsa_m2": 1.63,
+    "pregnant": false,
+    "gestational_weeks": 0,
+    "chronic_hypertension": false,
+    "baseline_sbp": 115,
+    "baseline_dbp": 72,
+    "baseline_hr": 78,
+    "comorbidities": {
+      "ckd": false,
+      "hfrEF": false,
+      "copd": false,
+      "asthma_or_reactive_airways": false,
+      "cad": false,
+      "diabetes": true,
+      "aortic_aneurysm_history": false,
+      "baseline_beta_blocker_use": false,
+      "baseline_bradycardia": false,
+      "av_conduction_disease": false,
+      "volume_depletion": true
+    }
+  },
+  "disease_model": {
+    "primary_pathology": "diabetic_ketoacidosis",
+    "severity_index": 0.78,
+    "end_organ_risk": {
+      "brain": 0.45,
+      "heart": 0.55,
+      "kidney": 0.60,
+      "aorta": 0.0,
+      "lungs": 0.05
+    },
+    "autoregulation_shift_index": 0.10,
+    "catecholamine_excess_index": 0.55,
+    "pulmonary_edema_index": 0.0,
+    "aortic_shear_index": 0.0,
+    "cerebral_edema_index": 0.08
+  },
+  "initial_state": {
+    "hemodynamics": {
+      "svr_index": 0.75,
+      "preload_index": 0.55,
+      "contractility_index": 0.92,
+      "cardiac_output_index": 0.80,
+      "stroke_volume_index": 0.72,
+      "map": 74,
+      "sbp": 102,
+      "dbp": 60,
+      "hr": 122,
+      "rhythm": "sinus_tachycardia",
+      "av_node_conduction_index": 1.0,
+      "coronary_supply_demand_mismatch_index": 0.18
+    },
+    "respiratory": {
+      "rr": 32,
+      "spo2": 99,
+      "fio2": 0.21,
+      "oxygen_device": "room_air",
+      "work_of_breathing_index": 0.65,
+      "crackles_index": 0.0,
+      "bronchospasm_index": 0.0,
+      "pulmonary_edema_index": 0.0
+    },
+    "neurologic": {
+      "gcs": 14,
+      "mental_status": "confused",
+      "headache_index": 0.25,
+      "vision_change_index": 0.0,
+      "focal_deficit_index": 0.0,
+      "cerebral_hypoperfusion_index": 0.15
+    },
+    "renal": {
+      "urine_output_ml_per_hr": 20,
+      "renal_perfusion_index": 0.58,
+      "aki_risk_index": 0.52
+    },
+    "cardiac": {
+      "chest_pain_index": 0.0,
+      "ischemia_index": 0.05,
+      "troponin_leak_index": 0.0,
+      "acute_heart_failure_index": 0.0
+    },
+    "monitor": {
+      "ecg_text": "Sinus tachycardia, rate 122. Peaked T waves in precordial leads (V2-V4) consistent with hyperkalemia. No ST elevation or depression. Normal QRS duration. QTc 410 ms.",
+      "telemetry_quality": "good",
+      "nibp_cycle_sec": 60,
+      "waveform_flags": [
+        "tachycardia_alarm",
+        "peaked_t_waves"
+      ]
+    },
+    "labs": {
+      "creatinine_mg_dl": 1.6,
+      "bnp_pg_ml": 22,
+      "troponin_ng_l": 5,
+      "lactate_mmol_l": 2.8,
+      "abg": {
+        "ph": 7.12,
+        "pco2": 18,
+        "po2": 112,
+        "hco3": 8
+      },
+      "cmp": {
+        "na": 131,
+        "k": 5.8,
+        "cl": 95,
+        "co2": 8,
+        "bun": 32,
+        "glucose": 520
+      },
+      "anion_gap": 28,
+      "serum_ketones": "large",
+      "beta_hydroxybutyrate_mmol_l": 8.2,
+      "wbc_k_per_ul": 14.0,
+      "hemoglobin_g_dl": 14.8,
+      "hematocrit_pct": 48.2,
+      "platelets_k_per_ul": 265,
+      "phosphorus_mg_dl": 5.1,
+      "magnesium_mg_dl": 1.6,
+      "calcium_mg_dl": 9.2,
+      "hba1c_pct": 11.4,
+      "lipase_u_l": 42,
+      "serum_osmolality_mosm_kg": 312,
+      "urine_ketones": "large"
+    },
+    "active_medications": [],
+    "orders": [],
+    "event_log": [],
+    "scoring": {
+      "critical_actions": [],
+      "harm_events": [],
+      "teaching_points": [],
+      "final_score": 0
+    }
+  },
+  "hidden_truth": {
+    "final_diagnosis": "Severe diabetic ketoacidosis precipitated by insulin non-adherence (ran out of insulin) with pseudohyperkalemia masking total-body potassium depletion",
+    "must_not_miss_alternatives": [
+      "Sepsis as precipitant (e.g., UTI, pneumonia)",
+      "Acute coronary syndrome as precipitant",
+      "Pregnancy as precipitant",
+      "New-onset type 1 diabetes (if history unknown)",
+      "Pancreatitis (abdominal pain overlap)"
+    ],
+    "head_ct_result_if_ordered": "No acute intracranial abnormality. No cerebral edema.",
+    "mri_brain_result_if_ordered": "No acute findings. No restricted diffusion.",
+    "fundoscopic_exam_if_requested": "Mild nonproliferative diabetic retinopathy. No papilledema.",
+    "ua_if_ordered": "Large ketones. Glucose > 500 mg/dL. Specific gravity 1.035. No bacteria. No WBC. No nitrites.",
+    "cxr_if_ordered": "No acute cardiopulmonary process. No infiltrate. No pulmonary edema. Heart size normal.",
+    "pregnancy_test_if_ordered": "Negative",
+    "blood_cultures_if_ordered": "No growth at 48 hours (final: no growth)",
+    "lipase_if_ordered": "42 U/L (within normal limits)",
+    "hba1c_if_ordered": "11.4% consistent with chronic poor glycemic control"
+  },
+  "opening_script": {
+    "patient_voice": "I feel terrible. I've been throwing up all day and my stomach is killing me. I ran out of my insulin two days ago and couldn't afford to refill it. I'm so thirsty and I can't stop peeing. I feel like I can't catch my breath.",
+    "nurse_handoff": "24-year-old female, type 1 diabetic, brought in by her roommate. She's been vomiting for the past 12 hours and has severe abdominal pain. She ran out of insulin two days ago. Fingerstick in triage was 'high' — off the glucometer scale. She's breathing fast and deep, and you can smell the ketones from the doorway. Pressure 102 over 60, heart rate 122, respiratory rate 32, sat 99 on room air, temp 37.1.",
+    "appearance": [
+      "Young woman appearing acutely ill and dehydrated",
+      "Deep, labored Kussmaul respirations",
+      "Fruity ketone odor on breath",
+      "Dry mucous membranes and poor skin turgor",
+      "Diffuse abdominal tenderness without rebound or guarding",
+      "Mildly confused but oriented to person and place"
+    ]
+  },
+  "critical_actions": [
+    {
+      "id": "recognize_dka",
+      "description": "Recognize diabetic ketoacidosis based on hyperglycemia, anion gap metabolic acidosis, and ketonemia",
+      "target_time_sec": 300,
+      "weight": 10
+    },
+    {
+      "id": "obtain_fingerstick_glucose",
+      "description": "Obtain point-of-care fingerstick glucose immediately at bedside",
+      "target_time_sec": 120,
+      "weight": 6
+    },
+    {
+      "id": "start_iv_fluid_resuscitation",
+      "description": "Start aggressive IV fluid resuscitation with isotonic crystalloid (NS 1-1.5 L bolus in first hour, then 250-500 mL/hr maintenance)",
+      "target_time_sec": 300,
+      "weight": 14
+    },
+    {
+      "id": "start_insulin_drip_after_k_check",
+      "description": "Start regular insulin IV infusion at 0.1 units/kg/hr (5.8 units/hr) only AFTER confirming serum K+ >= 3.3 mEq/L",
+      "target_time_sec": 600,
+      "weight": 16
+    },
+    {
+      "id": "check_and_replace_potassium",
+      "description": "Check potassium level and initiate potassium replacement (20-40 mEq/hr IV KCl) with insulin to prevent hypokalemia as insulin drives K+ intracellularly",
+      "target_time_sec": 600,
+      "weight": 16
+    },
+    {
+      "id": "serial_glucose_and_bmp_monitoring",
+      "description": "Order serial glucose monitoring every 1 hour and BMP every 2 hours to track anion gap closure and electrolyte shifts",
+      "target_time_sec": 900,
+      "weight": 8
+    },
+    {
+      "id": "identify_precipitating_cause",
+      "description": "Identify precipitating cause of DKA (insulin non-adherence due to inability to afford refill) and evaluate for occult infection or other triggers",
+      "target_time_sec": 1200,
+      "weight": 6
+    },
+    {
+      "id": "transition_to_subq_insulin",
+      "description": "Transition from IV insulin drip to subcutaneous insulin regimen when anion gap closes (< 12), pH > 7.3, bicarb > 18, glucose < 200, and patient is tolerating oral intake",
+      "target_time_sec": 3600,
+      "weight": 6
+    }
+  ],
+  "harm_events": [
+    {
+      "id": "insulin_with_low_potassium",
+      "description": "Starting insulin infusion when serum potassium is < 3.3 mEq/L, risking fatal hypokalemic cardiac arrhythmia (V-fib/asystole)",
+      "trigger": "insulin_started_and_k_less_than_3.3",
+      "severity": 10
+    },
+    {
+      "id": "no_fluids_first_hour",
+      "description": "Failure to administer IV fluids within the first hour, worsening dehydration, hypoperfusion, and acidosis",
+      "trigger": "no_iv_fluid_bolus_by_3600_sec",
+      "severity": 8
+    },
+    {
+      "id": "cerebral_edema_rapid_glucose_correction",
+      "description": "Overly rapid glucose correction (> 100 mg/dL/hr drop) causing osmotic fluid shifts and cerebral edema, especially dangerous in young patients",
+      "trigger": "glucose_drop_rate_greater_than_100_mg_dl_per_hr",
+      "severity": 9
+    },
+    {
+      "id": "failure_to_replace_potassium",
+      "description": "Failure to replace potassium alongside insulin therapy, leading to progressive hypokalemia, arrhythmias, and respiratory muscle weakness",
+      "trigger": "insulin_running_and_no_potassium_replacement_by_1800_sec",
+      "severity": 8
+    }
+  ],
+  "recommended_management_logic": {
+    "preferred_agents": [
+      "normal_saline_iv_bolus",
+      "regular_insulin_iv_infusion",
+      "potassium_chloride_iv",
+      "dextrose_5_half_normal_saline"
+    ],
+    "preferred_strategy": "Aggressive isotonic fluid resuscitation first (1-1.5 L NS in hour one), confirm K+ >= 3.3 before starting insulin, start regular insulin drip at 0.1 units/kg/hr, replace potassium 20-40 mEq/hr when K+ < 5.3, monitor glucose hourly and BMP q2h, add dextrose to IV fluids when glucose reaches 200-250 mg/dL to allow continued insulin infusion for anion gap closure, transition to subcutaneous insulin with overlap when gap closes and patient tolerates PO",
+    "penalized_strategy": [
+      "starting_insulin_before_checking_potassium",
+      "starting_insulin_with_k_less_than_3.3",
+      "no_iv_fluids_before_insulin",
+      "subcutaneous_insulin_for_severe_dka",
+      "bolus_iv_insulin_without_drip",
+      "administering_bicarbonate_when_ph_above_6.9",
+      "stopping_insulin_drip_when_glucose_normalizes_but_gap_still_open",
+      "failure_to_add_dextrose_when_glucose_below_250"
+    ]
+  },
+  "time_course": {
+    "untreated_progression": [
+      {
+        "time_sec": 300,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 98,
+            "dbp": 56,
+            "hr": 128,
+            "map": 70
+          },
+          "respiratory": {
+            "rr": 34
+          },
+          "neurologic": {
+            "mental_status": "confused",
+            "gcs": 14
+          },
+          "labs": {
+            "glucose": 530,
+            "ph": 7.10
+          }
+        },
+        "narrative": "She continues to retch into a basin. Her breathing is deep and labored. She asks for water repeatedly."
+      },
+      {
+        "time_sec": 900,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 92,
+            "dbp": 52,
+            "hr": 134,
+            "map": 65
+          },
+          "respiratory": {
+            "rr": 36
+          },
+          "neurologic": {
+            "mental_status": "somnolent",
+            "gcs": 13
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 10
+          },
+          "labs": {
+            "glucose": 545,
+            "ph": 7.06,
+            "k": 6.1
+          }
+        },
+        "narrative": "She is becoming drowsier and harder to rouse. Her skin is clammy. Urine output has dropped significantly."
+      },
+      {
+        "time_sec": 1800,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 84,
+            "dbp": 46,
+            "hr": 140,
+            "map": 59
+          },
+          "respiratory": {
+            "rr": 38,
+            "work_of_breathing_index": 0.85
+          },
+          "neurologic": {
+            "mental_status": "obtunded",
+            "gcs": 10
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 5
+          },
+          "disease_model": {
+            "severity_index": 0.90
+          },
+          "labs": {
+            "glucose": 560,
+            "ph": 7.00,
+            "k": 6.4,
+            "lactate_mmol_l": 4.5
+          }
+        },
+        "conditional_event": "if_no_iv_fluids_and_no_insulin",
+        "narrative": "She is obtunded and barely responsive. Blood pressure is dropping. The nurse alerts you to a rising lactate and worsening acidosis. The monitor shows tall, peaked T waves."
+      },
+      {
+        "time_sec": 2700,
+        "effects": {
+          "hemodynamics": {
+            "sbp": 74,
+            "dbp": 40,
+            "hr": 148,
+            "map": 51
+          },
+          "respiratory": {
+            "rr": 40,
+            "spo2": 96
+          },
+          "neurologic": {
+            "mental_status": "unresponsive",
+            "gcs": 6
+          },
+          "monitor": {
+            "ecg_text": "Sinus tachycardia with widened QRS complexes and markedly peaked T waves. Consider severe hyperkalemia."
+          }
+        },
+        "conditional_event": "if_no_treatment",
+        "narrative": "She is unresponsive. The QRS complexes on the monitor are widening ominously. The nurse is preparing to call a code."
+      },
+      {
+        "time_sec": 3600,
+        "effects": {
+          "hemodynamics": {
+            "hr": 30,
+            "rhythm": "ventricular_bradycardia",
+            "map": 35
+          },
+          "neurologic": {
+            "mental_status": "unresponsive",
+            "gcs": 3
+          },
+          "monitor": {
+            "ecg_text": "Wide complex bradycardia progressing toward sine wave pattern. Impending cardiac arrest."
+          }
+        },
+        "conditional_event": "if_no_treatment",
+        "narrative": "Cardiac arrest is imminent. The monitor shows a sine wave pattern. Code blue is called."
+      }
+    ]
+  },
+  "triggered_diagnostics": {
+    "fingerstick_glucose_ordered": {
+      "result_delay_sec": 30,
+      "result_text": "Fingerstick glucose: HIGH (> 500 mg/dL, above meter range)."
+    },
+    "abg_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "pH 7.12, pCO2 18 mmHg, pO2 112 mmHg, HCO3 8 mEq/L. Interpretation: severe anion gap metabolic acidosis with appropriate respiratory compensation (Winters formula expected pCO2 = 1.5(8)+8 = 20, actual 18 — appropriate)."
+    },
+    "cmp_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Na 131, K 5.8, Cl 95, CO2 8, BUN 32, Cr 1.6, Glucose 520, Ca 9.2. Anion gap = 131 - (95 + 8) = 28. Corrected Na for hyperglycemia: 131 + 1.6 × ((520-100)/100) = 137.7."
+    },
+    "cbc_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "WBC 14.0 (stress leukocytosis, no left shift), Hgb 14.8, Hct 48.2% (hemoconcentration from dehydration), Plt 265."
+    },
+    "serum_ketones_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "Serum ketones: Large. Beta-hydroxybutyrate: 8.2 mmol/L (severely elevated, > 3.0 diagnostic of DKA)."
+    },
+    "ua_ordered": {
+      "result_delay_sec": 360,
+      "result_text": "Large ketones. Glucose > 500. SG 1.035 (concentrated). No bacteria, no WBC, no nitrites, no leukocyte esterase. No evidence of UTI."
+    },
+    "ecg_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "Sinus tachycardia at 122 bpm. Peaked T waves most prominent in V2-V4 consistent with hyperkalemia. Normal QRS duration (94 ms). No ST elevation or depression. QTc 410 ms."
+    },
+    "cxr_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "No focal consolidation, effusion, or pulmonary edema. Normal cardiac silhouette. No pneumothorax. Clear lungs bilaterally."
+    },
+    "blood_cultures_ordered": {
+      "result_delay_sec": 172800,
+      "result_text": "No growth at 48 hours. Final: no organisms isolated."
+    },
+    "lipase_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Lipase 42 U/L (within normal limits). No evidence of acute pancreatitis."
+    },
+    "pregnancy_test_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "Urine hCG: Negative."
+    },
+    "hba1c_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "HbA1c: 11.4%. Indicates chronic poor glycemic control over the preceding 2-3 months."
+    },
+    "lactate_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "Lactate: 2.8 mmol/L (mildly elevated, likely from dehydration and hypoperfusion rather than sepsis)."
+    },
+    "phosphorus_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Phosphorus: 5.1 mg/dL (elevated due to acidosis-driven transcellular shift; will drop significantly with insulin therapy and will require monitoring/replacement)."
+    },
+    "magnesium_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Magnesium: 1.6 mg/dL (low-normal; may require supplementation as deficit is common in DKA)."
+    },
+    "vbg_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "Venous pH 7.08, pCO2 22 mmHg, HCO3 7 mEq/L. Consistent with severe metabolic acidosis."
+    },
+    "repeat_bmp_2hr_ordered": {
+      "result_delay_sec": 7200,
+      "result_text": "Na 134, K 4.2 (dropping with insulin — continue potassium replacement), Cl 102, CO2 12, BUN 26, Cr 1.3, Glucose 340. Anion gap = 134 - (102 + 12) = 20. Gap is closing."
+    },
+    "repeat_bmp_4hr_ordered": {
+      "result_delay_sec": 14400,
+      "result_text": "Na 137, K 3.8 (continue potassium replacement), Cl 106, CO2 18, BUN 20, Cr 1.1, Glucose 220. Anion gap = 137 - (106 + 18) = 13. Gap nearly closed. Add dextrose to IV fluids if not already done."
+    }
+  },
+  "success_criteria": {
+    "required": [
+      "recognize_dka",
+      "obtain_fingerstick_glucose",
+      "start_iv_fluid_resuscitation",
+      "start_insulin_drip_after_k_check",
+      "check_and_replace_potassium",
+      "serial_glucose_and_bmp_monitoring",
+      "identify_precipitating_cause",
+      "transition_to_subq_insulin"
+    ],
+    "target_end_state": {
+      "glucose_range": [150, 250],
+      "ph_min": 7.30,
+      "bicarb_min": 18,
+      "anion_gap_max": 12,
+      "potassium_range": [3.5, 5.0],
+      "mental_status": "alert",
+      "gcs_min": 15,
+      "no_harm_event_ids": [
+        "insulin_with_low_potassium",
+        "cerebral_edema_rapid_glucose_correction"
+      ]
+    }
+  },
+  "failure_criteria": {
+    "any_of": [
+      "insulin_with_low_potassium",
+      "cardiac_arrest_from_hyperkalemia",
+      "cerebral_edema_from_rapid_correction",
+      "map_less_than_40",
+      "unresponsive_state_persists_more_than_300_sec",
+      "no_treatment_by_3600_sec"
+    ]
+  },
+  "debrief_template": {
+    "what_went_well": [
+      "Rapidly identified DKA based on clinical presentation and laboratory values",
+      "Initiated aggressive IV fluid resuscitation as the first intervention",
+      "Checked potassium before starting insulin infusion",
+      "Replaced potassium proactively to prevent hypokalemic arrhythmia",
+      "Monitored glucose and electrolytes at appropriate intervals",
+      "Identified precipitating cause and addressed social barriers to insulin access"
+    ],
+    "what_could_have_gone_better": [
+      "Earlier fingerstick glucose at bedside before lab results returned",
+      "More systematic approach to potassium monitoring during insulin infusion",
+      "Earlier addition of dextrose to IV fluids when glucose approached 250 mg/dL",
+      "More thorough evaluation of potential infectious precipitants",
+      "Earlier endocrinology consultation for insulin regimen optimization"
+    ],
+    "key_choices_to_highlight": [
+      "Whether potassium was checked before starting insulin and what the threshold was for starting the drip",
+      "Fluid choice (NS vs LR) and rate of administration",
+      "Whether potassium replacement was initiated concurrently with insulin",
+      "Whether glucose was allowed to drop too rapidly and if dextrose was added appropriately",
+      "Whether bicarbonate was considered and whether the pH threshold of 6.9 was correctly applied",
+      "When and how the transition to subcutaneous insulin was managed"
+    ],
+    "teaching_points": [
+      "DKA is defined by the triad of hyperglycemia (glucose > 250), metabolic acidosis (pH < 7.3, bicarb < 18), and ketonemia/ketonuria. The severity classification per ADA is: mild (pH 7.25-7.30, bicarb 15-18), moderate (pH 7.00-7.24, bicarb 10-14), and severe (pH < 7.00, bicarb < 10). This patient has severe DKA.",
+      "Serum potassium in DKA is almost always falsely elevated due to insulin deficiency and acidosis causing transcellular potassium shift out of cells. For every 0.1 decrease in pH, serum K+ rises by approximately 0.6 mEq/L. This patient's K+ of 5.8 with a pH of 7.12 likely reflects a true total-body deficit of 3-5 mEq/kg, corresponding to roughly 200-300 mEq total body deficit.",
+      "The single most dangerous pitfall in DKA management is starting insulin when potassium is < 3.3 mEq/L. Insulin drives potassium intracellularly, and in the setting of total-body depletion, this can cause precipitous hypokalemia leading to fatal cardiac arrhythmia (V-fib, torsades, asystole). Per ADA: if K+ < 3.3, hold insulin and replace potassium first.",
+      "Fluid resuscitation is the FIRST priority in DKA, even before insulin. Patients are typically 5-9 liters volume depleted. ADA recommends isotonic saline (0.9% NaCl) at 15-20 mL/kg/hr (1-1.5 L) in the first hour. After initial bolus, switch to 0.45% NaCl at 250-500 mL/hr if corrected sodium is normal or elevated, or continue NS if corrected sodium is low.",
+      "Normal saline vs. Lactated Ringer's: NS is the traditional first-line fluid per ADA guidelines. However, large volumes of NS cause hyperchloremic non-anion gap metabolic acidosis, which can confuse anion gap closure assessment. LR or Plasma-Lyte are increasingly used and may result in faster bicarb recovery and less hyperchloremic acidosis, though evidence is still evolving.",
+      "Bicarbonate administration in DKA is controversial and generally NOT recommended unless pH is < 6.9 (ADA guideline). At pH 6.9-7.0, it is considered but not strongly recommended. Bicarbonate can worsen intracellular acidosis (CO2 crosses cell membranes more readily than HCO3-), cause paradoxical CSF acidosis, worsen hypokalemia, and delay ketone clearance.",
+      "Glucose should not drop faster than 50-75 mg/dL per hour to avoid cerebral edema, which is more common in children but can occur in young adults. When glucose reaches 200-250 mg/dL, add dextrose (D5W) to the IV fluids and continue the insulin drip — the goal of insulin is to close the anion gap, not just to lower glucose.",
+      "Closing the anion gap is the true endpoint of DKA treatment, NOT glucose normalization. Glucose often normalizes hours before the gap closes. Stopping the insulin drip when glucose is normal but the gap is still open is a common and dangerous error that leads to rebound ketoacidosis.",
+      "Transition criteria for subcutaneous insulin: anion gap < 12, pH > 7.3, bicarb > 18, glucose < 200 mg/dL, patient tolerating PO. Give subcutaneous long-acting insulin (glargine/detemir) 2-4 hours BEFORE stopping the insulin drip to prevent rebound hyperglycemia and recurrent ketosis.",
+      "Always identify and treat the precipitating cause of DKA. The most common causes are insulin non-adherence (as in this case), infection, new-onset diabetes, myocardial infarction, and substance use. Addressing the social determinants (medication cost, access) is essential for preventing recurrence."
+    ]
+  }
+}

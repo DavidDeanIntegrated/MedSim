@@ -40,6 +40,73 @@ _MED_ID: dict[str, str] = {
     "epi drip": "epinephrine_iv",
     "neo drip": "phenylephrine_iv",
     "levo": "norepinephrine_iv",
+    # Beta-blockers
+    "esmolol": "esmolol_iv",
+    "brevibloc": "esmolol_iv",
+    # Phase 2: Insulin / DKA
+    "insulin drip": "insulin_regular_iv",
+    "insulin infusion": "insulin_regular_iv",
+    "regular insulin": "insulin_regular_iv",
+    "insulin": "insulin_regular_iv",
+    # Phase 2: Thrombolytics / Anticoagulants
+    "tpa": "alteplase_iv",
+    "alteplase": "alteplase_iv",
+    "activase": "alteplase_iv",
+    "tenecteplase": "alteplase_iv",
+    "heparin drip": "heparin_iv",
+    "heparin infusion": "heparin_iv",
+    "heparin": "heparin_iv",
+    "heparin bolus": "heparin_iv",
+    # Phase 2: Magnesium
+    "magnesium sulfate": "magnesium_sulfate_iv",
+    "mag sulfate": "magnesium_sulfate_iv",
+    "magnesium": "magnesium_sulfate_iv",
+    # Phase 2: Diuretics
+    "furosemide": "furosemide_iv",
+    "lasix": "furosemide_iv",
+    # Phase 2: Antiarrhythmics
+    "amiodarone": "amiodarone_iv",
+    "cordarone": "amiodarone_iv",
+    "adenosine": "adenosine_iv",
+    # Phase 2: Antiplatelets
+    "aspirin": "aspirin_po",
+    "asa": "aspirin_po",
+    "clopidogrel": "clopidogrel_po",
+    "plavix": "clopidogrel_po",
+    # Phase 2: Analgesics / Sedatives
+    "morphine": "morphine_iv",
+    "fentanyl": "fentanyl_iv",
+    "midazolam": "midazolam_iv",
+    "versed": "midazolam_iv",
+    "lorazepam": "lorazepam_iv",
+    "ativan": "lorazepam_iv",
+    # Phase 2: Steroids
+    "dexamethasone": "dexamethasone_iv",
+    "decadron": "dexamethasone_iv",
+    "methylprednisolone": "methylprednisolone_iv",
+    "solu-medrol": "methylprednisolone_iv",
+    "solumedrol": "methylprednisolone_iv",
+    # Phase 2: Bronchodilators
+    "albuterol": "albuterol_neb",
+    "proventil": "albuterol_neb",
+    "ventolin": "albuterol_neb",
+    "ipratropium": "ipratropium_neb",
+    "atrovent": "ipratropium_neb",
+    "duoneb": "albuterol_neb",
+    # Phase 2: Fluids
+    "normal saline bolus": "normal_saline_iv",
+    "ns bolus": "normal_saline_iv",
+    "lactated ringers": "lactated_ringers_iv",
+    "lr bolus": "lactated_ringers_iv",
+    # Phase 2: Antihistamines (for anaphylaxis)
+    "diphenhydramine": "diphenhydramine_iv",
+    "benadryl": "diphenhydramine_iv",
+    "famotidine": "famotidine_iv",
+    "pepcid": "famotidine_iv",
+    # Phase 2: Epinephrine IM (anaphylaxis)
+    "epi im": "epinephrine_im",
+    "epinephrine im": "epinephrine_im",
+    "epipen": "epinephrine_im",
 }
 _MED_NAMES = sorted(_MED_ID, key=len, reverse=True)
 
@@ -58,6 +125,11 @@ _DEFAULT_RATE: dict[str, float] = {
     "dopamine_iv": 5.0,
     "dobutamine_iv": 5.0,
     "vasopressin_iv": 0.03,
+    # Phase 2 drugs
+    "insulin_regular_iv": 0.1,     # units/kg/hr (will multiply by weight)
+    "heparin_iv": 1000.0,          # units/hr
+    "magnesium_sulfate_iv": 1.0,   # g/hr maintenance
+    "amiodarone_iv": 1.0,          # mg/min for 6 hr
 }
 
 # Medications whose primary route is continuous infusion
@@ -72,16 +144,38 @@ _INFUSION_PREFERRED = {
     "dopamine_iv",
     "dobutamine_iv",
     "vasopressin_iv",
+    # Phase 2
+    "insulin_regular_iv",
+    "heparin_iv",
+    "amiodarone_iv",
 }
 
 # Medications whose primary route is IV bolus
-_BOLUS_PREFERRED = {"labetalol_iv", "hydralazine_iv", "phenylephrine_iv"}
+_BOLUS_PREFERRED = {
+    "labetalol_iv", "hydralazine_iv", "phenylephrine_iv",
+    # Phase 2 bolus-preferred
+    "furosemide_iv", "adenosine_iv", "aspirin_po", "clopidogrel_po",
+    "morphine_iv", "fentanyl_iv", "midazolam_iv", "lorazepam_iv",
+    "dexamethasone_iv", "methylprednisolone_iv",
+    "albuterol_neb", "ipratropium_neb",
+    "diphenhydramine_iv", "famotidine_iv", "epinephrine_im",
+    "magnesium_sulfate_iv",  # can be bolus (4-6g load) or infusion
+    "alteplase_iv",          # weight-based dose
+}
 
 # Known-safe max bolus doses (mg) — above this triggers unsafe flag
 _UNSAFE_BOLUS_DOSE_MG: dict[str, float] = {
     "phenylephrine_iv": 5.0,     # phenylephrine push is in mcg; >5mg almost certainly a unit error
     "labetalol_iv": 200.0,
     "hydralazine_iv": 40.0,
+    # Phase 2 drugs
+    "furosemide_iv": 200.0,
+    "adenosine_iv": 18.0,
+    "morphine_iv": 20.0,
+    "fentanyl_iv": 0.5,          # 500 mcg = likely error
+    "midazolam_iv": 10.0,
+    "lorazepam_iv": 8.0,
+    "epinephrine_im": 1.0,       # >1 mg IM is unusual
 }
 
 _START_RE = re.compile(r"\b(start|begin|initiate|hang|run|get|start up|give|administer)\b")
@@ -106,11 +200,27 @@ _DIAGNOSTICS: list[tuple[str, str, str]] = [
     (r"\bua\b|urinalysis|urine\s+(?:analysis|culture)", "urinalysis", "lab"),
     (r"\bbnp\b|nt.?probnp|brain\s+natriuretic", "bnp", "lab"),
     (r"\bcbc\b|complete\s+blood\s+count", "cbc", "lab"),
-    (r"\bcoags?\b|coagulation\s+(?:panel|studies?|study)|coag\s+(?:panel|study)|pt\s+ptt|ptt\s+inr", "coagulation_panel", "lab"),
+    (r"\bcoags?\b|coagulation\s+(?:panel|studies?|study)|coag\s+(?:panel|study)|pt\s+ptt|ptt\s+inr|\binr\b", "coagulation_panel", "lab"),
     (r"\bfingerstick\b|\bfsbg?\b|\bfsbs?\b|finger\s+stick|point\s+of\s+care\s+glucose|poc\s+glucose", "fingerstick_glucose", "lab"),
     (r"\bchest\s+(?:x.?ray|xr|cxr)\b|\bcxr\b|\bchest\s+film\b", "chest_xray", "imaging"),
     (r"\bd.?dimer\b", "d_dimer", "lab"),
     (r"\blactic?\s+acid\b|\blactate\b", "lactate", "lab"),
+    # Phase 2: expanded diagnostics
+    (r"\bct\s*(?:angio|a)\b.*\bchest\b|\bcta\s+chest\b|\bct\s+pe\b|\bpe\s+(?:protocol|study)\b", "ct_angiography_chest", "imaging"),
+    (r"\bct\s*(?:angio|a)\b.*\b(?:abd|abdom)\b|\bcta\s+(?:abd|abdom)\b|ct\s+aorta", "ct_angiography_abdomen", "imaging"),
+    (r"\babg\b|arterial\s+blood\s+gas|\bvbg\b|venous\s+blood\s+gas|blood\s+gas", "blood_gas", "lab"),
+    (r"\bblood\s+culture|blood\s+cx|bcx|b/c\b", "blood_cultures", "lab"),
+    (r"\blipase\b", "lipase", "lab"),
+    (r"\bliver\s+(?:panel|function|enzymes?)|\blfts?\b|\bast\b.*\balt\b|\bhepatic\s+panel", "liver_panel", "lab"),
+    (r"\burine\s+(?:drug\s+screen|tox)\b|\buds\b|\butox\b", "urine_drug_screen", "lab"),
+    (r"\btype\s+and\s+(?:screen|cross)\b|\bt(?:ype)?\s*(?:&|and)\s*(?:s(?:creen)?|c(?:ross)?)\b|crossmatch", "type_and_screen", "lab"),
+    (r"\bprocalcitonin\b|\bproct?\b", "procalcitonin", "lab"),
+    (r"\b(?:right.?sided|rV)\s+(?:ecg|ekg|leads?)\b|right\s+sided\s+leads?|rV4", "right_sided_ecg", "diagnostic"),
+    (r"\becho(?:cardiogram)?\b|\btte\b|bedside\s+echo|point.?of.?care\s+(?:echo|ultrasound|us)", "bedside_echo", "diagnostic"),
+    (r"\bhemoglobin\s+a1c\b|\bhba1c\b|\ba1c\b", "hba1c", "lab"),
+    (r"\bketones?\b|\bbeta.?hydroxybutyrate\b|\bbhb\b", "ketones", "lab"),
+    (r"\buric\s+acid\b", "uric_acid", "lab"),
+    (r"\bmagnesium\s+level\b|\bmag\s+level\b|\bserum\s+mag", "magnesium_level", "lab"),
 ]
 
 # Order verb (for labs) and imaging/common-lab bypass patterns
@@ -118,7 +228,9 @@ _ORDER_RE = re.compile(r"\b(order|get|obtain|send|check|draw|request|do|run|stat
 # Labs and imaging that can be recognized without an explicit order verb
 _LAB_BYPASS = re.compile(
     r"\b(cbc|bmp|cmp|coags?|troponin|trop|ua\b|hcg|ecg|ekg|ct|mri|scan|labs?|"
-    r"fingerstick|fsbg|bnp|d.?dimer|lactate|lactic|cxr|x.?ray|xray)\b"
+    r"fingerstick|fsbg|bnp|d.?dimer|lactate|lactic|cxr|x.?ray|xray|"
+    r"abg|vbg|blood\s+gas|blood\s+culture|bcx|lipase|lfts?|uds|procalcitonin|"
+    r"type\s+and|crossmatch|echo|a1c|ketones|bhb|inr|mag\s+level|uric\s+acid)\b"
 )
 
 # ---------------------------------------------------------------------------
@@ -135,6 +247,20 @@ _ASSESSMENTS: list[tuple[str, str]] = [
     (r"hypertensive\s+urgency|htn\s+urgency", "hypertensive_urgency"),
     (r"ischemic\s+stroke|cva\b|cerebrovascular", "ischemic_stroke"),
     (r"hemorrhagic\s+stroke|ich\b|intracranial\s+hemorrhage", "hemorrhagic_stroke"),
+    # Phase 2: expanded assessments
+    (r"septic\s+shock|sepsis|severe\s+sepsis|urosepsis", "septic_shock"),
+    (r"\bdka\b|diabetic\s+ketoacidosis|ketoacidosis", "diabetic_ketoacidosis"),
+    (r"\bstemi\b|st\s+elevation|acute\s+mi|myocardial\s+infarction|heart\s+attack", "stemi"),
+    (r"\bnstemi\b|non.?st\s+elevation", "nstemi"),
+    (r"\beclampsia\b|pre.?eclampsia|preeclampsia|hellp", "eclampsia"),
+    (r"pulmonary\s+embol(?:ism|us)|\bpe\b(?=\s|$)|massive\s+pe", "pulmonary_embolism"),
+    (r"aortic\s+dissection|dissection|stanford\s+(?:type\s+)?[ab]", "aortic_dissection"),
+    (r"\banaphylaxis\b|anaphylactic|severe\s+allergic", "anaphylaxis"),
+    (r"\bcopd\b\s+exacerbation|\bcopd\b|acute\s+exacerbation", "copd_exacerbation"),
+    (r"(?:flash\s+)?pulmonary\s+edema|acute\s+(?:decompensated\s+)?heart\s+failure|\badhf\b|chf\s+exacerbation",
+     "acute_heart_failure"),
+    (r"cardiogenic\s+shock", "cardiogenic_shock"),
+    (r"cardiac\s+arrest|\bacls\b|pulseless", "cardiac_arrest"),
 ]
 
 # ---------------------------------------------------------------------------
@@ -234,6 +360,10 @@ _TITRATION_STEP: dict[str, float] = {
     "dopamine_iv": 2.0,
     "dobutamine_iv": 2.0,
     "vasopressin_iv": 0.01,
+    # Phase 2 drugs
+    "insulin_regular_iv": 0.5,
+    "heparin_iv": 200.0,
+    "amiodarone_iv": 0.5,
 }
 
 # ---------------------------------------------------------------------------

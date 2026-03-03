@@ -1,0 +1,548 @@
+{
+  "case_file_version": "2.0.0",
+  "case_id": "anaphylaxis_001",
+  "title": "Anaphylaxis from Shellfish Ingestion with Rapidly Progressive Airway Compromise",
+  "difficulty": "moderate",
+  "scenario_type": "anaphylaxis",
+  "category": "allergy_immunology_emergency",
+  "authoring_notes": {
+    "summary": "32-year-old male with known shellfish allergy presents after eating shrimp at a restaurant. He rapidly develops diffuse urticaria, angioedema of lips and tongue, audible stridor, bilateral wheezing, and distributive shock. The case demands immediate recognition, IM epinephrine as first-line therapy, aggressive airway management, IV fluid resuscitation, and adjunctive medications. Untreated progression leads to complete airway obstruction and cardiovascular collapse.",
+    "teaching_focus": [
+      "IM epinephrine (1:1,000) is THE first-line treatment for anaphylaxis — not antihistamines, not IV epi push",
+      "Epinephrine dose and route matter: 0.3-0.5 mg IM into the lateral thigh, not subcutaneous, not IV bolus",
+      "IV epinephrine push (1:10,000) risks fatal arrhythmia and is reserved for cardiac arrest",
+      "Antihistamines (H1 and H2 blockers) and corticosteroids are adjunctive — they do not treat the life-threatening features",
+      "Aggressive isotonic crystalloid resuscitation for distributive shock (up to 1-2 L bolus in adults)",
+      "Repeat IM epinephrine every 5-15 minutes if symptoms persist",
+      "Consider epinephrine infusion for refractory anaphylaxis",
+      "Biphasic reactions occur in up to 20% of cases; observation period of 4-6 hours minimum",
+      "Airway management in angioedema is difficult — early preparation for surgical airway",
+      "Tryptase level drawn within 1-3 hours supports the diagnosis retrospectively"
+    ]
+  },
+  "case_metadata": {
+    "case_id": "anaphylaxis_001",
+    "title": "Anaphylaxis from Shellfish Ingestion with Rapidly Progressive Airway Compromise",
+    "difficulty": "moderate",
+    "scenario_type": "anaphylaxis",
+    "time_elapsed_sec": 0,
+    "time_step_sec": 5,
+    "status": "not_started"
+  },
+  "patient_profile": {
+    "name": "David Park",
+    "age_years": 32,
+    "sex": "male",
+    "weight_kg": 72,
+    "height_cm": 175,
+    "bsa_m2": 1.87,
+    "pregnant": false,
+    "gestational_weeks": 0,
+    "chronic_hypertension": false,
+    "baseline_sbp": 122,
+    "baseline_dbp": 74,
+    "baseline_hr": 72,
+    "comorbidities": {
+      "ckd": false,
+      "hfrEF": false,
+      "copd": false,
+      "asthma_or_reactive_airways": false,
+      "cad": false,
+      "diabetes": false,
+      "aortic_aneurysm_history": false,
+      "baseline_beta_blocker_use": false,
+      "baseline_bradycardia": false,
+      "av_conduction_disease": false,
+      "volume_depletion": false,
+      "shellfish_allergy": true,
+      "prior_anaphylaxis": false,
+      "epipen_prescribed": true
+    }
+  },
+  "disease_model": {
+    "primary_pathology": "anaphylaxis_IgE_mediated",
+    "severity_index": 0.85,
+    "end_organ_risk": {
+      "airway": 0.9,
+      "cardiovascular": 0.8,
+      "skin_mucosal": 0.95,
+      "respiratory_lower": 0.7,
+      "gi": 0.4,
+      "neurologic": 0.3
+    },
+    "mast_cell_degranulation_index": 0.88,
+    "histamine_release_index": 0.85,
+    "capillary_leak_index": 0.78,
+    "bronchospasm_severity_index": 0.72,
+    "angioedema_severity_index": 0.82,
+    "vasodilation_index": 0.80
+  },
+  "initial_state": {
+    "hemodynamics": {
+      "svr_index": 0.42,
+      "preload_index": 0.48,
+      "contractility_index": 1.05,
+      "cardiac_output_index": 0.72,
+      "stroke_volume_index": 0.55,
+      "map": 54,
+      "sbp": 78,
+      "dbp": 42,
+      "hr": 132,
+      "rhythm": "sinus_tachycardia",
+      "av_node_conduction_index": 1.0,
+      "coronary_supply_demand_mismatch_index": 0.35
+    },
+    "respiratory": {
+      "rr": 30,
+      "spo2": 88,
+      "fio2": 0.21,
+      "oxygen_device": "room_air",
+      "work_of_breathing_index": 0.82,
+      "crackles_index": 0.0,
+      "bronchospasm_index": 0.72,
+      "pulmonary_edema_index": 0.05,
+      "stridor_index": 0.70,
+      "upper_airway_edema_index": 0.78
+    },
+    "neurologic": {
+      "gcs": 14,
+      "mental_status": "anxious_and_agitated",
+      "headache_index": 0.1,
+      "vision_change_index": 0.0,
+      "focal_deficit_index": 0.0,
+      "cerebral_hypoperfusion_index": 0.42
+    },
+    "renal": {
+      "urine_output_ml_per_hr": 20,
+      "renal_perfusion_index": 0.52,
+      "aki_risk_index": 0.35
+    },
+    "cardiac": {
+      "chest_pain_index": 0.15,
+      "ischemia_index": 0.12,
+      "troponin_leak_index": 0.0,
+      "acute_heart_failure_index": 0.0
+    },
+    "monitor": {
+      "ecg_text": "Sinus tachycardia, rate 132, normal axis, no ST changes, no arrhythmia",
+      "telemetry_quality": "good",
+      "nibp_cycle_sec": 60,
+      "waveform_flags": [
+        "hypotension_alarm",
+        "tachycardia_alarm",
+        "low_spo2_alarm"
+      ]
+    },
+    "labs": {
+      "creatinine_mg_dl": 0.9,
+      "bnp_pg_ml": 28,
+      "troponin_ng_l": 5,
+      "lactate_mmol_l": 3.2,
+      "abg": {
+        "ph": 7.32,
+        "pco2": 32,
+        "po2": 58,
+        "hco3": 20
+      },
+      "cmp": {
+        "na": 140,
+        "k": 4.1,
+        "cl": 103,
+        "co2": 20,
+        "bun": 14,
+        "glucose": 148
+      },
+      "cbc": {
+        "wbc": 12.4,
+        "hgb": 15.2,
+        "hct": 45.6,
+        "platelets": 238
+      },
+      "tryptase_mcg_l": null
+    },
+    "active_medications": [],
+    "orders": [],
+    "event_log": [],
+    "scoring": {
+      "critical_actions": [],
+      "harm_events": [],
+      "teaching_points": [],
+      "final_score": 0
+    }
+  },
+  "hidden_truth": {
+    "final_diagnosis": "Anaphylaxis secondary to IgE-mediated shellfish (shrimp) allergy with angioedema, bronchospasm, and distributive shock",
+    "must_not_miss_alternatives": [
+      "Hereditary angioedema (no urticaria, no hypotension, does not respond to epinephrine)",
+      "ACE-inhibitor angioedema (medication-related, no urticaria or hypotension)",
+      "Severe asthma exacerbation (no urticaria, no angioedema, no hypotension)",
+      "Vasovagal syncope (bradycardia not tachycardia, no urticaria)",
+      "Carcinoid crisis (flushing but no urticaria or angioedema)",
+      "Scombroid fish poisoning (histamine toxicity from spoiled fish, no true allergy)"
+    ],
+    "tryptase_result_if_ordered": "Serum tryptase elevated at 42.3 mcg/L (normal <11.4 mcg/L), consistent with mast cell degranulation in anaphylaxis. Draw within 1-3 hours of symptom onset.",
+    "cxr_if_ordered": "Hyperinflated lung fields bilaterally, no focal consolidation, no pneumothorax, no pulmonary edema.",
+    "ecg_if_ordered": "Sinus tachycardia at 132 bpm, normal axis, no ST-segment elevation or depression, no arrhythmia.",
+    "laryngoscopy_if_performed": "Significant edema of the epiglottis, aryepiglottic folds, and arytenoids. Glottic opening narrowed to approximately 4-5 mm. Vocal cords edematous but mobile.",
+    "abg_if_ordered": "pH 7.32, PaCO2 32, PaO2 58, HCO3 20 — mixed metabolic acidosis with respiratory alkalosis compensation, hypoxemia from bronchospasm and V/Q mismatch.",
+    "allergen_trigger": "Shrimp tropomyosin (major shellfish allergen), IgE-mediated type I hypersensitivity"
+  },
+  "opening_script": {
+    "patient_voice": "I ate shrimp... I'm allergic... I can't breathe... my throat is closing... please help me...",
+    "nurse_handoff": "32-year-old male, David Park, brought in by EMS from a restaurant. Known shellfish allergy, accidentally ate shrimp. Developed hives all over his body, lips and tongue swelling, now with noisy breathing and wheezing. EMS reports BP 78/42, heart rate 132, SpO2 88% on room air. No epi given in the field — his EpiPen was expired and he didn't have it with him. He looks really sick.",
+    "appearance": [
+      "Sitting upright, tripoding, visibly distressed and struggling to breathe",
+      "Diffuse erythematous urticarial wheals covering torso, arms, and legs",
+      "Lips markedly swollen, tongue protruding and edematous, drooling",
+      "Audible inspiratory stridor and expiratory wheezing",
+      "Skin flushed, warm, and diaphoretic",
+      "Speaking in 1-2 word sentences only",
+      "Tachypneic with accessory muscle use and nasal flaring"
+    ]
+  },
+  "critical_actions": [
+    {
+      "id": "recognize_anaphylaxis",
+      "description": "Recognize anaphylaxis based on acute onset of skin/mucosal involvement, respiratory compromise, and hypotension after known allergen exposure",
+      "target_time_sec": 60,
+      "weight": 10
+    },
+    {
+      "id": "im_epinephrine",
+      "description": "Administer IM epinephrine 0.3-0.5 mg (1:1,000 concentration) into the anterolateral thigh IMMEDIATELY",
+      "target_time_sec": 120,
+      "weight": 20
+    },
+    {
+      "id": "supplemental_oxygen_airway",
+      "description": "Apply high-flow supplemental oxygen, prepare for advanced airway management, and position the patient upright; have RSI medications, surgical airway kit, and difficult airway equipment at bedside",
+      "target_time_sec": 120,
+      "weight": 10
+    },
+    {
+      "id": "iv_access_fluid_resuscitation",
+      "description": "Establish two large-bore IV lines and begin aggressive isotonic crystalloid bolus (1-2 L normal saline wide open) for distributive shock",
+      "target_time_sec": 300,
+      "weight": 10
+    },
+    {
+      "id": "adjunctive_medications",
+      "description": "Administer adjunctive medications: diphenhydramine 50 mg IV (H1 blocker), famotidine 20 mg IV (H2 blocker), and methylprednisolone 125 mg IV (corticosteroid to reduce biphasic risk)",
+      "target_time_sec": 600,
+      "weight": 8
+    },
+    {
+      "id": "repeat_im_epinephrine",
+      "description": "Repeat IM epinephrine 0.3-0.5 mg if no clinical improvement 5-15 minutes after the first dose",
+      "target_time_sec": 900,
+      "weight": 10
+    },
+    {
+      "id": "epinephrine_infusion_if_refractory",
+      "description": "Initiate IV epinephrine infusion (1-10 mcg/min titrated to effect) if anaphylaxis is refractory to repeated IM doses",
+      "target_time_sec": 1200,
+      "weight": 8
+    },
+    {
+      "id": "monitor_biphasic_reaction",
+      "description": "Plan for extended observation period (minimum 4-6 hours) to monitor for biphasic anaphylactic reaction; educate on EpiPen prescription and allergy referral at discharge",
+      "target_time_sec": 1800,
+      "weight": 6
+    }
+  ],
+  "harm_events": [
+    {
+      "id": "no_epinephrine_given",
+      "description": "Anaphylaxis managed without any epinephrine — this is the #1 cause of death in anaphylaxis fatalities",
+      "trigger": "no_epinephrine_administered_by_600_sec",
+      "severity": 10
+    },
+    {
+      "id": "iv_epinephrine_push",
+      "description": "IV epinephrine push (1:10,000) given instead of IM (1:1,000) in a patient with a pulse — high risk of fatal arrhythmia, myocardial ischemia, and hypertensive crisis",
+      "trigger": "iv_epinephrine_bolus_administered_with_pulse_present",
+      "severity": 7
+    },
+    {
+      "id": "delayed_epinephrine",
+      "description": "Epinephrine not given within 10 minutes of presentation — delay is associated with increased mortality, more refractory hypotension, and higher intubation rates",
+      "trigger": "first_epinephrine_dose_after_600_sec",
+      "severity": 8
+    },
+    {
+      "id": "antihistamines_only",
+      "description": "Only antihistamines administered without epinephrine — antihistamines do not reverse bronchospasm, angioedema, or hypotension and are NOT a substitute for epinephrine",
+      "trigger": "antihistamine_given_and_no_epinephrine_by_600_sec",
+      "severity": 9
+    },
+    {
+      "id": "failed_airway",
+      "description": "Complete airway obstruction due to progressive angioedema without timely intervention — surgical airway (cricothyrotomy) not performed when indicated",
+      "trigger": "spo2_below_60_for_120_sec_or_airway_obstruction_complete",
+      "severity": 10
+    },
+    {
+      "id": "subcutaneous_epinephrine",
+      "description": "Epinephrine given subcutaneously instead of intramuscularly — absorption is slower and less reliable due to peripheral vasoconstriction in shock",
+      "trigger": "subcutaneous_epinephrine_administered",
+      "severity": 4
+    },
+    {
+      "id": "premature_discharge",
+      "description": "Patient discharged before adequate observation period without monitoring for biphasic reaction (should observe minimum 4-6 hours)",
+      "trigger": "disposition_discharge_before_4_hours",
+      "severity": 5
+    }
+  ],
+  "recommended_management_logic": {
+    "preferred_agents": [
+      "epinephrine_im_1mg_per_ml",
+      "normal_saline_iv_bolus",
+      "diphenhydramine_iv",
+      "famotidine_iv",
+      "methylprednisolone_iv",
+      "epinephrine_iv_infusion",
+      "albuterol_nebulized"
+    ],
+    "preferred_strategy": "Immediate IM epinephrine as first-line, followed by high-flow oxygen, aggressive IV crystalloid resuscitation, adjunctive antihistamines and corticosteroids, repeat IM epinephrine every 5-15 minutes PRN, transition to epinephrine infusion if refractory, prepare for difficult airway, and observe for biphasic reaction",
+    "penalized_strategy": [
+      "antihistamines_as_primary_treatment",
+      "iv_epinephrine_push_in_non_arrest",
+      "subcutaneous_epinephrine_in_shock",
+      "corticosteroids_as_primary_treatment",
+      "delayed_epinephrine_while_waiting_for_labs_or_imaging",
+      "early_discharge_without_observation",
+      "no_epipen_prescription_at_discharge"
+    ],
+    "airway_notes": "Angioedema of the upper airway makes intubation extremely difficult. If intubation is needed: use the most experienced operator, have surgical airway (cricothyrotomy) kit open at bedside, consider awake fiberoptic intubation if time permits. Do NOT paralyze unless you are prepared to perform a surgical airway. Epinephrine often improves upper airway edema and may avert the need for intubation."
+  },
+  "time_course": {
+    "untreated_progression": [
+      {
+        "time_sec": 120,
+        "effects": {
+          "respiratory": {
+            "spo2": 84,
+            "rr": 34,
+            "stridor_index": 0.78,
+            "bronchospasm_index": 0.78,
+            "work_of_breathing_index": 0.88
+          },
+          "hemodynamics": {
+            "sbp": 72,
+            "dbp": 38,
+            "map": 49,
+            "hr": 140,
+            "svr_index": 0.38
+          },
+          "disease_model": {
+            "angioedema_severity_index": 0.86
+          }
+        },
+        "narrative": "His breathing is getting worse. The stridor is louder and you can hear wheezing from the doorway. His lips are more swollen and his tongue is further protruding. He can no longer speak."
+      },
+      {
+        "time_sec": 300,
+        "effects": {
+          "respiratory": {
+            "spo2": 76,
+            "rr": 38,
+            "stridor_index": 0.88,
+            "bronchospasm_index": 0.85,
+            "upper_airway_edema_index": 0.88,
+            "work_of_breathing_index": 0.92
+          },
+          "hemodynamics": {
+            "sbp": 64,
+            "dbp": 32,
+            "map": 43,
+            "hr": 148,
+            "svr_index": 0.32,
+            "preload_index": 0.38
+          },
+          "neurologic": {
+            "mental_status": "obtunded",
+            "gcs": 10,
+            "cerebral_hypoperfusion_index": 0.62
+          },
+          "disease_model": {
+            "angioedema_severity_index": 0.92,
+            "capillary_leak_index": 0.85
+          }
+        },
+        "narrative": "He is becoming obtunded. Massive facial and tongue swelling. Inspiratory stridor is harsh. SpO2 is dropping rapidly. He is no longer responsive to voice — only to painful stimuli."
+      },
+      {
+        "time_sec": 600,
+        "effects": {
+          "respiratory": {
+            "spo2": 55,
+            "rr": 8,
+            "stridor_index": 0.95,
+            "bronchospasm_index": 0.90,
+            "upper_airway_edema_index": 0.95,
+            "work_of_breathing_index": 0.35
+          },
+          "hemodynamics": {
+            "sbp": 52,
+            "dbp": 28,
+            "map": 36,
+            "hr": 155,
+            "svr_index": 0.25,
+            "preload_index": 0.28,
+            "cardiac_output_index": 0.45
+          },
+          "neurologic": {
+            "mental_status": "unresponsive",
+            "gcs": 4,
+            "cerebral_hypoperfusion_index": 0.85
+          }
+        },
+        "conditional_event": "if_no_epinephrine_and_no_airway_intervention",
+        "narrative": "Near-complete upper airway obstruction. He is barely breathing — agonal respirations only. Profoundly hypotensive. Unresponsive. This is a surgical airway situation if intubation cannot be accomplished immediately."
+      },
+      {
+        "time_sec": 900,
+        "effects": {
+          "respiratory": {
+            "spo2": 0,
+            "rr": 0,
+            "upper_airway_edema_index": 1.0
+          },
+          "hemodynamics": {
+            "sbp": 0,
+            "dbp": 0,
+            "map": 0,
+            "hr": 30,
+            "rhythm": "pulseless_electrical_activity",
+            "cardiac_output_index": 0.0
+          },
+          "neurologic": {
+            "gcs": 3,
+            "mental_status": "unresponsive"
+          }
+        },
+        "conditional_event": "if_no_epinephrine_and_no_airway_and_no_resuscitation",
+        "narrative": "Cardiac arrest. PEA arrest secondary to hypoxia and profound distributive shock from untreated anaphylaxis. Begin ACLS — IV epinephrine now indicated in arrest dose (1 mg IV push 1:10,000 every 3-5 min)."
+      }
+    ]
+  },
+  "triggered_diagnostics": {
+    "tryptase_ordered": {
+      "result_delay_sec": 1800,
+      "result_text": "Serum tryptase: 42.3 mcg/L (reference <11.4 mcg/L). Significantly elevated, consistent with mast cell degranulation. Supports clinical diagnosis of anaphylaxis. Note: should be drawn 1-3 hours from symptom onset and compared to baseline tryptase."
+    },
+    "cxr_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "Hyperinflated lungs bilaterally. No focal consolidation, pneumothorax, or pulmonary edema. ET tube in satisfactory position if intubated."
+    },
+    "ecg_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "Sinus tachycardia at 132 bpm. Normal axis. Normal intervals. No ST-segment elevation or depression. No arrhythmia."
+    },
+    "abg_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "pH 7.32, PaCO2 32 mmHg, PaO2 58 mmHg, HCO3 20 mEq/L, lactate 3.2 mmol/L. Interpretation: partially compensated metabolic acidosis with hypoxemia. Elevated lactate suggests tissue hypoperfusion."
+    },
+    "cmp_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Na 140, K 4.1, Cl 103, CO2 20, BUN 14, Cr 0.9, Glucose 148. Mildly elevated glucose (stress response). Low bicarbonate consistent with metabolic acidosis."
+    },
+    "cbc_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "WBC 12.4 (elevated — stress/demargination), Hgb 15.2, Hct 45.6 (hemoconcentration from capillary leak), Platelets 238."
+    },
+    "troponin_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Troponin I: 0.005 ng/mL (within normal limits). No evidence of acute myocardial injury at this time. Repeat in 3-6 hours if clinical concern for Kounis syndrome (allergic acute coronary syndrome)."
+    },
+    "lactate_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "Lactate: 3.2 mmol/L (elevated). Consistent with tissue hypoperfusion from distributive shock. Trend to assess response to resuscitation."
+    },
+    "laryngoscopy_performed": {
+      "result_delay_sec": 30,
+      "result_text": "Direct visualization: significant edema of the epiglottis, aryepiglottic folds, and arytenoids. Glottic opening narrowed to approximately 4-5 mm. Vocal cords edematous but mobile. Grade 3-4 Cormack-Lehane view. Recommend smaller endotracheal tube (6.0) or consider surgical airway if intubation fails."
+    }
+  },
+  "success_criteria": {
+    "required": [
+      "recognize_anaphylaxis",
+      "im_epinephrine",
+      "supplemental_oxygen_airway",
+      "iv_access_fluid_resuscitation",
+      "adjunctive_medications"
+    ],
+    "target_end_state": {
+      "sbp_min": 90,
+      "map_min": 65,
+      "spo2_min": 92,
+      "hr_max": 110,
+      "mental_status": "alert_and_oriented",
+      "gcs_min": 14,
+      "stridor_resolved": true,
+      "bronchospasm_index_max": 0.2,
+      "angioedema_improving": true,
+      "no_harm_event_ids": [
+        "no_epinephrine_given",
+        "failed_airway",
+        "antihistamines_only"
+      ],
+      "disposition": "observation_or_icu_admission",
+      "epipen_prescribed_at_discharge": true,
+      "allergy_referral_planned": true
+    }
+  },
+  "failure_criteria": {
+    "any_of": [
+      "no_epinephrine_given_by_600_sec",
+      "cardiac_arrest_from_anaphylaxis",
+      "complete_airway_obstruction_without_surgical_airway",
+      "spo2_below_40_for_greater_than_120_sec",
+      "map_below_30_for_greater_than_300_sec",
+      "death",
+      "disposition_is_discharge_before_4_hours"
+    ]
+  },
+  "debrief_template": {
+    "what_went_well": [
+      "Rapid recognition of anaphylaxis based on clinical criteria (skin, respiratory, cardiovascular involvement)",
+      "Immediate IM epinephrine as first-line treatment",
+      "Early airway assessment and preparation for difficult airway",
+      "Aggressive fluid resuscitation for distributive shock",
+      "Appropriate use of adjunctive medications (H1 blocker, H2 blocker, corticosteroids)",
+      "Repeated epinephrine dosing when initial response was inadequate",
+      "Planned observation period for biphasic reaction"
+    ],
+    "what_could_have_gone_better": [
+      "Faster time to first IM epinephrine dose",
+      "Earlier preparation of difficult airway equipment and surgical airway kit",
+      "More aggressive IV fluid resuscitation",
+      "Earlier consideration of epinephrine infusion for refractory symptoms",
+      "Tryptase level not drawn in the acute phase",
+      "EpiPen prescription and allergy referral not addressed before disposition"
+    ],
+    "key_choices_to_highlight": [
+      "Was IM epinephrine the FIRST medication given, or were antihistamines given first?",
+      "Was the correct epinephrine route used (IM, not IV push, not subcutaneous)?",
+      "Was the correct epinephrine concentration used (1:1,000 IM, not 1:10,000)?",
+      "How quickly was epinephrine given after recognizing anaphylaxis?",
+      "Was the airway managed proactively with early preparation for surgical airway?",
+      "Was fluid resuscitation adequate and timely?",
+      "Was repeat epinephrine given when symptoms did not fully resolve?",
+      "Was an appropriate observation period planned before discharge?"
+    ],
+    "teaching_points": [
+      "IM epinephrine (1:1,000 = 1 mg/mL) into the anterolateral thigh is THE first-line treatment for anaphylaxis. There is no contraindication to epinephrine in anaphylaxis — the risk of not giving it far outweighs any risk of giving it.",
+      "IV epinephrine push (1:10,000) is reserved for cardiac arrest. In a patient with a pulse, IV push epinephrine can cause fatal ventricular arrhythmia, severe hypertension, and myocardial ischemia.",
+      "Antihistamines (diphenhydramine, famotidine) treat only urticaria and pruritus. They do NOT reverse bronchospasm, laryngeal edema, or hypotension. They are adjunctive, never primary.",
+      "Corticosteroids (methylprednisolone, dexamethasone) have no immediate effect in anaphylaxis — onset of action is 4-6 hours. They are given to potentially reduce the risk of biphasic reactions.",
+      "Aggressive isotonic crystalloid resuscitation (1-2 L in adults) is critical because anaphylaxis causes massive third-spacing from capillary leak — patients can lose up to 35% of intravascular volume within minutes.",
+      "Repeat IM epinephrine every 5-15 minutes if symptoms persist. Up to 20% of patients require more than one dose.",
+      "For refractory anaphylaxis, start an IV epinephrine infusion at 1-10 mcg/min and titrate to clinical effect (BP, HR, respiratory status).",
+      "Angioedema of the upper airway makes intubation extremely difficult. Always have a surgical airway (cricothyrotomy) kit open and ready. The most experienced airway operator should manage the airway.",
+      "Biphasic reactions occur in up to 20% of anaphylaxis cases, typically 1-72 hours after the initial episode (most within 8-10 hours). Observe patients for a minimum of 4-6 hours; longer for severe presentations.",
+      "All patients with anaphylaxis should be discharged with an epinephrine autoinjector prescription, an anaphylaxis action plan, and a referral to an allergist."
+    ]
+  }
+}

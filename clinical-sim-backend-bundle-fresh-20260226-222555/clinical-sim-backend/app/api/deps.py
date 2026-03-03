@@ -33,6 +33,12 @@ def get_parser_service() -> ParserService:
 
 
 @lru_cache
+def get_llm_parser_service():
+    from app.services.llm_parser_service import LLMParserService
+    return LLMParserService()
+
+
+@lru_cache
 def get_engine_service() -> EngineService:
     return EngineService()
 

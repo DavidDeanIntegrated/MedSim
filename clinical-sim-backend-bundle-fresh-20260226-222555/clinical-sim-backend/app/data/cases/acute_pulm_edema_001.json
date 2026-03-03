@@ -1,0 +1,718 @@
+{
+  "case_file_version": "2.0.0",
+  "case_id": "acute_pulm_edema_001",
+  "title": "Acute Cardiogenic Pulmonary Edema (Flash Pulmonary Edema) in Decompensated HFrEF",
+  "difficulty": "hard",
+  "scenario_type": "acute_cardiogenic_pulmonary_edema",
+  "category": "acute_heart_failure",
+  "authoring_notes": {
+    "summary": "74-year-old male with known HFrEF (EF 25%), hypertension, and CKD stage III presents with acute flash pulmonary edema after stopping all cardiac medications one week ago. He is hypertensive, tachycardic, severely hypoxic, and in extremis with pink frothy sputum and diffuse bilateral crackles. The case requires rapid recognition, immediate NIPPV, IV nitroglycerin for afterload reduction, IV furosemide, and avoidance of harmful interventions such as IV fluid bolus, premature intubation, or beta-blocker administration.",
+    "teaching_focus": [
+      "NIPPV (BiPAP/CPAP) is the single most impactful intervention in flash pulmonary edema — reduces preload, afterload, and work of breathing simultaneously",
+      "IV nitroglycerin for combined preload and afterload reduction in hypertensive acute pulmonary edema",
+      "Appropriate diuretic dosing in CKD (typically 2-2.5x home oral dose IV, or 1 mg/kg if diuretic-naive)",
+      "Avoid intubation when possible — NIPPV dramatically reduces need for mechanical ventilation",
+      "Identify the precipitant: medication non-compliance, ACS, arrhythmia, dietary indiscretion",
+      "The LMNOP mnemonic: Lasix, Morphine (use cautiously/avoid), Nitrates, Oxygen/NIPPV, Position (upright)",
+      "Avoid beta-blockers in acute decompensated heart failure — worsens cardiac output",
+      "Avoid IV fluid bolus — worsens pulmonary edema catastrophically",
+      "Avoid nitroprusside in CKD — risk of cyanide and thiocyanate toxicity with impaired renal clearance",
+      "Demand ischemia (type 2 MI) versus acute coronary syndrome as precipitant — troponin elevation in the setting of severe hemodynamic stress"
+    ]
+  },
+  "case_metadata": {
+    "case_id": "acute_pulm_edema_001",
+    "title": "Acute Cardiogenic Pulmonary Edema (Flash Pulmonary Edema) in Decompensated HFrEF",
+    "difficulty": "hard",
+    "scenario_type": "acute_cardiogenic_pulmonary_edema",
+    "time_elapsed_sec": 0,
+    "time_step_sec": 5,
+    "status": "not_started"
+  },
+  "patient_profile": {
+    "name": "William Turner",
+    "age_years": 74,
+    "sex": "male",
+    "weight_kg": 94,
+    "height_cm": 178,
+    "bsa_m2": 2.14,
+    "pregnant": false,
+    "gestational_weeks": 0,
+    "chronic_hypertension": true,
+    "baseline_sbp": 148,
+    "baseline_dbp": 88,
+    "baseline_hr": 78,
+    "comorbidities": {
+      "ckd": true,
+      "ckd_stage": 3,
+      "baseline_creatinine": 2.0,
+      "baseline_gfr": 32,
+      "hfrEF": true,
+      "ef_percent": 25,
+      "copd": false,
+      "asthma_or_reactive_airways": false,
+      "cad": true,
+      "diabetes": true,
+      "aortic_aneurysm_history": false,
+      "baseline_beta_blocker_use": true,
+      "baseline_ace_inhibitor_use": true,
+      "baseline_diuretic_use": true,
+      "baseline_bradycardia": false,
+      "av_conduction_disease": false,
+      "volume_depletion": false,
+      "medication_noncompliance": true,
+      "days_off_medications": 7,
+      "home_medications": [
+        "carvedilol 25 mg BID",
+        "lisinopril 20 mg daily",
+        "furosemide 80 mg BID",
+        "spironolactone 25 mg daily",
+        "metformin 500 mg BID (held for CKD worsening)",
+        "aspirin 81 mg daily",
+        "atorvastatin 40 mg daily"
+      ]
+    }
+  },
+  "disease_model": {
+    "primary_pathology": "acute_cardiogenic_pulmonary_edema",
+    "precipitant": "medication_noncompliance_with_afterload_surge",
+    "severity_index": 0.92,
+    "end_organ_risk": {
+      "brain": 0.25,
+      "heart": 0.70,
+      "kidney": 0.65,
+      "aorta": 0.05,
+      "lungs": 0.95
+    },
+    "autoregulation_shift_index": 0.55,
+    "catecholamine_excess_index": 0.75,
+    "pulmonary_edema_index": 0.90,
+    "aortic_shear_index": 0.05,
+    "cerebral_edema_index": 0.10,
+    "lv_failure_index": 0.85,
+    "rv_strain_index": 0.45,
+    "fluid_overload_index": 0.88,
+    "afterload_mismatch_index": 0.82
+  },
+  "initial_state": {
+    "hemodynamics": {
+      "svr_index": 2.10,
+      "preload_index": 1.85,
+      "contractility_index": 0.40,
+      "cardiac_output_index": 0.55,
+      "stroke_volume_index": 0.50,
+      "map": 141,
+      "sbp": 198,
+      "dbp": 112,
+      "hr": 118,
+      "rhythm": "sinus_tachycardia",
+      "av_node_conduction_index": 1.0,
+      "coronary_supply_demand_mismatch_index": 0.65,
+      "jvp_cm": 16,
+      "cvp_estimated": 18,
+      "pcwp_estimated": 32
+    },
+    "respiratory": {
+      "rr": 36,
+      "spo2": 82,
+      "fio2": 0.21,
+      "oxygen_device": "room_air",
+      "work_of_breathing_index": 0.95,
+      "crackles_index": 0.90,
+      "crackles_distribution": "diffuse_bilateral_to_apices",
+      "bronchospasm_index": 0.15,
+      "pulmonary_edema_index": 0.90,
+      "pink_frothy_sputum": true,
+      "accessory_muscle_use": true,
+      "tripod_positioning": true,
+      "ability_to_speak_full_sentences": false
+    },
+    "neurologic": {
+      "gcs": 15,
+      "mental_status": "alert_severely_distressed",
+      "headache_index": 0.10,
+      "vision_change_index": 0.0,
+      "focal_deficit_index": 0.0,
+      "cerebral_hypoperfusion_index": 0.05,
+      "agitation_index": 0.75,
+      "diaphoresis": true
+    },
+    "renal": {
+      "urine_output_ml_per_hr": 15,
+      "renal_perfusion_index": 0.45,
+      "aki_risk_index": 0.70,
+      "baseline_creatinine": 2.0,
+      "current_creatinine": 2.8
+    },
+    "cardiac": {
+      "chest_pain_index": 0.20,
+      "ischemia_index": 0.40,
+      "troponin_leak_index": 0.55,
+      "acute_heart_failure_index": 0.92,
+      "s3_gallop": true,
+      "murmur": "grade_2_systolic_MR",
+      "peripheral_edema": "2_plus_pitting_bilateral_LE",
+      "ef_estimated": 25
+    },
+    "monitor": {
+      "ecg_text": "Sinus tachycardia, rate 118, left ventricular hypertrophy with strain pattern, nonspecific ST-T wave changes, no acute STEMI criteria, old Q waves in V1-V3",
+      "telemetry_quality": "good",
+      "nibp_cycle_sec": 60,
+      "waveform_flags": [
+        "hypertension_alarm",
+        "tachycardia_alarm",
+        "low_spo2_alarm",
+        "high_respiratory_rate_alarm"
+      ]
+    },
+    "labs": {
+      "creatinine_mg_dl": 2.8,
+      "bun_mg_dl": 58,
+      "bnp_pg_ml": 2340,
+      "troponin_ng_l": 45,
+      "lactate_mmol_l": 3.2,
+      "hemoglobin_g_dl": 11.2,
+      "wbc_k_per_ul": 9.8,
+      "platelets_k_per_ul": 188,
+      "inr": 1.1,
+      "abg": {
+        "ph": 7.22,
+        "pco2": 52,
+        "po2": 48,
+        "hco3": 20,
+        "base_excess": -6,
+        "interpretation": "mixed_respiratory_and_metabolic_acidosis"
+      },
+      "cmp": {
+        "na": 134,
+        "k": 5.4,
+        "cl": 100,
+        "co2": 18,
+        "bun": 58,
+        "creatinine": 2.8,
+        "glucose": 198,
+        "calcium": 8.6,
+        "magnesium": 1.8,
+        "phosphorus": 5.1
+      },
+      "cbc": {
+        "wbc": 9.8,
+        "hemoglobin": 11.2,
+        "hematocrit": 34.1,
+        "platelets": 188
+      },
+      "procalcitonin_ng_ml": 0.15
+    },
+    "active_medications": [],
+    "orders": [],
+    "event_log": [],
+    "scoring": {
+      "critical_actions": [],
+      "harm_events": [],
+      "teaching_points": [],
+      "final_score": 0
+    }
+  },
+  "hidden_truth": {
+    "final_diagnosis": "Acute decompensated heart failure with flash cardiogenic pulmonary edema precipitated by medication non-compliance in the setting of known HFrEF (EF 25%), hypertension, and CKD stage III",
+    "precipitant": "Medication non-compliance (stopped carvedilol, lisinopril, furosemide, spironolactone 7 days ago) leading to afterload surge and volume overload in a severely reduced EF ventricle",
+    "must_not_miss_alternatives": [
+      "Acute coronary syndrome (STEMI/NSTEMI) as precipitant",
+      "New-onset atrial fibrillation with rapid ventricular response",
+      "Acute mitral regurgitation (papillary muscle rupture or chordal rupture)",
+      "Aortic dissection with acute aortic regurgitation",
+      "Tension pneumothorax",
+      "Pulmonary embolism",
+      "Cardiac tamponade",
+      "Sepsis with cardiomyopathy"
+    ],
+    "ecg_result_if_ordered": "Sinus tachycardia at 118 bpm. Left ventricular hypertrophy with repolarization abnormalities. Nonspecific ST-T wave changes in lateral leads consistent with strain pattern. Old Q waves in V1-V3 (prior anterior infarction). No acute ST elevation. No new pathological Q waves. QTc 468 ms.",
+    "cxr_result_if_ordered": "Portable AP chest radiograph: Cardiomegaly with cardiothoracic ratio 0.62. Bilateral diffuse alveolar opacities in butterfly distribution consistent with pulmonary edema. Cephalization of pulmonary vasculature. Bilateral pleural effusions, small-to-moderate. Kerley B lines at lung periphery. No pneumothorax. Aortic calcifications noted. ET tube not present.",
+    "echo_result_if_ordered": "Severely reduced LV systolic function, estimated EF 20-25%. Global hypokinesis with akinesis of anterior wall and septum (prior territory). Moderate-to-severe functional mitral regurgitation. Dilated LV cavity (LVEDD 6.8 cm). Mildly dilated RV with reduced systolic function. Elevated estimated RVSP 55 mmHg. Moderate tricuspid regurgitation. IVC dilated (2.6 cm) with <50% respiratory variation consistent with elevated RA pressure. No pericardial effusion. No aortic stenosis.",
+    "ct_chest_result_if_ordered": "Diffuse bilateral ground glass opacities and consolidation consistent with pulmonary edema. Bilateral small-to-moderate pleural effusions. Cardiomegaly. No pulmonary embolism on CT angiography. No pneumothorax.",
+    "pocus_result_if_ordered": "B-lines diffusely bilateral in all lung zones (>3 per intercostal space in 8 zones). Reduced LV systolic function with global hypokinesis. Dilated IVC without respiratory variation. Small bilateral pleural effusions.",
+    "ua_if_ordered": "Specific gravity 1.025. 1+ protein. Trace blood. No WBC. No bacteria. No casts on microscopy.",
+    "troponin_trend": "Initial 45 ng/L, repeat at 3 hours 52 ng/L, 6 hours 48 ng/L — mildly elevated with flat trend consistent with demand ischemia (type 2 MI), not acute plaque rupture"
+  },
+  "opening_script": {
+    "patient_voice": "I can't... breathe... can't lay down... please... help me...",
+    "nurse_handoff": "74-year-old male, William Turner, brought in by EMS sitting bolt upright on the stretcher. Severe respiratory distress, pink frothy sputum, diaphoretic. History of heart failure and kidney disease. Family says he stopped taking all his heart medications about a week ago because he couldn't afford them. EMS found him sitting at the edge of his bed gasping. Vitals en route: BP 198/112, heart rate 118, respiratory rate 36, SpO2 82% on a non-rebreather. They sat him up and that's the best they could do. No IV access yet — he's too diaphoretic and agitated for them to get a line in the field.",
+    "appearance": [
+      "Sitting bolt upright, tripoding, cannot tolerate lying back",
+      "Severe respiratory distress with accessory muscle use and intercostal retractions",
+      "Diaphoretic with cool mottled extremities",
+      "Pink frothy sputum at lips",
+      "Speaking only 1-2 words at a time between gasps",
+      "Anxious, wide-eyed, appears to be in extremis",
+      "Jugular venous distension visible to angle of jaw",
+      "Bilateral lower extremity pitting edema to mid-shin"
+    ]
+  },
+  "critical_actions": [
+    {
+      "id": "recognize_acute_cardiogenic_pulmonary_edema",
+      "description": "Recognize acute cardiogenic pulmonary edema based on clinical presentation, history, and physical exam findings",
+      "target_time_sec": 120,
+      "weight": 8
+    },
+    {
+      "id": "initiate_nippv",
+      "description": "Apply NIPPV (BiPAP preferred: IPAP 10-15, EPAP 5-8 cmH2O, or CPAP 8-12 cmH2O) — the single most important intervention",
+      "target_time_sec": 300,
+      "weight": 18
+    },
+    {
+      "id": "start_iv_nitroglycerin",
+      "description": "Start IV nitroglycerin infusion (5-10 mcg/min, titrate to 200 mcg/min) for preload and afterload reduction",
+      "target_time_sec": 300,
+      "weight": 14
+    },
+    {
+      "id": "administer_iv_furosemide",
+      "description": "Administer IV furosemide for diuresis (at least 80-160 mg IV given CKD and home dose of 80 mg BID oral)",
+      "target_time_sec": 600,
+      "weight": 10
+    },
+    {
+      "id": "upright_positioning",
+      "description": "Ensure patient is positioned sitting upright (head of bed >60 degrees, legs dangling if possible) to reduce preload",
+      "target_time_sec": 60,
+      "weight": 4
+    },
+    {
+      "id": "obtain_ecg",
+      "description": "Obtain 12-lead ECG to rule out acute STEMI or new arrhythmia as precipitant",
+      "target_time_sec": 300,
+      "weight": 8
+    },
+    {
+      "id": "obtain_bnp_troponin",
+      "description": "Order BNP and troponin to confirm CHF exacerbation and evaluate for demand ischemia or ACS trigger",
+      "target_time_sec": 300,
+      "weight": 6
+    },
+    {
+      "id": "avoid_iv_fluids",
+      "description": "Avoid administering IV fluid bolus throughout the case — patient is severely volume overloaded",
+      "target_time_sec": 0,
+      "weight": 10
+    },
+    {
+      "id": "cardiology_consultation",
+      "description": "Consider and initiate cardiology consultation for ICU admission and optimization of heart failure management",
+      "target_time_sec": 1200,
+      "weight": 6
+    }
+  ],
+  "harm_events": [
+    {
+      "id": "iv_fluid_bolus_given",
+      "description": "IV fluid bolus administered to a patient with severe cardiogenic pulmonary edema, worsening alveolar flooding and hypoxia",
+      "trigger": "iv_fluid_bolus_ordered",
+      "severity": 9,
+      "consequence": {
+        "pulmonary_edema_index_change": 0.15,
+        "spo2_change": -8,
+        "work_of_breathing_index_change": 0.15,
+        "narrative": "Within minutes of the fluid bolus, SpO2 drops further and the patient's respiratory distress worsens dramatically. Pink frothy sputum increases. The nurse looks at you with concern."
+      }
+    },
+    {
+      "id": "premature_intubation_no_nippv_trial",
+      "description": "Patient intubated without first trialing NIPPV — NIPPV avoids intubation in the majority of flash pulmonary edema cases and is safer",
+      "trigger": "intubation_ordered_without_prior_nippv",
+      "severity": 6,
+      "consequence": {
+        "narrative": "The patient is intubated. Positive pressure ventilation does improve oxygenation, but the patient becomes hypotensive post-intubation due to reduced preload in the setting of already-compromised cardiac output. A trial of NIPPV first would likely have avoided this complication and its associated risks."
+      }
+    },
+    {
+      "id": "beta_blocker_in_acute_decompensation",
+      "description": "Beta-blocker administered in acute decompensated heart failure, further reducing cardiac output in an already failing ventricle",
+      "trigger": "beta_blocker_administered",
+      "severity": 7,
+      "consequence": {
+        "cardiac_output_index_change": -0.15,
+        "hr_change": -25,
+        "sbp_change": -30,
+        "acute_heart_failure_index_change": 0.15,
+        "narrative": "After the beta-blocker is given, the patient's heart rate drops but blood pressure plummets. Cardiac output falls further. The patient becomes more obtunded and SpO2 worsens. The failing ventricle cannot compensate for the negative inotropy and chronotropy."
+      }
+    },
+    {
+      "id": "no_afterload_reduction",
+      "description": "No vasodilator therapy initiated despite severely hypertensive presentation — afterload reduction is critical in hypertensive flash pulmonary edema",
+      "trigger": "no_nitroglycerin_or_vasodilator_by_900_sec",
+      "severity": 6,
+      "consequence": {
+        "narrative": "Despite NIPPV and diuresis, the patient remains severely hypertensive and the failing ventricle cannot overcome the elevated afterload. Pulmonary edema persists. The pathophysiology of flash pulmonary edema is primarily afterload-driven — vasodilator therapy is essential."
+      }
+    },
+    {
+      "id": "nitroprusside_in_ckd",
+      "description": "Nitroprusside administered in a patient with CKD stage III (Cr 2.8) — risk of cyanide and thiocyanate toxicity due to impaired renal clearance",
+      "trigger": "nitroprusside_ordered",
+      "severity": 5,
+      "consequence": {
+        "narrative": "Nitroprusside is started. While it effectively reduces afterload, in this patient with CKD stage III and creatinine 2.8, thiocyanate accumulation is a significant risk. IV nitroglycerin would be the safer choice for afterload and preload reduction. If nitroprusside must be used, close monitoring of thiocyanate levels is mandatory and duration should be minimized."
+      }
+    }
+  ],
+  "recommended_management_logic": {
+    "preferred_agents": [
+      "nitroglycerin_iv_infusion",
+      "furosemide_iv",
+      "nippv_bipap_or_cpap"
+    ],
+    "preferred_strategy": "Immediate NIPPV to reduce work of breathing and improve oxygenation, IV nitroglycerin to reduce preload and afterload (the hemodynamic driver of flash pulmonary edema), IV furosemide for diuresis, upright positioning, and identification of the precipitant. Avoid intubation unless NIPPV fails after adequate trial with escalating settings.",
+    "penalized_strategy": [
+      "iv_fluid_bolus_in_pulmonary_edema",
+      "intubation_without_nippv_trial",
+      "beta_blocker_in_acute_decompensation",
+      "nitroprusside_in_ckd_patient",
+      "morphine_administration",
+      "attempt_to_normalize_bp_immediately_without_addressing_volume_and_oxygenation",
+      "discharge_after_symptom_improvement"
+    ],
+    "notes": {
+      "nippv_rationale": "NIPPV reduces preload via increased intrathoracic pressure, reduces afterload via same mechanism, reduces work of breathing, improves alveolar recruitment, and avoids the hemodynamic compromise of intubation/sedation. NNT approximately 3 to avoid intubation.",
+      "nitroglycerin_rationale": "In hypertensive flash pulmonary edema, the primary pathophysiology is afterload mismatch rather than volume overload alone. Nitroglycerin reduces preload (venodilation) and afterload (arterial dilation at higher doses), rapidly improving hemodynamics.",
+      "furosemide_rationale": "While the patient does have true volume overload, the initial benefit of IV furosemide in the first 15-20 minutes is partly from venodilation (preload reduction) before diuresis begins. Dose should be at least equivalent to home oral dose given IV, typically 1-2.5x. In CKD, higher doses are often needed.",
+      "morphine_caution": "Morphine was historically part of the LMNOP mnemonic but is now generally avoided due to increased mortality risk in acute heart failure, respiratory depression, and hypotension."
+    }
+  },
+  "time_course": {
+    "untreated_progression": [
+      {
+        "time_sec": 120,
+        "effects": {
+          "respiratory": {
+            "spo2": 78,
+            "rr": 40,
+            "work_of_breathing_index": 0.98
+          },
+          "hemodynamics": {
+            "sbp": 202,
+            "dbp": 114,
+            "hr": 124,
+            "map": 143
+          }
+        },
+        "narrative": "The patient is becoming more agitated. SpO2 continues to drop. He is gasping, using every accessory muscle. Pink frothy sputum is now dripping from his mouth."
+      },
+      {
+        "time_sec": 300,
+        "effects": {
+          "respiratory": {
+            "spo2": 72,
+            "rr": 42,
+            "work_of_breathing_index": 0.99,
+            "pulmonary_edema_index": 0.95
+          },
+          "neurologic": {
+            "mental_status": "obtunded",
+            "gcs": 12,
+            "agitation_index": 0.30
+          },
+          "hemodynamics": {
+            "hr": 130,
+            "sbp": 190,
+            "dbp": 108
+          },
+          "labs": {
+            "lactate_mmol_l": 4.1
+          }
+        },
+        "narrative": "The patient is becoming obtunded from hypoxemia and respiratory fatigue. He is no longer able to maintain his own airway positioning. Agonal breathing pattern is developing. The room fills with alarms."
+      },
+      {
+        "time_sec": 600,
+        "effects": {
+          "respiratory": {
+            "spo2": 60,
+            "rr": 12,
+            "work_of_breathing_index": 0.50,
+            "oxygen_device": "room_air"
+          },
+          "neurologic": {
+            "mental_status": "unresponsive",
+            "gcs": 6
+          },
+          "hemodynamics": {
+            "hr": 140,
+            "rhythm": "sinus_tachycardia_with_pvcs",
+            "sbp": 160,
+            "dbp": 95
+          },
+          "cardiac": {
+            "ischemia_index": 0.75
+          },
+          "labs": {
+            "lactate_mmol_l": 6.5
+          }
+        },
+        "narrative": "Respiratory failure. The patient is unresponsive, GCS 6. Respiratory rate has dropped to 12 — not improvement, but exhaustion. SpO2 is 60%. PVCs are appearing on the monitor. This patient requires immediate crash intubation. The window for NIPPV has closed."
+      },
+      {
+        "time_sec": 900,
+        "conditional_event": "if_no_intervention",
+        "effects": {
+          "respiratory": {
+            "spo2": 40,
+            "rr": 4
+          },
+          "neurologic": {
+            "gcs": 3
+          },
+          "hemodynamics": {
+            "hr": 45,
+            "rhythm": "bradycardia_pea_impending",
+            "sbp": 70,
+            "dbp": 40,
+            "map": 50
+          }
+        },
+        "narrative": "Cardiovascular collapse. Severe bradycardia and hypotension. Impending PEA arrest from refractory hypoxemia. Without immediate resuscitation this patient will die."
+      }
+    ],
+    "treated_with_nippv_and_ntg": [
+      {
+        "time_sec": 300,
+        "condition": "nippv_applied_and_ntg_infusion_started",
+        "effects": {
+          "respiratory": {
+            "spo2": 88,
+            "rr": 30,
+            "work_of_breathing_index": 0.70,
+            "pulmonary_edema_index": 0.80
+          },
+          "hemodynamics": {
+            "sbp": 175,
+            "dbp": 100,
+            "hr": 112,
+            "map": 125
+          },
+          "neurologic": {
+            "mental_status": "anxious_but_cooperative",
+            "agitation_index": 0.50
+          }
+        },
+        "narrative": "With BiPAP and nitroglycerin running, the patient's SpO2 has improved to 88%. He is still working hard but is more cooperative. Blood pressure is trending down. He can now speak a few words."
+      },
+      {
+        "time_sec": 600,
+        "condition": "nippv_and_ntg_and_furosemide_given",
+        "effects": {
+          "respiratory": {
+            "spo2": 93,
+            "rr": 24,
+            "work_of_breathing_index": 0.45,
+            "pulmonary_edema_index": 0.60
+          },
+          "hemodynamics": {
+            "sbp": 158,
+            "dbp": 92,
+            "hr": 102,
+            "map": 114
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 60
+          }
+        },
+        "narrative": "Significant improvement. SpO2 93% on BiPAP. Respiratory rate down to 24. The patient is producing urine and the Foley bag is filling. He says he feels 'a little better' and can speak in short phrases. Crackles are still present but diminishing at the apices."
+      },
+      {
+        "time_sec": 1200,
+        "condition": "full_treatment_ongoing",
+        "effects": {
+          "respiratory": {
+            "spo2": 96,
+            "rr": 20,
+            "work_of_breathing_index": 0.25,
+            "pulmonary_edema_index": 0.35,
+            "crackles_index": 0.40
+          },
+          "hemodynamics": {
+            "sbp": 145,
+            "dbp": 85,
+            "hr": 92,
+            "map": 105
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 120
+          },
+          "neurologic": {
+            "mental_status": "tired_but_alert",
+            "gcs": 15,
+            "agitation_index": 0.10
+          }
+        },
+        "narrative": "The patient has turned the corner. SpO2 96% on BiPAP. He is tired but alert, speaking in full sentences. Blood pressure 145/85. Urine output is brisk at 120 mL/hr. Crackles are now only at the bases. The frothy sputum has stopped. He thanks you and asks what happened."
+      },
+      {
+        "time_sec": 1800,
+        "condition": "full_treatment_continued",
+        "effects": {
+          "respiratory": {
+            "spo2": 97,
+            "rr": 18,
+            "work_of_breathing_index": 0.15,
+            "pulmonary_edema_index": 0.20,
+            "crackles_index": 0.25
+          },
+          "hemodynamics": {
+            "sbp": 138,
+            "dbp": 80,
+            "hr": 84,
+            "map": 99
+          },
+          "renal": {
+            "urine_output_ml_per_hr": 90
+          },
+          "labs": {
+            "lactate_mmol_l": 1.8
+          }
+        },
+        "narrative": "Continued improvement. The patient is ready for consideration of weaning BiPAP to high-flow nasal cannula. Lactate is clearing. He is conversational and expresses that he stopped his medications because he could not afford the copay. This is an opportunity to address medication access and discharge planning."
+      }
+    ]
+  },
+  "triggered_diagnostics": {
+    "ecg_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "Sinus tachycardia at 118 bpm. Left ventricular hypertrophy with repolarization abnormalities (strain pattern) in leads I, aVL, V5-V6. Nonspecific ST-T wave changes in lateral leads. Old Q waves in V1-V3 consistent with prior anterior myocardial infarction. No acute ST elevation meeting STEMI criteria. No new ST depression beyond strain pattern. QTc 468 ms. Normal axis."
+    },
+    "cxr_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Portable AP radiograph: Cardiomegaly (CTR 0.62). Bilateral diffuse alveolar opacities in butterfly/bat-wing distribution consistent with pulmonary edema. Cephalization of the pulmonary vasculature. Bilateral small-to-moderate pleural effusions. Kerley B lines at lung periphery. No pneumothorax. No focal consolidation to suggest pneumonia. Calcified aortic knob."
+    },
+    "bnp_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "BNP: 2340 pg/mL (reference <100 pg/mL). Markedly elevated, consistent with acute decompensated heart failure."
+    },
+    "troponin_ordered": {
+      "result_delay_sec": 240,
+      "result_text": "High-sensitivity troponin: 45 ng/L (reference <14 ng/L). Mildly elevated. In the context of severe hemodynamic stress, this is most consistent with demand ischemia (type 2 myocardial infarction). Serial troponins recommended to evaluate trend."
+    },
+    "troponin_repeat_3hr_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Repeat high-sensitivity troponin at 3 hours: 52 ng/L. Flat trend — consistent with demand ischemia rather than acute plaque rupture."
+    },
+    "cmp_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "Na 134, K 5.4 (hemolysis not suspected, true hyperkalemia from renal dysfunction and low output), Cl 100, CO2 18, BUN 58, Cr 2.8 (baseline 2.0 — acute-on-chronic kidney injury), Glucose 198, Ca 8.6, Mg 1.8, Phos 5.1. eGFR 20 mL/min (baseline 32)."
+    },
+    "cbc_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "WBC 9.8, Hgb 11.2, Hct 34.1%, Plt 188. Mild normocytic anemia consistent with CKD and chronic disease."
+    },
+    "abg_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "pH 7.22, pCO2 52, pO2 48, HCO3 20, BE -6, SaO2 79%. Interpretation: Mixed respiratory and metabolic acidosis. Acute hypercapnic respiratory failure with superimposed non-anion-gap metabolic acidosis (CKD) and early lactic acidosis."
+    },
+    "lactate_ordered": {
+      "result_delay_sec": 180,
+      "result_text": "Lactate: 3.2 mmol/L (reference <2.0). Elevated, consistent with tissue hypoperfusion and anaerobic metabolism from low cardiac output."
+    },
+    "echo_ordered": {
+      "result_delay_sec": 1800,
+      "result_text": "Bedside TTE: Severely reduced LV systolic function, EF 20-25% by visual estimate. Global hypokinesis. Anterior wall and septal akinesis (old infarction territory). LV cavity dilated (LVEDD 6.8 cm). Moderate-to-severe functional mitral regurgitation. Mildly dilated RV with reduced function. Estimated RVSP 55 mmHg. Moderate tricuspid regurgitation. IVC 2.6 cm, <50% inspiratory collapse — consistent with elevated RA pressure >15 mmHg. No pericardial effusion. No aortic stenosis."
+    },
+    "pocus_ordered": {
+      "result_delay_sec": 120,
+      "result_text": "Lung ultrasound: Diffuse bilateral B-lines in all 8 zones (>3 per intercostal space), consistent with pulmonary edema. Bilateral small pleural effusions. Cardiac: Severely reduced LV squeeze, grossly dilated LV. IVC plethoric, no respiratory variation. No pericardial effusion."
+    },
+    "ua_ordered": {
+      "result_delay_sec": 600,
+      "result_text": "Color dark amber, SG 1.025, pH 5.5, protein 1+, blood trace, no WBC, no bacteria, no casts on microscopy. Concentrated urine consistent with low renal perfusion."
+    },
+    "coagulation_ordered": {
+      "result_delay_sec": 300,
+      "result_text": "PT 12.8 sec, INR 1.1, PTT 32 sec. Normal coagulation."
+    },
+    "procalcitonin_ordered": {
+      "result_delay_sec": 360,
+      "result_text": "Procalcitonin: 0.15 ng/mL (reference <0.25). Low — not suggestive of bacterial infection as precipitant."
+    }
+  },
+  "success_criteria": {
+    "required": [
+      "recognize_acute_cardiogenic_pulmonary_edema",
+      "initiate_nippv",
+      "start_iv_nitroglycerin",
+      "administer_iv_furosemide",
+      "obtain_ecg",
+      "obtain_bnp_troponin",
+      "avoid_iv_fluids"
+    ],
+    "target_end_state": {
+      "spo2_min": 92,
+      "sbp_range": [130, 160],
+      "map_range": [90, 115],
+      "hr_range": [70, 100],
+      "rr_max": 24,
+      "mental_status": "tired_but_alert",
+      "gcs_min": 15,
+      "pulmonary_edema_index_max": 0.40,
+      "work_of_breathing_index_max": 0.30,
+      "urine_output_ml_per_hr_min": 50,
+      "no_harm_event_ids": [
+        "iv_fluid_bolus_given",
+        "beta_blocker_in_acute_decompensation"
+      ],
+      "disposition": "icu_admission"
+    }
+  },
+  "failure_criteria": {
+    "any_of": [
+      "spo2_less_than_50_for_more_than_120_sec",
+      "cardiac_arrest",
+      "gcs_3_persists_more_than_180_sec",
+      "iv_fluid_bolus_given_and_no_corrective_action",
+      "beta_blocker_given_and_cardiac_output_collapses",
+      "disposition_is_discharge",
+      "no_nippv_and_no_intubation_by_600_sec"
+    ]
+  },
+  "debrief_template": {
+    "what_went_well": [
+      "Rapid recognition of acute cardiogenic pulmonary edema",
+      "Early application of NIPPV before considering intubation",
+      "Appropriate use of IV nitroglycerin for afterload and preload reduction",
+      "Correct diuretic dosing accounting for CKD and home dose",
+      "Upright positioning to reduce preload",
+      "Systematic workup for precipitant (ECG, troponin, BNP)",
+      "Avoidance of harmful interventions (IV fluids, beta-blockers)",
+      "Appropriate disposition to ICU with cardiology consultation"
+    ],
+    "what_could_have_gone_better": [
+      "Faster time to NIPPV application",
+      "Earlier initiation of nitroglycerin drip",
+      "Recognition of medication non-compliance as precipitant and social determinants of health",
+      "Point-of-care ultrasound for rapid confirmation before CXR",
+      "Serial reassessment of respiratory status and hemodynamics after each intervention",
+      "Earlier consideration of Foley catheter for accurate output monitoring"
+    ],
+    "key_choices_to_highlight": [
+      "Whether NIPPV was applied before or after other interventions — it should be first",
+      "Choice of nitroglycerin versus nitroprusside versus other vasodilators",
+      "Furosemide dose selected and rationale (home dose conversion, CKD adjustment)",
+      "Whether IV fluids were avoided or inadvertently ordered",
+      "Whether the team considered and ruled out ACS as a precipitant",
+      "Whether intubation was considered too early versus an appropriate NIPPV trial",
+      "Whether the team addressed the underlying cause (medication non-compliance, affordability)"
+    ],
+    "teaching_points": [
+      "NIPPV is the single most impactful intervention in flash pulmonary edema. It reduces preload, reduces afterload, improves alveolar recruitment, and reduces work of breathing simultaneously. NNT ~3 to avoid intubation.",
+      "Flash pulmonary edema in hypertensive patients is primarily an afterload problem, not purely a volume problem. IV nitroglycerin is essential for reducing afterload and preload.",
+      "The LMNOP mnemonic: Lasix, Morphine (now used cautiously or avoided — associated with increased mortality), Nitrates, Oxygen/NIPPV, Position upright.",
+      "IV furosemide dosing in CKD: higher doses are typically needed due to reduced tubular secretion. The initial venodilation effect occurs before diuresis begins at 15-20 minutes.",
+      "Avoid beta-blockers in acute decompensated heart failure — the failing ventricle depends on sympathetic drive to maintain cardiac output. Beta-blockers can precipitate cardiogenic shock.",
+      "Avoid IV fluid bolus — this is the most common and most dangerous error in acute pulmonary edema management.",
+      "Nitroprusside should be avoided in CKD due to risk of cyanide and thiocyanate accumulation. Nitroglycerin is the preferred vasodilator.",
+      "Troponin elevation in acute heart failure is common and usually represents demand ischemia (type 2 MI) from supply-demand mismatch. A flat troponin trend supports this over acute coronary syndrome.",
+      "Medication non-compliance is a leading precipitant of acute HF decompensation. Address barriers to adherence including cost, health literacy, and access.",
+      "Post-stabilization, patients need optimization of GDMT (guideline-directed medical therapy), cardiology follow-up, and medication access planning to prevent readmission."
+    ]
+  }
+}
