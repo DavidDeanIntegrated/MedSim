@@ -1,0 +1,65 @@
+.order-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.ob-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.ob-chip {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 4px 12px;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.ob-chip:hover:not(:disabled) {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+.ob-chip:disabled { opacity: 0.4; cursor: wait; }
+.ob-input-row {
+  display: flex;
+  gap: 0;
+}
+.ob-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 14px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.85rem;
+  outline: none;
+}
+.ob-input::placeholder { color: var(--text-muted); }
+.ob-input:disabled { opacity: 0.5; }
+.ob-submit {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 14px 24px;
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.ob-submit:hover:not(:disabled) { opacity: 0.9; }
+.ob-submit:disabled { opacity: 0.3; cursor: not-allowed; }
+
+@media (max-width: 640px) {
+  .ob-chips { overflow-x: auto; flex-wrap: nowrap; }
+  .ob-input { font-size: 16px; min-height: 48px; } /* prevent iOS zoom */
+}

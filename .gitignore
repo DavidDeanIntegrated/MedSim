@@ -25,3 +25,8 @@ htmlcov/
 
 # SQLite database files
 *.db
+
+# Node.js / React frontend
+node_modules/
+frontend-dist/
+.vite/

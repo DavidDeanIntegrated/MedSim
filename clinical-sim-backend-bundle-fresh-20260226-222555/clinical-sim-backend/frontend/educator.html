@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MedSim — Educator Dashboard</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface-2: #1c2333;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-muted: #8b949e;
+  --accent: #58a6ff;
+  --green: #3fb950;
+  --yellow: #d29922;
+  --red: #f85149;
+  --orange: #db6d28;
+  --purple: #bc8cff;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'SF Mono', 'Fira Code', monospace; background: var(--bg); color: var(--text); min-height: 100vh; }
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+header { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+header h1 { font-size: 1.3rem; color: var(--accent); }
+header a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; }
+header a:hover { color: var(--accent); }
+
+/* Stats cards */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+.stat-card .label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.stat-card .value { font-size: 2rem; font-weight: bold; }
+.stat-card .value.green { color: var(--green); }
+.stat-card .value.yellow { color: var(--yellow); }
+.stat-card .value.accent { color: var(--accent); }
+
+/* Case performance table */
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+.panel h2 { font-size: 1rem; color: var(--accent); margin-bottom: 16px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; }
+td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+tr:hover td { background: var(--surface-2); }
+.score-bar { display: inline-block; height: 8px; border-radius: 4px; background: var(--green); min-width: 4px; }
+.score-bar.low { background: var(--red); }
+.score-bar.mid { background: var(--yellow); }
+.score-bar.high { background: var(--green); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+.badge.A { background: var(--green); color: #000; }
+.badge.B { background: var(--accent); color: #000; }
+.badge.C { background: var(--yellow); color: #000; }
+.badge.D { background: var(--orange); color: #fff; }
+.badge.F { background: var(--red); color: #fff; }
+
+/* Learner search */
+.search-bar { display: flex; gap: 12px; margin-bottom: 16px; }
+.search-bar input { flex: 1; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; color: var(--text); font-family: inherit; font-size: 0.85rem; }
+.search-bar input::placeholder { color: var(--text-muted); }
+.search-bar button { background: var(--accent); color: #000; border: none; border-radius: 6px; padding: 10px 20px; font-family: inherit; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+.search-bar button:hover { opacity: 0.9; }
+
+/* Learner detail */
+.learner-detail { display: none; }
+.learner-detail.active { display: block; }
+.session-list { list-style: none; }
+.session-list li { padding: 10px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.session-list li:hover { background: var(--surface-2); cursor: pointer; }
+
+/* Loading */
+.loading { text-align: center; padding: 40px; color: var(--text-muted); }
+.error { color: var(--red); padding: 12px; background: rgba(248,81,73,0.1); border-radius: 6px; margin-bottom: 16px; }
+
+/* Tabs */
+.tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--border); }
+.tab { padding: 10px 20px; cursor: pointer; color: var(--text-muted); border-bottom: 2px solid transparent; font-size: 0.85rem; }
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  table { font-size: 0.75rem; }
+  th, td { padding: 8px 6px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>MedSim Educator Dashboard</h1>
+    <a href="/">Back to Simulation</a>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="overview">Overview</div>
+    <div class="tab" data-tab="learners">Learners</div>
+    <div class="tab" data-tab="cases">Cases</div>
+  </div>
+
+  <!-- Overview Tab -->
+  <div class="tab-content active" id="tab-overview">
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><div class="label">Total Sessions</div><div class="value accent" id="stat-sessions">—</div></div>
+      <div class="stat-card"><div class="label">Total Learners</div><div class="value accent" id="stat-learners">—</div></div>
+      <div class="stat-card"><div class="label">Cases Available</div><div class="value green" id="stat-cases">—</div></div>
+      <div class="stat-card"><div class="label">Avg Score</div><div class="value yellow" id="stat-avg">—</div></div>
+    </div>
+
+    <div class="panel">
+      <h2>Case Performance Overview</h2>
+      <table id="case-table">
+        <thead>
+          <tr>
+            <th>Case</th>
+            <th>Attempts</th>
+            <th>Learners</th>
+            <th>Avg Score</th>
+            <th>Best</th>
+            <th>Distribution</th>
+          </tr>
+        </thead>
+        <tbody id="case-tbody"></tbody>
+      </table>
+      <div class="loading" id="case-loading">Loading cohort data...</div>
+    </div>
+  </div>
+
+  <!-- Learners Tab -->
+  <div class="tab-content" id="tab-learners">
+    <div class="search-bar">
+      <input type="text" id="learner-search" placeholder="Enter learner user ID...">
+      <button onclick="searchLearner()">Search</button>
+    </div>
+
+    <div class="learner-detail" id="learner-detail">
+      <div class="stats-grid" id="learner-stats"></div>
+      <div class="panel">
+        <h2>Session History</h2>
+        <ul class="session-list" id="learner-sessions"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cases Tab -->
+  <div class="tab-content" id="tab-cases">
+    <div class="panel">
+      <h2>Available Cases</h2>
+      <table id="all-cases-table">
+        <thead>
+          <tr>
+            <th>Case ID</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Difficulty</th>
+          </tr>
+        </thead>
+        <tbody id="all-cases-tbody"></tbody>
+      </table>
+      <div class="loading" id="cases-loading">Loading cases...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+
+// --- Tab switching ---
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// --- Load cohort data ---
+async function loadCohort() {
+  try {
+    const res = await fetch(API + '/analytics/cohort');
+    const data = await res.json();
+
+    document.getElementById('stat-sessions').textContent = data.total_sessions || 0;
+    document.getElementById('stat-learners').textContent = data.total_learners || 0;
+
+    const tbody = document.getElementById('case-tbody');
+    tbody.innerHTML = '';
+    const cases = data.cases || {};
+    let totalScore = 0, totalCount = 0;
+
+    for (const [caseId, stats] of Object.entries(cases)) {
+      totalScore += stats.avg_score * stats.attempts;
+      totalCount += stats.attempts;
+
+      const barClass = stats.avg_score >= 78 ? 'high' : stats.avg_score >= 55 ? 'mid' : 'low';
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${caseId}</td>
+        <td>${stats.attempts}</td>
+        <td>${stats.unique_learners}</td>
+        <td>${stats.avg_score}%</td>
+        <td>${stats.max_score}%</td>
+        <td><div class="score-bar ${barClass}" style="width: ${Math.max(4, stats.avg_score)}px"></div></td>
+      `;
+      tbody.appendChild(row);
+    }
+
+    document.getElementById('stat-avg').textContent = totalCount > 0
+      ? Math.round(totalScore / totalCount) + '%'
+      : '—';
+
+    document.getElementById('case-loading').style.display = 'none';
+  } catch (e) {
+    document.getElementById('case-loading').textContent = 'No session data yet';
+  }
+}
+
+// --- Load case library ---
+async function loadCases() {
+  try {
+    const res = await fetch(API + '/cases');
+    const data = await res.json();
+
+    document.getElementById('stat-cases').textContent = data.cases ? data.cases.length : 0;
+
+    const tbody = document.getElementById('all-cases-tbody');
+    tbody.innerHTML = '';
+    for (const c of (data.cases || [])) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${c.case_id}</td>
+        <td>${c.title}</td>
+        <td>${c.category || '—'}</td>
+        <td>${c.difficulty || 'moderate'}</td>
+      `;
+      tbody.appendChild(row);
+    }
+    document.getElementById('cases-loading').style.display = 'none';
+  } catch (e) {
+    document.getElementById('cases-loading').textContent = 'Failed to load cases';
+  }
+}
+
+// --- Search learner ---
+async function searchLearner() {
+  const uid = document.getElementById('learner-search').value.trim();
+  if (!uid) return;
+
+  try {
+    const res = await fetch(API + '/analytics/learner/' + encodeURIComponent(uid));
+    const data = await res.json();
+
+    const detail = document.getElementById('learner-detail');
+    detail.classList.add('active');
+
+    document.getElementById('learner-stats').innerHTML = `
+      <div class="stat-card"><div class="label">Sessions</div><div class="value accent">${data.total_sessions}</div></div>
+      <div class="stat-card"><div class="label">Avg Score</div><div class="value ${data.average_score >= 78 ? 'green' : data.average_score >= 55 ? 'yellow' : ''}">${data.average_score}%</div></div>
+      <div class="stat-card"><div class="label">Cases Attempted</div><div class="value accent">${data.cases_attempted}</div></div>
+      <div class="stat-card"><div class="label">Recommended</div><div class="value green">${data.recommended_difficulty}</div></div>
+    `;
+
+    const list = document.getElementById('learner-sessions');
+    list.innerHTML = '';
+    for (const s of (data.sessions || [])) {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${s.case_id || 'Unknown case'}</span>
+        <span>Score: ${s.score} | ${Math.round(s.total_time_sec / 60)}min | ${s.status}</span>
+      `;
+      li.onclick = () => window.open('/sessions/' + s.session_id + '/debrief', '_blank');
+      list.appendChild(li);
+    }
+  } catch (e) {
+    document.getElementById('learner-detail').classList.remove('active');
+    alert('Learner not found or no sessions');
+  }
+}
+
+// --- Enter key for search ---
+document.getElementById('learner-search').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') searchLearner();
+});
+
+// --- Init ---
+loadCohort();
+loadCases();
+</script>
+</body>
+</html>
