@@ -159,3 +159,45 @@ class Case(Base):
     updated_at = Column(DateTime(timezone=True), default=_utcnow, onupdate=_utcnow)
 
     sessions = relationship("Session", back_populates="case")
+
+
+class InputLog(Base):
+    """Persistent log of every user input for analysis and app improvement."""
+
+    __tablename__ = "input_logs"
+
+    id = Column(String(36), primary_key=True, default=_uuid)
+    session_id = Column(String(36), nullable=False, index=True)
+    case_id = Column(String(100), nullable=True, index=True)
+    user_id = Column(String(100), nullable=True, index=True)
+    turn_index = Column(Integer, nullable=False, default=0)
+    turn_id = Column(String(50), nullable=True)
+    sim_time_sec = Column(Float, nullable=False, default=0)
+    raw_input = Column(Text, nullable=False)
+    normalized_input = Column(Text, nullable=True)
+    parser_mode = Column(String(30), nullable=True)
+    action_count = Column(Integer, nullable=False, default=0)
+    parsed_actions_summary = Column(Text, nullable=True)  # short summary of what was parsed
+    had_parse_failure = Column(Boolean, default=False)  # True if parser returned 0 actions
+    flagged = Column(Boolean, default=False, index=True)  # True if manually flagged for review
+    flag_reason = Column(Text, nullable=True)  # why it was flagged
+    flag_category = Column(String(50), nullable=True, index=True)  # bug, parser_fail, ux, content, other
+    notes = Column(Text, nullable=True)  # developer notes
+    created_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)
+
+
+class Feedback(Base):
+    """Developer/tester feedback entries linked to specific inputs or general issues."""
+
+    __tablename__ = "feedback"
+
+    id = Column(String(36), primary_key=True, default=_uuid)
+    input_log_id = Column(String(36), ForeignKey("input_logs.id"), nullable=True, index=True)
+    session_id = Column(String(100), nullable=True)
+    category = Column(String(50), nullable=False, default="general")  # bug, parser_fail, ux, content, feature_request, other
+    severity = Column(String(20), nullable=False, default="low")  # low, medium, high, critical
+    title = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
+    status = Column(String(20), nullable=False, default="open")  # open, in_progress, resolved, wontfix
+    resolved_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=_utcnow, nullable=False)

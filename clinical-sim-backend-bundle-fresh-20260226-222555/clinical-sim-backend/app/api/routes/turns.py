@@ -2,6 +2,7 @@ import logging
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session as DBSession
 
 from app.api.deps import (
     get_engine_service,
@@ -12,10 +13,12 @@ from app.api.deps import (
 )
 from app.api.routes.stream import notify_session_update
 from app.core.config import get_settings
+from app.db.engine import get_db
 from app.models.engine import ExecuteTurnRequest
 from app.models.parser import ParseTurnRequest
 from app.models.voice import BuildVoicePlanRequest
 from app.services.engine_service import EngineService
+from app.services.input_log_service import InputLogService
 from app.services.parser_service import ParserService
 from app.services.session_service import SessionService
 from app.services.voice_service import VoiceService
@@ -112,6 +115,7 @@ def process_turn(
     parser_service: ParserService = Depends(get_parser_service),
     engine_service: EngineService = Depends(get_engine_service),
     voice_service: VoiceService = Depends(get_voice_service),
+    db: DBSession = Depends(get_db),
 ):
     try:
         session = session_service.get_session(session_id)
@@ -120,7 +124,7 @@ def process_turn(
 
     parser_mode = request.get("parserMode", "rule")
 
-    # Auto-generate turnId and timestampSimSec if not provided (BUG-6 fix)
+    # BUG-6 fix: auto-generate turnId and timestampSimSec when missing
     turn_id = request.get("turnId") or f"turn-{uuid4().hex[:8]}"
     patient_state = session.get("patientState", {})
     timestamp_sim_sec = request.get("timestampSimSec")
@@ -130,7 +134,7 @@ def process_turn(
     parse_request = ParseTurnRequest(
         turnId=turn_id,
         timestampSimSec=timestamp_sim_sec,
-        inputText=request["inputText"],
+        inputText=request.get("inputText", ""),
         parserMode=parser_mode,
         speaker=request.get("speaker", "resident"),
         activeInfusions=request.get("activeInfusions", []),
@@ -144,7 +148,6 @@ def process_turn(
     if parsed is None:
         parsed = parser_service.parse_turn(parse_request)
 
-    patient_state = session.get("patientState")
     if not patient_state:
         raise HTTPException(status_code=400, detail="No active case state")
 
@@ -154,6 +157,9 @@ def process_turn(
         includeFullState=request.get("includeFullState", True),
     )
     engine_result = engine_service.execute_turn(patient_state, execute_request)
+
+    transcript = session.get("transcript", [])
+    turn_index = len(transcript)
 
     session_service.update_session_state(
         session_id=session_id,
@@ -168,6 +174,31 @@ def process_turn(
 
     if engine_result.updated_patient_state:
         notify_session_update(session_id, engine_result.updated_patient_state)
+
+    # ── Log input to SQLite for analytics/review ──
+    try:
+        action_count = len(parsed.actions) if parsed.actions else 0
+        actions_summary = ", ".join(
+            a.action_type for a in (parsed.actions or [])
+        )[:500]
+
+        input_log_svc = InputLogService(db)
+        input_log_svc.log_input(
+            session_id=session_id,
+            case_id=session.get("activeCaseId"),
+            user_id=session.get("userId"),
+            turn_index=turn_index,
+            turn_id=parsed.turn_id,
+            sim_time_sec=timestamp_sim_sec,
+            raw_input=parsed.raw_input or request.get("inputText", ""),
+            normalized_input=parsed.normalized_input if hasattr(parsed, "normalized_input") else None,
+            parser_mode=parser_mode,
+            action_count=action_count,
+            parsed_actions_summary=actions_summary or None,
+            had_parse_failure=(action_count == 0 and bool(parsed.raw_input)),
+        )
+    except Exception:
+        logger.warning("Failed to log input to SQLite (non-fatal)", exc_info=True)
 
     voice_request = BuildVoicePlanRequest(
         engineResult=engine_result,
