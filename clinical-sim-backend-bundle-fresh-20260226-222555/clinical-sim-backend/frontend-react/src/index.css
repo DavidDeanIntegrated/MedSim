@@ -9,11 +9,20 @@
   /* Secondary */
   --secondary: #5f6368;
   --on-secondary: #ffffff;
+  --secondary-container: #cde5ff;
 
-  /* Error / Success / Warning */
+  /* Tertiary */
+  --tertiary: #6750a4;
+  --tertiary-container: #eaddff;
+
+  /* Semantic */
   --error: #d93025;
   --on-error: #ffffff;
   --error-container: #fce8e6;
+  --success: #1e8e3e;
+  --success-container: #e6f4ea;
+  --warning: #f9ab00;
+  --warning-container: #fef7e0;
   --green: #1e8e3e;
   --yellow: #f9ab00;
   --orange: #e8710a;
@@ -42,8 +51,14 @@
   --text-muted: #5f6368;
   --accent: #1a73e8;
 
+  /* Surface variant */
+  --surface-variant: #dde3ea;
+
   /* Monitor (stays dark for clinical accuracy) */
   --monitor-bg: #0a0e14;
+  --monitor-surface: #1a1d24;
+  --monitor-border: #30353d;
+  --monitor-text-dim: #8b949e;
 
   /* Shape scale */
   --radius-xs: 4px;
