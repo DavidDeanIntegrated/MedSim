@@ -1,0 +1,37 @@
+.info-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.ip-section { border-bottom: 1px solid var(--border); }
+.ip-section:last-child { border-bottom: none; }
+.ip-header {
+  padding: 8px 14px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--surface-2);
+}
+.ip-list { list-style: none; }
+.ip-item { padding: 6px 14px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
+.ip-item:not(:last-child) { border-bottom: 1px solid rgba(48,54,61,0.5); }
+.ip-empty { padding: 10px 14px; font-size: 0.75rem; color: var(--text-muted); font-style: italic; }
+
+/* Infusion items */
+.ip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; animation: pulse 2s infinite; }
+@keyframes pulse { 50% { opacity: 0.4; } }
+.ip-med { flex: 1; text-transform: capitalize; }
+.ip-rate { color: var(--accent); font-weight: bold; font-size: 0.75rem; }
+
+/* Lab items */
+.ip-item.lab { flex-direction: column; align-items: flex-start; gap: 2px; }
+.ip-lab-id { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; }
+.ip-lab-val { font-size: 0.75rem; }
+
+/* Imaging items */
+.ip-item.imaging { flex-direction: column; align-items: flex-start; gap: 4px; }
+.ip-image-wrap { width: 100%; max-height: 200px; overflow: hidden; border-radius: 4px; margin-top: 4px; }
+.ip-image { width: 100%; height: auto; display: block; }

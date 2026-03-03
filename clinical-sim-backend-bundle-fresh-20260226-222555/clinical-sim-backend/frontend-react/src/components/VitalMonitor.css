@@ -1,0 +1,79 @@
+.vital-monitor {
+  background: #0a0e14;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Waveform strip */
+.waveform-strip {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Numeric vitals grid */
+.vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.vital-tile {
+  background: #0a0e14;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.vital-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.vital-value { font-size: 1.4rem; font-weight: bold; font-variant-numeric: tabular-nums; }
+.vital-tile.bp .vital-value { color: #ff4444; }
+.vital-tile.map .vital-value { color: #ff8c00; }
+.vital-tile.hr .vital-value { color: #00ff41; }
+.vital-tile.spo2 .vital-value { color: #00e5ff; }
+.vital-tile.rr .vital-value { color: #ffeb3b; }
+.vital-tile.rhythm .vital-value { color: #00ff41; font-size: 0.8rem; }
+
+/* Alarm strip */
+.alarm-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px 10px;
+  background: rgba(248, 81, 73, 0.1);
+  border-bottom: 1px solid var(--border);
+}
+.alarm-flag {
+  background: var(--red);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  animation: blink 1s infinite;
+}
+@keyframes blink { 50% { opacity: 0.6; } }
+
+/* Footer */
+.monitor-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 0.7rem;
+}
+.patient-info { display: flex; gap: 12px; color: var(--text-muted); }
+.monitor-meta { display: flex; align-items: center; gap: 16px; }
+.sim-time { color: var(--accent); font-weight: bold; font-size: 0.85rem; }
+.score-bar-wrap { display: flex; align-items: center; gap: 6px; }
+.score-label { color: var(--text-muted); }
+.score-track { width: 80px; height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+.score-fill { height: 100%; background: var(--green); border-radius: 3px; transition: width 0.3s; }
+.score-value { color: var(--green); font-weight: bold; min-width: 24px; text-align: right; }
+
+@media (max-width: 640px) {
+  .vitals-grid { grid-template-columns: repeat(2, 1fr); }
+  .vital-value { font-size: 1.1rem; }
+}

@@ -1,0 +1,95 @@
+name: MedSim CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.11"
+  NODE_VERSION: "22"
+
+jobs:
+  # --- Backend: lint, type-check, test ---
+  backend:
+    name: Backend CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: clinical-sim-backend-bundle-fresh-20260226-222555/clinical-sim-backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+
+      - name: Lint with ruff
+        run: |
+          pip install ruff
+          ruff check app/ tests/ --select E,F,W --ignore E501
+
+      - name: Type check with mypy
+        run: |
+          pip install mypy types-requests
+          mypy app/ --ignore-missing-imports --no-strict-optional || true
+
+      - name: Run tests
+        run: python -m pytest tests/ -v --tb=short
+
+  # --- Frontend: type-check, build ---
+  frontend:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: clinical-sim-backend-bundle-fresh-20260226-222555/clinical-sim-backend/frontend-react
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: clinical-sim-backend-bundle-fresh-20260226-222555/clinical-sim-backend/frontend-react/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npx vite build
+
+  # --- Docker build (only on main) ---
+  docker:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    if: github.ref == 'refs/heads/main'
+    defaults:
+      run:
+        working-directory: clinical-sim-backend-bundle-fresh-20260226-222555/clinical-sim-backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t medsim:latest .
+
+      - name: Verify health endpoint
+        run: |
+          docker run -d --name medsim-test -p 8000:8000 medsim:latest
+          sleep 5
+          curl -f http://localhost:8000/health || exit 1
+          docker stop medsim-test

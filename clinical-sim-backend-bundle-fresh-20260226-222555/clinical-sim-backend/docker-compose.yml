@@ -1,0 +1,68 @@
+# MedSim Docker Compose
+# Usage:
+#   Development:  docker compose up
+#   Production:   docker compose --profile production up
+
+services:
+  # --- Development: FastAPI backend + SQLite ---
+  medsim:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=development
+      - DATABASE_URL=sqlite:///./medsim.db
+      - JWT_SECRET=${JWT_SECRET:-medsim-dev-secret-change-in-production}
+      - LLM_PARSER_ENABLED=false
+    volumes:
+      - ./app:/app/app          # Hot-reload application code
+      - ./frontend:/app/frontend # Hot-reload legacy frontend
+      - medsim-data:/app/app/data/sessions  # Persist session data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # --- Production: PostgreSQL database ---
+  postgres:
+    image: postgres:16-alpine
+    profiles: ["production"]
+    environment:
+      POSTGRES_DB: medsim
+      POSTGRES_USER: medsim
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-medsim-dev-password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medsim"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --- Production: Backend with PostgreSQL ---
+  medsim-prod:
+    build: .
+    profiles: ["production"]
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=production
+      - DATABASE_URL=postgresql://medsim:${POSTGRES_PASSWORD:-medsim-dev-password}@postgres:5432/medsim
+      - JWT_SECRET=${JWT_SECRET}
+      - LLM_PARSER_ENABLED=${LLM_PARSER_ENABLED:-false}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  medsim-data:
+  pgdata:

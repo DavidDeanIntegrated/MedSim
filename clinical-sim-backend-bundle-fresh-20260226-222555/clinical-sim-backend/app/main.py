@@ -4,8 +4,10 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.api.routes.analytics import router as analytics_router
 from app.api.routes.cases import router as cases_router
 from app.api.routes.health import router as health_router
+from app.api.routes.lti import router as lti_router
 from app.api.routes.reports import router as reports_router
 from app.api.routes.sessions import router as sessions_router
 from app.api.routes.state import router as state_router
@@ -21,7 +23,7 @@ settings = get_settings()
 
 FRONTEND_DIR = Path(__file__).parent.parent / "frontend"
 
-app = FastAPI(title=settings.app_name, version="0.2.0")
+app = FastAPI(title=settings.app_name, version="0.3.0")
 
 # Initialize database tables on startup
 init_db()
@@ -38,6 +40,14 @@ def root() -> FileResponse | RedirectResponse:
     return RedirectResponse(url="/docs", status_code=307)
 
 
+@app.get("/educator", include_in_schema=False, response_model=None)
+def educator_dashboard() -> FileResponse | RedirectResponse:
+    page = FRONTEND_DIR / "educator.html"
+    if page.exists():
+        return FileResponse(page)
+    return RedirectResponse(url="/docs", status_code=307)
+
+
 # Auth
 app.include_router(auth_router)
 
@@ -49,3 +59,5 @@ app.include_router(state_router)
 app.include_router(stream_router)
 app.include_router(turns_router)
 app.include_router(reports_router)
+app.include_router(analytics_router)
+app.include_router(lti_router)
