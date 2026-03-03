@@ -87,9 +87,10 @@
   border-radius: 8px;
   font-size: 0.8rem;
   z-index: 1000;
-  animation: toast-in 0.3s ease-out;
+  animation: toast-in 0.3s ease-out, toast-out 0.5s ease-in 4.5s forwards;
 }
 @keyframes toast-in { from { opacity: 0; transform: translateX(-50%) translateY(20px); } }
+@keyframes toast-out { to { opacity: 0; transform: translateX(-50%) translateY(20px); } }
 
 /* Mobile responsive */
 @media (max-width: 768px) {

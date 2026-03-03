@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useSimulation } from './hooks/useSimulation';
 import CaseSelector from './components/CaseSelector';
 import VitalMonitor from './components/VitalMonitor';
@@ -9,6 +10,16 @@ import './App.css';
 
 export default function App() {
   const { state, selectCase, submitOrder, requestDebrief, resetToMenu } = useSimulation();
+  const [toastVisible, setToastVisible] = useState(false);
+
+  useEffect(() => {
+    if (state.error) {
+      setToastVisible(true);
+      const timer = setTimeout(() => setToastVisible(false), 5000);
+      return () => clearTimeout(timer);
+    }
+    setToastVisible(false);
+  }, [state.error]);
 
   if (state.phase === 'case-select') {
     return <CaseSelector onSelect={selectCase} loading={state.loading} />;
@@ -63,7 +74,7 @@ export default function App() {
       </div>
 
       {/* Error toast */}
-      {state.error && (
+      {state.error && toastVisible && (
         <div className="error-toast">{state.error}</div>
       )}
     </div>

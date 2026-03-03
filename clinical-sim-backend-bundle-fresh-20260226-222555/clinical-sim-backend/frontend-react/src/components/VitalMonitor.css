@@ -26,9 +26,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: background 0.3s;
 }
 .vital-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.vital-value { font-size: 1.4rem; font-weight: bold; font-variant-numeric: tabular-nums; }
+.vital-value { font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: bold; font-variant-numeric: tabular-nums; }
+
+/* Default colors */
 .vital-tile.bp .vital-value { color: #ff4444; }
 .vital-tile.map .vital-value { color: #ff8c00; }
 .vital-tile.hr .vital-value { color: #00ff41; }
@@ -36,25 +39,38 @@
 .vital-tile.rr .vital-value { color: #ffeb3b; }
 .vital-tile.rhythm .vital-value { color: #00ff41; font-size: 0.8rem; }
 
+/* Dynamic severity classes for vital tiles */
+.vital-tile.vital-critical { background: rgba(248, 81, 73, 0.15); }
+.vital-tile.vital-critical .vital-value { color: #ff4444; animation: pulse-critical 1s infinite; }
+.vital-tile.vital-warning { background: rgba(210, 153, 34, 0.1); }
+.vital-tile.vital-warning .vital-value { color: #d29922; }
+.vital-tile.vital-normal .vital-value { color: var(--green); }
+
+@keyframes pulse-critical { 50% { opacity: 0.7; } }
+
 /* Alarm strip */
 .alarm-strip {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  padding: 6px 10px;
-  background: rgba(248, 81, 73, 0.1);
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(248, 81, 73, 0.12);
   border-bottom: 1px solid var(--border);
 }
 .alarm-flag {
   background: var(--red);
   color: #fff;
-  padding: 2px 8px;
-  border-radius: 3px;
-  font-size: 0.65rem;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 0.7rem;
   font-weight: bold;
-  animation: blink 1s infinite;
+  animation: alarm-pulse 1s infinite;
+  box-shadow: 0 0 8px rgba(248, 81, 73, 0.5);
 }
-@keyframes blink { 50% { opacity: 0.6; } }
+@keyframes alarm-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(248, 81, 73, 0.5); }
+  50% { opacity: 0.7; box-shadow: 0 0 16px rgba(248, 81, 73, 0.8); }
+}
 
 /* Footer */
 .monitor-footer {

@@ -12,7 +12,8 @@
   --orange: #db6d28;
   --purple: #bc8cff;
 
-  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color: var(--text);

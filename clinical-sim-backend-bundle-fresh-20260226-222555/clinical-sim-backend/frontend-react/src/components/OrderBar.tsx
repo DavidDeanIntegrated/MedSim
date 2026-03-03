@@ -46,7 +46,7 @@ export default function OrderBar({ onSubmit, loading, suggestions }: Props) {
   return (
     <div className="order-bar">
       <div className="ob-chips">
-        {chips.slice(0, 6).map((chip, i) => (
+        {chips.map((chip, i) => (
           <button
             key={i}
             className="ob-chip"

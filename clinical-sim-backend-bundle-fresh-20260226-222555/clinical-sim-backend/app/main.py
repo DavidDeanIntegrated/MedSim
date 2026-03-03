@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -23,7 +24,17 @@ settings = get_settings()
 
 FRONTEND_DIR = Path(__file__).parent.parent / "frontend"
 
-app = FastAPI(title=settings.app_name, version="0.3.0")
+app = FastAPI(title=settings.app_name, version="0.3.1")
+
+# CORS — allow Vite dev server (port 5173) during local development
+if settings.app_env != "production":
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 # Initialize database tables on startup
 init_db()
