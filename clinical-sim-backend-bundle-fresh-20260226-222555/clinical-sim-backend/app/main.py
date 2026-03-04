@@ -24,6 +24,7 @@ configure_logging()
 settings = get_settings()
 
 FRONTEND_DIR = Path(__file__).parent.parent / "frontend"
+REACT_DIST = Path(__file__).parent.parent / "frontend-dist"
 
 app = FastAPI(title=settings.app_name, version="0.4.0")
 
@@ -40,12 +41,24 @@ if settings.app_env != "production":
 # Initialize database tables on startup
 init_db()
 
+# Serve legacy vanilla frontend at /static
 if FRONTEND_DIR.exists():
     app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
+
+# Serve React build assets (JS/CSS with hashed filenames — long cache OK)
+if REACT_DIST.exists() and (REACT_DIST / "assets").exists():
+    app.mount("/assets", StaticFiles(directory=REACT_DIST / "assets"), name="react-assets")
 
 
 @app.get("/", include_in_schema=False, response_model=None)
 def root() -> FileResponse | RedirectResponse:
+    # Prefer React build, fall back to vanilla frontend
+    react_index = REACT_DIST / "index.html"
+    if react_index.exists():
+        return FileResponse(
+            react_index,
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+        )
     index = FRONTEND_DIR / "index.html"
     if index.exists():
         return FileResponse(index)
