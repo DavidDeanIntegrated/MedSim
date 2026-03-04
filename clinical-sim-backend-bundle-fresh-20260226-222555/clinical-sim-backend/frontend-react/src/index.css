@@ -92,7 +92,7 @@
 
 html, body {
   height: 100%;
-  overflow: hidden;
+  /* overflow: hidden is on .sim-layout, NOT here — debrief & case selector need to scroll */
 }
 
 body {
